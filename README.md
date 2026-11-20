@@ -1,5 +1,12 @@
 # ICP Qualifier
 
+**Winner of the Nebius + Tavily challenge and 2nd place of 30 in the GTM main challenge** at the AI Builders x commIT Hack Day, Berlin, 20 November 2026.
+Built in one day by [LPAI Solutions](https://lpai-solutions.com). Free to use under the MIT license.
+
+[Live demo](https://icp-qualifier.onrender.com/live) (free tier, the first load can take a minute) · [Demo video, 2 min](https://github.com/phibenthrop/hackathon-2026/releases/download/demo-video/icp-qualifier-demo.mp4) · [Slides](https://icp-qualifier.onrender.com/slides)
+
+Want this set up for your own sales team, with your customer profile and your sources? Get in touch via [lpai-solutions.com](https://lpai-solutions.com).
+
 > Type any company. An agent researches it on the live web, scores it against your ideal customer
 > profile with verbatim quotes, plans the outreach and drafts the first message for the recommended channel. A person decides what goes out.
 
