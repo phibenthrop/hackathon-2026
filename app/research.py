@@ -161,8 +161,19 @@ def mentions(t: Target, text: str, url: str) -> bool:
     return bool((t.domain and _norm(t.domain) in hay) or _norm(t.name) in hay)
 
 
+def official_domain(t: Target, urls: list[str]) -> str | None:
+    """The first hit whose host contains the company name without spaces (e.g. nagel-group.com)."""
+    want = re.sub(r"[^a-z0-9]", "", t.name.lower())
+    for u in urls:
+        m = re.match(r"https?://(?:www\.)?([^/]+)", u)
+        if m and want and want in re.sub(r"[^a-z0-9]", "", m.group(1).split(".")[0].lower()):
+            return m.group(1).lower()
+    return None
+
+
 def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | None = None) -> Research:
     """Company website (extract) plus three targeted searches: at most 4 Tavily calls."""
+    # (5 when only a name is given: the official site is found in the first search, then extracted)
     tv = client or Tavily(api_key, budget)
     res = Research(target)
     seen: set[str] = set()
@@ -181,20 +192,23 @@ def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | 
         res.sources.append(Source(len(res.sources) + 1, url, _squash(title)[:160] or url,
                                   depersonalize(snippet or "")[:EXCERPT_CHARS] or body[:EXCERPT_CHARS], body, kind, published))
 
-    if target.domain:
+    def extract_site(domain: str) -> None:
         try:
-            rows, dt = tv.extract([f"https://{target.domain}"])
-            res.calls.append({"call": "extract", "query": f"https://{target.domain}", "seconds": round(dt, 2),
+            rows, dt = tv.extract([f"https://{domain}"])
+            res.calls.append({"call": "extract", "query": f"https://{domain}", "seconds": round(dt, 2),
                               "results": len(rows), "credits": 1})
             for r in rows:
-                add(r.get("url"), f"{target.domain} (company website)", r.get("raw_content"), "website")
+                add(r.get("url"), f"{domain} (company website)", r.get("raw_content"), "website")
         except BudgetExceeded:
             raise
         except Exception as exc:  # unreachable site: carry on with search
-            res.calls.append({"call": "extract", "query": f"https://{target.domain}", "error": str(exc)[:160],
+            res.calls.append({"call": "extract", "query": f"https://{domain}", "error": str(exc)[:160],
                               "credits": 1})
 
-    for query, topic, time_range, kind in _queries(target):
+    if target.domain:
+        extract_site(target.domain)
+
+    for i, (query, topic, time_range, kind) in enumerate(_queries(target)):
         try:
             rows, dt = tv.search(query, topic=topic, time_range=time_range)
         except BudgetExceeded:
@@ -207,6 +221,11 @@ def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | 
         for r in rows:
             add(r.get("url"), r.get("title"), r.get("raw_content") or r.get("content"), kind,
                 snippet=r.get("content"), published=r.get("published_date"))
+        if i == 0 and not target.domain:  # name only: find the official site among the first hits
+            site = official_domain(target, [r.get("url") or "" for r in rows])
+            if site:
+                target.domain = site
+                extract_site(site)
     return res
 
 

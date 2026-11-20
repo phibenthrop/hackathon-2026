@@ -207,3 +207,11 @@ def test_example_has_no_person_names():
     text = outreach.EXAMPLE_FILE.read_text()
     assert "linkedin.com/in/" not in text
     assert json.loads(text)["input"]["company"]
+
+
+def test_name_only_finds_official_site():
+    t = parse_target("Nagel-Group")
+    assert research.official_domain(t, ["https://www.wsj.com/x", "https://www.nagel-group.com/en"]) == "nagel-group.com"
+    b = Budget()
+    res = run_research(parse_target("Chillspeed"), "k", b, client=FakeTavily(b))
+    assert b.tavily_used <= research.MAX_TAVILY_CALLS and res.sources
