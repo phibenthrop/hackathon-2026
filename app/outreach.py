@@ -63,7 +63,8 @@ class ModelError(RuntimeError):
     pass
 
 
-def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: float, budget: Budget) -> dict:
+def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: float, budget: Budget,
+                reasoning: str | None = None) -> dict:
     """One chat completion through the shared client in app/llm.py (JSON mode, capped retries).
 
     Returns {"content", "seconds", "prompt_tokens", "completion_tokens"}; raises ModelError."""
@@ -72,7 +73,8 @@ def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: floa
     if not key:
         raise ModelError(NO_KEYS_MSG)
     client = LLMClient(LLMConfig(base_url=NEBIUS_BASE_URL, model=model, api_key=key,
-                                 timeout=timeout, max_tokens=max_tokens))
+                                 timeout=timeout, max_tokens=max_tokens, reasoning_effort=reasoning,
+                                 max_retries=1))
     t0 = time.monotonic()
     try:
         content = client.chat(messages, temperature=0.2)
@@ -82,7 +84,23 @@ def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: floa
             raise ModelError(f"Nebius account has no credit (HTTP 402) - {model} could not run.") from None
         raise ModelError(f"Nebius call failed for {model}: {msg[:160]}") from None
     return {"content": content, "seconds": round(time.monotonic() - t0, 2),
-            "prompt_tokens": client.usage.prompt_tokens, "completion_tokens": client.usage.completion_tokens}
+            "prompt_tokens": client.usage.prompt_tokens, "completion_tokens": client.usage.completion_tokens,
+            "reasoning_tokens": client.usage.reasoning_tokens}
+
+
+def step_chat(st, messages: list[dict], budget: Budget) -> dict:
+    """Primary model of a step; on overload/timeout/error one try with the step's fallback model.
+
+    The returned dict carries "model" (the one that answered) and "fallback_from" if it switched."""
+    try:
+        return {**nebius_chat(st.model, messages, st.max_tokens, st.timeout, budget, st.reasoning), "model": st.model}
+    except ModelError as exc:
+        if not st.fallback or "402" in str(exc):
+            raise
+        model, _, effort = st.fallback.partition("@")
+        log.warning("%s failed (%s); falling back to %s", st.model, exc, model)
+        c = nebius_chat(model, messages, st.max_tokens, st.timeout, budget, effort or None)
+        return {**c, "model": model, "fallback_from": st.model, "fallback_reason": str(exc)[:160]}
 
 
 parse_json = extract_json
@@ -91,9 +109,14 @@ parse_json = extract_json
 def _meta(step_key: str, model: str, calls: list[dict]) -> dict:
     pt = sum(c["prompt_tokens"] for c in calls)
     ct = sum(c["completion_tokens"] for c in calls)
-    cost = cost_usd(model, pt, ct)
+    models = [c.get("model", model) for c in calls]
+    cost = sum(cost_usd(m, c["prompt_tokens"], c["completion_tokens"]) or 0 for m, c in zip(models, calls))
+    model = models[-1] if models else model
+    fb = next((c for c in calls if c.get("fallback_from")), None)
     return {"step": step_key, "model": model, "calls": len(calls), "seconds": round(sum(c["seconds"] for c in calls), 2),
-            "prompt_tokens": pt, "completion_tokens": ct, "cost_usd": cost}
+            "prompt_tokens": pt, "completion_tokens": ct, "reasoning_tokens": sum(c.get("reasoning_tokens", 0) for c in calls),
+            "cost_usd": round(cost, 6),
+            **({"fallback_from": fb["fallback_from"], "fallback_reason": fb["fallback_reason"]} if fb else {})}
 
 
 # ---------------------------------------------------------------- ICP
@@ -156,7 +179,8 @@ SCORE_SYSTEM = f"""You qualify one B2B company against an ideal customer profile
 For every criterion return:
 - status: "met", "partial", "not_met" or "no_evidence"
 - reason: one short sentence
-- quote: a passage copied CHARACTER FOR CHARACTER from one source TEXT (8 to 40 words), or null
+- quote: a passage copied CHARACTER FOR CHARACTER from one source TEXT (one sentence or line, 6 to 30 words,
+  no ellipses, never two passages joined, plain ASCII hyphens as in the text), or null
 - source: the number n of that source, or null
 Sources about other companies do not count. No quote -> "no_evidence". Never infer what is not written.
 Reply with JSON only: {{"findings": [{{"criterion_id": "...", "status": "...", "reason": "...", "quote": "...", "source": 1}}]}}"""
@@ -219,13 +243,13 @@ def step_score(run: dict) -> dict:
     msgs = [{"role": "system", "content": SCORE_SYSTEM}, {"role": "user", "content": user}]
     calls, raw = [], None
     for _ in range(2):  # one retry on invalid JSON, within the per-run model cap
-        c = nebius_chat(st.model, msgs, st.max_tokens, st.timeout, run["budget"])
+        c = step_chat(st, msgs, run["budget"])
         calls.append(c)
         raw = parse_json(c["content"])
         if raw and isinstance(raw.get("findings"), list):
             break
     if not raw or not isinstance(raw.get("findings"), list):
-        raise ModelError(f"{st.model} returned no valid JSON.")
+        raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.")
     by_id = {str(f.get("criterion_id")): f for f in raw["findings"] if isinstance(f, dict)}
     findings, proposed = [], {}
     for c in criteria:
@@ -263,11 +287,10 @@ def step_plan(run: dict) -> dict:
             f"TARGET COMPANY:\n<untrusted>{research.target.raw}</untrusted>\n\n"
             f"ICP FIT (computed by the app, tier {run['score']['tier']}):\n{fit}\n\n"
             f"SOURCES:\n{_sources_block(research, 1800)}")
-    c = nebius_chat(st.model, [{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": user}],
-                    st.max_tokens, st.timeout, run["budget"])
+    c = step_chat(st, [{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": user}], run["budget"])
     plan = parse_json(c["content"])
     if not plan:
-        raise ModelError(f"{st.model} returned no valid JSON.")
+        raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.")
     run["plan"] = plan
     run["language"] = detect_language(research)
     return {**_meta("plan", st.model, [c]), "result": {"plan": plan, "language": run["language"],
@@ -280,11 +303,10 @@ def step_write(run: dict) -> dict:
     user = (f"LANGUAGE: {run['language']}\n\nSELLER PRODUCT:\n<untrusted>{run['product']}</untrusted>\n\n"
             f"OUTREACH PLAN (from our strategist):\n{json.dumps(run['plan'], ensure_ascii=False)[:3000]}\n\n"
             f"SOURCES:\n{_sources_block(research, 1200)}")
-    c = nebius_chat(st.model, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}],
-                    st.max_tokens, st.timeout, run["budget"])
+    c = step_chat(st, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}], run["budget"])
     draft = parse_json(c["content"])
     if not draft or not isinstance(draft.get("body"), str):
-        raise ModelError(f"{st.model} returned no valid JSON.")
+        raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.")
     draft = {"subject": str(draft.get("subject") or "")[:200], "body": draft["body"][:3000]}
     run["draft"] = draft
     return {**_meta("write", st.model, [c]), "result": {"draft": draft, "language": run["language"],

@@ -1,0 +1,339 @@
+{
+  "run_id": "f4f848a25fee",
+  "input": {
+    "company": "dachser.de",
+    "product": "ColdTrace (fictional): wireless temperature sensors and automatic audit reports for temperature-controlled logistics.",
+    "icp": [
+      "Industry: refrigerated transport, temperature controlled transport, cold storage",
+      "Sector: logistics, transport, storage solutions",
+      "Region: United Kingdom",
+      "Signal: expanding (new site or capacity)",
+      "Signal: audit / compliance pressure",
+      "Signal: manual temperature records",
+      "Signal: hiring operations staff",
+      "Signal: sustainability programme"
+    ]
+  },
+  "steps": [
+    {
+      "step": "research",
+      "model": "Tavily",
+      "calls": 4,
+      "seconds": 2.62,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "cost_usd": null,
+      "tavily_credits": 4,
+      "result": {
+        "target": {
+          "name": "Dachser",
+          "domain": "dachser.de",
+          "input": "dachser.de"
+        },
+        "sources": [
+          {
+            "n": 1,
+            "url": "https://dachser.de",
+            "title": "dachser.de (company website)",
+            "excerpt": "Über Uns Wir sind weltweit für unsere Kunden vor Ort. Durch die intelligente Kombination unserer logistischen Netzkompetenzen schaffen wir kunden- und branchenspezifische Lösungen, bei denen alle Komponenten perfekt ineinandergreifen. Mehr erfahren Leistungen Neben unseren weltweiten Transport- und Warehouse-Leistungen bieten wir Ihnen zahlreiche Services entlang der Supply Chain an, die kundenind",
+            "kind": "website",
+            "published": null,
+            "chars": 1061
+          },
+          {
+            "n": 2,
+            "url": "https://tavily.com/knowledge/company/4cQnxL5Cauq0",
+            "title": "Dachser GmbH & Co. KG",
+            "excerpt": "Dachser GmbH & Co. KG ID: 4cQnxL5Cauq0 Website: www.dachser.de Headquarters: Nürnberg, Bayern, Germany LinkedIn: www.linkedin.com/company/dachser-gmbh-%26-co.-kg · 5 followers Business model: B2B SaaS: no Social profiles: www.facebook.com/dachser, www.youtube.com/watch?v=v5k8vbgoizs, www.youtube.com/watch?v=507tsb21fbu, www.youtube.com/watch?v=9nxoa8-oy9y, www.youtube.com/dachser [...] Description",
+            "kind": "search",
+            "published": null,
+            "chars": 1582
+          },
+          {
+            "n": 3,
+            "url": "https://en.wikipedia.org/wiki/Dachser",
+            "title": "Dachser - Wikipedia",
+            "excerpt": "Dachser Group SE & Co. Their headquarters are stationed in Kempten in the Allgäu region. DACHSER is involved in the European Logistics, Air & Sea Logistics, and Food Logistics business segments. In contract logistics, the group provides transport, warehousing and value-added services. A shareholder agreement signed in 2007, with a supervisory board including a majority of non-family experts, ensur",
+            "kind": "search",
+            "published": null,
+            "chars": 5000
+          },
+          {
+            "n": 4,
+            "url": "https://www.dachser.com/en/company-10",
+            "title": "Company",
+            "excerpt": "As one of the world’s leading logistics companies, DACHSER combines the power of a multinational firm with the values of a traditional family-owned enterprise. More Philosophy Mission & Strategy Facts & Figures Corporate Compliance + Integrity in Logistics + Compliance reporting system + Value-based supply chain",
+            "kind": "search",
+            "published": null,
+            "chars": 5000
+          },
+          {
+            "n": 5,
+            "url": "https://tavily.com/knowledge/company/IwchyGCSryXt",
+            "title": "DACHSER",
+            "excerpt": "DACHSER ID: IwchyGCSryXt Website: www.dachser.com Legal name: DACHSER SE Headquarters: Kempten, Germany LinkedIn: www.linkedin.com/company/dachser · 298,618 followers Industry: Transportation, Logistics, Supply Chain and Storage Company type: Privately Held Founded: 1930 Business model: B2B SaaS: no [...] FY, 2022: revenue 8.12B gross profit 2.67B EBITDA 780.26M EBIT 667.48M net income 488.73M EUR",
+            "kind": "news",
+            "published": null,
+            "chars": 2720
+          },
+          {
+            "n": 6,
+            "url": "https://www.ttnews.com/logistics/companies/Dachser/2026",
+            "title": "Dachser SE Data, Revenue & Information 2026 Top Logistics Company - TT",
+            "excerpt": "From This Company No rankings are available for this year. Top Logistics News Trinity Logistics relocated its Minneapolis office to a larger space to accommodate business growth less than a year after acquiring Granite Logistics. Costco Wholesale is getting a lift from anxious consumers flocking to emergency preparedness products. Forward Air reported top-line growth for the third quarter Nov. 9 a",
+            "kind": "news",
+            "published": "Wed, 22 Apr 2026 00:00:00 GMT",
+            "chars": 1096
+          },
+          {
+            "n": 7,
+            "url": "https://finance.yahoo.com/news/dachser-broadens-horizons-opening-dachser-140000507.html",
+            "title": "Dachser Broadens Its Horizons With the Opening of Dachser Argentina",
+            "excerpt": "With a staff of 21,650 employees in 37 countries at 347 locations all over the globe, in 2012, Dachser generated a revenue of EUR 4.41 billion and handled 49.8 million shipments weighing a total of 37.46 million tons. For more information about Dachser, please visit www.dachser.com Terms and Privacy Policy Privacy Dashboard More Info Recommended Stories [...] \"The air and sea freight business know",
+            "kind": "search",
+            "published": null,
+            "chars": 4264
+          },
+          {
+            "n": 8,
+            "url": "https://www.dachser.us/en/dachser-americas",
+            "title": "DACHSER Americas",
+            "excerpt": "Facts DACHSER America (as of 2025) Annual sales (Net, unconsolidated) 292.0 m EUR Employees 557 Locations 19 Shipments 110,800 Tonnage 259,300 t DACHSER USA - the management",
+            "kind": "search",
+            "published": null,
+            "chars": 4511
+          }
+        ],
+        "calls": [
+          {
+            "call": "extract",
+            "query": "https://dachser.de",
+            "seconds": 0.72,
+            "results": 1,
+            "credits": 1
+          },
+          {
+            "call": "search (general)",
+            "query": "\"Dachser\" dachser.de company",
+            "seconds": 0.71,
+            "results": 3,
+            "credits": 1
+          },
+          {
+            "call": "search (news)",
+            "query": "\"Dachser\" news",
+            "seconds": 0.44,
+            "results": 3,
+            "credits": 1
+          },
+          {
+            "call": "search (general)",
+            "query": "\"Dachser\" locations depots fleet employees",
+            "seconds": 0.74,
+            "results": 3,
+            "credits": 1
+          }
+        ]
+      }
+    },
+    {
+      "step": "score",
+      "model": "zai-org/GLM-5.3-Flash",
+      "calls": 1,
+      "seconds": 11.05,
+      "prompt_tokens": 4634,
+      "completion_tokens": 702,
+      "reasoning_tokens": 280,
+      "cost_usd": 0.001046,
+      "result": {
+        "tier": "C",
+        "score": 0.18,
+        "summary": "Meets 2 of 8 criteria. Against: region. No evidence: industry; expanding (new site or capacity); audit / compliance pressure; manual temperature records; hiring operations staff.",
+        "findings": [
+          {
+            "criterion_id": "industry",
+            "label": "Industry: refrigerated transport, temperature controlled transport, cold storage",
+            "status": "no_evidence",
+            "reason": "Food Logistics is mentioned but no refrigerated or temperature-controlled transport terms appear in any source.",
+            "quote": null,
+            "page": null,
+            "url": null,
+            "source_link": null,
+            "source_n": null
+          },
+          {
+            "criterion_id": "sector",
+            "label": "Sector: logistics, transport, storage solutions",
+            "status": "met",
+            "reason": "Multiple sources describe Dachser as a logistics, transport and warehousing company.",
+            "quote": "Industry: Transportation, Logistics, Supply Chain and Storage",
+            "page": "[5]",
+            "url": "https://tavily.com/knowledge/company/IwchyGCSryXt#:~:text=Industry%3A%20Transportation%2C%20Logistics%2C%20Supply%20Chain%20and%20Storage",
+            "source_link": null,
+            "source_n": 5
+          },
+          {
+            "criterion_id": "region",
+            "label": "Region: United Kingdom",
+            "status": "not_met",
+            "reason": "Dachser is headquartered in Germany; Great Britain appears only in a country-selector list, not as main operating base.",
+            "quote": "Headquarters: Kempten, Germany",
+            "page": "[5]",
+            "url": "https://tavily.com/knowledge/company/IwchyGCSryXt#:~:text=Headquarters%3A%20Kempten%2C%20Germany",
+            "source_link": null,
+            "source_n": 5
+          },
+          {
+            "criterion_id": "sig_expansion",
+            "label": "Signal: expanding (new site or capacity)",
+            "status": "no_evidence",
+            "reason": "The Argentina opening is only in a page title, not in source text, and is outside the target region.",
+            "quote": null,
+            "page": null,
+            "url": null,
+            "source_link": null,
+            "source_n": null
+          },
+          {
+            "criterion_id": "sig_compliance",
+            "label": "Signal: audit / compliance pressure",
+            "status": "no_evidence",
+            "reason": "Compliance mentions refer to corporate/foreign trade compliance, not audit or quality certification pressure.",
+            "quote": null,
+            "page": null,
+            "url": null,
+            "source_link": null,
+            "source_n": null
+          },
+          {
+            "criterion_id": "sig_manual",
+            "label": "Signal: manual temperature records",
+            "status": "no_evidence",
+            "reason": "No mention of paper, spreadsheets or manual temperature records.",
+            "quote": null,
+            "page": null,
+            "url": null,
+            "source_link": null,
+            "source_n": null
+          },
+          {
+            "criterion_id": "sig_hiring",
+            "label": "Signal: hiring operations staff",
+            "status": "no_evidence",
+            "reason": "No hiring-related terms; source 2 reports zero open roles.",
+            "quote": null,
+            "page": null,
+            "url": null,
+            "source_link": null,
+            "source_n": null
+          },
+          {
+            "criterion_id": "sig_sustainability",
+            "label": "Signal: sustainability programme",
+            "status": "met",
+            "reason": "Sustainability is explicitly named as a company focus area.",
+            "quote": "The company is involved in logistics, supply chain, compliance, sustainability, and social responsibility.",
+            "page": "[5]",
+            "url": "https://tavily.com/knowledge/company/IwchyGCSryXt#:~:text=The%20company%20is%20involved,sustainability%2C%20and%20social%20responsibility.",
+            "source_link": null,
+            "source_n": 5
+          }
+        ],
+        "discarded": 0,
+        "proposed": 3
+      }
+    },
+    {
+      "step": "plan",
+      "model": "moonshotai/Kimi-K3",
+      "calls": 1,
+      "seconds": 5.45,
+      "prompt_tokens": 3831,
+      "completion_tokens": 1115,
+      "reasoning_tokens": 0,
+      "cost_usd": 0.028218,
+      "result": {
+        "plan": {
+          "fit_summary": "DACHSER is a global logistics provider (Kempten, Germany; ~15,500 staff, €7.11B revenue 2023) with Food Logistics, contract logistics and warehousing segments [3][5], making it a plausible but unconfirmed cold-chain fit (tier C).",
+          "who": [
+            {
+              "role": "Head of Food Logistics",
+              "why": "Owns the Food Logistics business segment, the most likely user of temperature monitoring [3][5]."
+            },
+            {
+              "role": "Head of Quality Management / Compliance",
+              "why": "Would own audit documentation and compliance reporting across transport and warehousing operations [4][8]."
+            },
+            {
+              "role": "Head of Contract Logistics Operations",
+              "why": "Runs transport, warehousing and value-added services where sensors would be deployed [2][3]."
+            }
+          ],
+          "hook": "DACHSER operates dedicated Food Logistics and Life Science & Healthcare logistics businesses [3][8], where temperature documentation is typically audit-critical. ColdTrace automates temperature records and audit reports across transport and warehousing — worth a short conversation?",
+          "channel": "Email — a large, Germany-headquartered org [5] where a role-addressed note with a one-pager can be forwarded internally; LinkedIn as fallback given its active company presence [5].",
+          "avoid": [
+            "Do not claim DACHSER runs refrigerated/cold-chain transport — sources show Food Logistics but no explicit temperature-controlled evidence [3][5].",
+            "Do not assert manual record-keeping, audit failures or compliance gaps — no evidence in sources.",
+            "Do not frame this as a UK play — HQ is Kempten, Germany [5].",
+            "Do not name or guess any individual; address roles only."
+          ],
+          "questions": [
+            "How does your Food Logistics team currently capture temperature data across transport and warehousing, and how are audit reports for customers produced today?"
+          ]
+        },
+        "language": "German",
+        "checks": {
+          "cited": [
+            2,
+            3,
+            4,
+            5,
+            8
+          ],
+          "invalid_refs": [],
+          "unsourced_numbers": []
+        }
+      }
+    },
+    {
+      "step": "write",
+      "model": "moonshotai/Kimi-K3",
+      "calls": 1,
+      "seconds": 2.0,
+      "prompt_tokens": 3111,
+      "completion_tokens": 278,
+      "reasoning_tokens": 0,
+      "cost_usd": 0.013503,
+      "fallback_from": "zai-org/GLM-5.3",
+      "fallback_reason": "Nebius call failed for zai-org/GLM-5.3: HTTP 529 from LLM endpoint",
+      "result": {
+        "draft": {
+          "subject": "Temperaturdokumentation in der Food Logistics bei DACHSER",
+          "body": "Guten Tag,\n\nich wende mich an die Leitung Food Logistics bei DACHSER. Ihr Unternehmen betreibt neben European Logistics und Air & Sea Logistics ein eigenes Food-Logistics-Netzwerk [3][4] sowie Contract-Logistics- und Warehouse-Leistungen [2][5].\n\nIn solchen Bereichen ist die lückenlose Temperaturdokumentation für Kundenaudits oft aufwendig. ColdTrace bietet kabellose Temperatursensoren für Transport und Lagerung und erstellt daraus automatisch prüffertige Audit-Berichte.\n\nMich interessiert: Wie erfasst Ihr Food-Logistics-Team heute Temperaturdaten über Transport und Lagerung hinweg, und wie werden Audit-Berichte für Kunden erstellt?\n\nWären Sie offen für ein kurzes Gespräch von 15 Minuten? Alternativ sende ich gern vorab eine einseitige Übersicht, die Sie intern weiterleiten können.\n\nMit freundlichen Grüßen\n[Sender]"
+        },
+        "language": "German",
+        "checks": {
+          "cited": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "invalid_refs": [],
+          "unsourced_numbers": [
+            "Wären Sie offen für ein kurzes Gespräch von 15 Minuten?"
+          ]
+        }
+      }
+    }
+  ],
+  "totals": {
+    "seconds": 21.12,
+    "model_cost_usd": 0.042767,
+    "tavily_credits": 4,
+    "tokens": 13671,
+    "model_calls": 4,
+    "tavily_calls": 4
+  },
+  "recorded_at": "2026-11-20T12:42"
+}

@@ -7,7 +7,10 @@ and with the deterministic rule scorer.
 
     set -a; . ~/.config/jarvis/hackday.env; set +a
     uv run python scripts/compare_models.py --n 12
-    uv run python scripts/compare_models.py --models zai-org/GLM-5.3-Flash openai/gpt-oss-120b
+    uv run python scripts/compare_models.py --models zai-org/GLM-5.3-Flash@low openai/gpt-oss-120b
+
+"model@effort" sets Nebius reasoning_effort for that model (GLM-5.3-Flash at its default spends the
+whole token cap on reasoning and returns no JSON, so the app runs it at "low").
 
 Cost guard: at most n x models calls (plus one JSON retry each); max_tokens capped.
 Writes data/real/model_comparison.json.
@@ -32,7 +35,7 @@ from app.realdata import REAL_DIR, HttpWebsiteReader, RealDataset  # noqa: E402
 from app.scoring import LLMScorer, RuleScorer, enforce_evidence, parse_findings, tier_for  # noqa: E402
 
 OUT = REAL_DIR / "model_comparison.json"
-DEFAULT_MODELS = ["zai-org/GLM-5.3-Flash", "nvidia/Nemotron-3_5-Lightning", "openai/gpt-oss-120b"]
+DEFAULT_MODELS = ["zai-org/GLM-5.3-Flash@low", "nvidia/Nemotron-3_5-Lightning", "openai/gpt-oss-120b"]
 
 
 def sample(ds: RealDataset, n: int):
@@ -44,8 +47,10 @@ def sample(ds: RealDataset, n: int):
     return cands[::step][:n]
 
 
-def run_model(model: str, sites, criteria, key: str) -> dict:
-    scorer = LLMScorer(LLMConfig(base_url=NEBIUS_BASE_URL, model=model, api_key=key, timeout=60, max_tokens=1800))
+def run_model(spec: str, sites, criteria, key: str) -> dict:
+    model, _, effort = spec.partition("@")
+    scorer = LLMScorer(LLMConfig(base_url=NEBIUS_BASE_URL, model=model, api_key=key, timeout=60, max_tokens=1800,
+                                 reasoning_effort=effort or None))
     rows = []
     for site in sites:
         before = (scorer.client.usage.prompt_tokens, scorer.client.usage.completion_tokens)
@@ -65,7 +70,8 @@ def run_model(model: str, sites, criteria, key: str) -> dict:
         rows.append(row)
         print(f"  {model:40s} {site.company.domain:32s} {row['seconds']:6.2f}s tier={row['tier']} "
               f"discarded={row['discarded']}/{row['proposed']}", flush=True)
-    return {"model": model, "rows": rows, "calls": scorer.client.usage.calls, "errors": scorer.client.usage.errors}
+    return {"model": model, "reasoning_effort": effort or None, "rows": rows, "calls": scorer.client.usage.calls,
+            "errors": scorer.client.usage.errors, "reasoning_tokens": scorer.client.usage.reasoning_tokens}
 
 
 def summarize(res: dict, ref: dict | None, rules: dict[str, str]) -> dict:
@@ -83,7 +89,8 @@ def summarize(res: dict, ref: dict | None, rules: dict[str, str]) -> dict:
         return round(sum(a == b for a, b in pairs) / len(pairs), 2) if pairs else None
 
     ref_tiers = {r["domain"]: r["tier"] for r in ref["rows"]} if ref else None
-    return {"model": res["model"], "companies": n, "valid_json_rate": round(len(ok) / n, 2) if n else None,
+    return {"model": res["model"], "reasoning_effort": res["reasoning_effort"], "companies": n,
+            "reasoning_tokens": res["reasoning_tokens"], "valid_json_rate": round(len(ok) / n, 2) if n else None,
             "discarded_quote_rate": round(disc / prop, 2) if prop else None, "quotes_proposed": prop,
             "avg_seconds": round(sum(r["seconds"] for r in ok) / len(ok), 2) if ok else None,
             "avg_tokens": round((pt + ct) / n) if n else None,
@@ -116,9 +123,9 @@ def main() -> int:
     summary = [summarize(r, results[0] if i else None, rules) for i, r in enumerate(results)]
     out = {"computed": dt.datetime.now().isoformat(timespec="minutes"), "step": "score",
            "dataset": "data/real (similarcompanies.ai snapshot, cached website texts)",
-           "companies": [s.company.domain for s in sites], "reference_model": args.models[0],
+           "companies": [s.company.domain for s in sites], "reference_model": args.models[0].partition("@")[0],
            "note": (f"{n} companies from the real snapshot, same prompt and quote gate as the app. "
-                    f"Tier agreement is against {args.models[0]}; cost from the Nebius catalog prices of 2026-11-20."),
+                    f"Tier agreement is against {args.models[0].partition('@')[0]}; cost from the Nebius catalog prices of 2026-11-20."),
            "models": summary, "rows": {r["model"]: r["rows"] for r in results}}
     OUT.write_text(json.dumps(out, indent=2))
     for s in summary:

@@ -42,26 +42,37 @@ class Step:
     why: str
     max_tokens: int
     timeout: float
+    reasoning: str | None = None  # Nebius reasoning_effort for this step
+    fallback: str | None = None  # model@effort tried once if the primary is overloaded or times out
 
 
 _DEFAULTS = [
     ("score", "Score against the ICP", "zai-org/GLM-5.3-Flash",
      "Small, fast, cheap: one call per company, JSON out, and every quote is checked by code anyway, "
-     "so we pay for speed, not brilliance.", 1800, 40),
+     "so we pay for speed, not brilliance. Reasoning set to 'low': at the default it spent all 1,800 "
+     "tokens thinking and returned no JSON. Comparison on 12 real companies (2026-11-20): 100% valid "
+     "JSON, 3% of quotes discarded by the gate, vs 29% for gpt-oss-120b; Nemotron-Lightning ignores "
+     "the reasoning setting and returned no JSON.", 1800, 40, "low"),
     ("plan", "Plan the outreach", "moonshotai/Kimi-K3",
      "Strong reasoning model, one call per run: choosing whom to address and which hook to use is the "
-     "step where judgement matters and the volume is low.", 2500, 60),
+     "step where judgement matters and the volume is low.", 2500, 45, None),
     ("write", "Write the email draft", "zai-org/GLM-5.3",
      "Fluent multilingual writer with a natural voice (German and English tested), fast enough for a "
-     "live demo, cheaper than the planner.", 1500, 50),
+     "live demo, cheaper than the planner. Reasoning 'low': at the default it used all 1,500 tokens "
+     "thinking and returned no draft (measured 2026-11-20). If it is overloaded (HTTP 529, seen on "
+     "2026-11-20) the step falls back to Kimi-K3 without reasoning.", 1500, 30, "low"),
 ]
+
+
+FALLBACKS = {"score": "openai/gpt-oss-120b@low", "plan": "zai-org/GLM-5.3@low", "write": "moonshotai/Kimi-K3@none"}
 
 
 def steps() -> dict[str, Step]:
     out = {}
-    for key, title, model, why, max_tokens, timeout in _DEFAULTS:
+    for key, title, model, why, max_tokens, timeout, reasoning in _DEFAULTS:
         model = os.environ.get(f"LIVE_MODEL_{key.upper()}", "").strip() or model
-        out[key] = Step(key, title, model, why, max_tokens, timeout)
+        reasoning = os.environ.get(f"LIVE_REASONING_{key.upper()}", "").strip() or reasoning
+        out[key] = Step(key, title, model, why, max_tokens, timeout, reasoning, FALLBACKS.get(key))
     return out
 
 

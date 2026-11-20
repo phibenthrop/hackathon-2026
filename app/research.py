@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from .models_registry import TAVILY_BASE_URL
 
 MAX_TAVILY_CALLS = 5
-MAX_MODEL_CALLS = 4
+MAX_MODEL_CALLS = 6  # score (2 on invalid JSON) + plan + write, each may fall back once
 MAX_INPUT_CHARS = 200
 MAX_SOURCES = 8
 BODY_CHARS = 5000

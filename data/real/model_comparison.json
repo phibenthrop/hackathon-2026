@@ -1,0 +1,451 @@
+{
+  "computed": "2026-11-20T12:39",
+  "step": "score",
+  "dataset": "data/real (similarcompanies.ai snapshot, cached website texts)",
+  "companies": [
+    "templartransport.com",
+    "edwards-transport.com",
+    "transveg.pl",
+    "readyfrt.com",
+    "chillway.co.uk",
+    "fly-transport.com",
+    "sandlfastrack.co.uk",
+    "hitrans.co.uk",
+    "agmchilleddistribution.com",
+    "mgstransport.co.uk",
+    "goodalltransport.co.uk",
+    "transportservicesuk.com"
+  ],
+  "reference_model": "zai-org/GLM-5.3-Flash",
+  "note": "12 companies from the real snapshot, same prompt and quote gate as the app. Tier agreement is against zai-org/GLM-5.3-Flash; cost from the Nebius catalog prices of 2026-11-20.",
+  "models": [
+    {
+      "model": "zai-org/GLM-5.3-Flash",
+      "reasoning_effort": "low",
+      "companies": 12,
+      "reasoning_tokens": 586,
+      "valid_json_rate": 1.0,
+      "discarded_quote_rate": 0.03,
+      "quotes_proposed": 36,
+      "avg_seconds": 3.34,
+      "avg_tokens": 1848,
+      "cost_per_company_usd": 0.000394,
+      "tier_agreement": 1.0,
+      "tier_agreement_with_rules": 0.33,
+      "tiers": {
+        "A": 7,
+        "B": 2,
+        "C": 3
+      },
+      "errors": 0
+    },
+    {
+      "model": "nvidia/Nemotron-3_5-Lightning",
+      "reasoning_effort": "low",
+      "companies": 12,
+      "reasoning_tokens": 43200,
+      "valid_json_rate": 0.0,
+      "discarded_quote_rate": null,
+      "quotes_proposed": 0,
+      "avg_seconds": null,
+      "avg_tokens": 6746,
+      "cost_per_company_usd": 0.001053,
+      "tier_agreement": null,
+      "tier_agreement_with_rules": null,
+      "tiers": {
+        "A": 0,
+        "B": 0,
+        "C": 0
+      },
+      "errors": 0
+    },
+    {
+      "model": "openai/gpt-oss-120b",
+      "reasoning_effort": "low",
+      "companies": 12,
+      "reasoning_tokens": 0,
+      "valid_json_rate": 1.0,
+      "discarded_quote_rate": 0.29,
+      "quotes_proposed": 35,
+      "avg_seconds": 1.78,
+      "avg_tokens": 2119,
+      "cost_per_company_usd": 0.000574,
+      "tier_agreement": 0.92,
+      "tier_agreement_with_rules": 0.42,
+      "tiers": {
+        "A": 7,
+        "B": 1,
+        "C": 4
+      },
+      "errors": 0
+    }
+  ],
+  "rows": {
+    "zai-org/GLM-5.3-Flash": [
+      {
+        "domain": "templartransport.com",
+        "seconds": 12.69,
+        "prompt_tokens": 999,
+        "completion_tokens": 234,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "edwards-transport.com",
+        "seconds": 2.07,
+        "prompt_tokens": 1799,
+        "completion_tokens": 292,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 4,
+        "discarded": 0
+      },
+      {
+        "domain": "transveg.pl",
+        "seconds": 2.09,
+        "prompt_tokens": 1229,
+        "completion_tokens": 290,
+        "valid_json": true,
+        "tier": "B",
+        "proposed": 4,
+        "discarded": 0
+      },
+      {
+        "domain": "readyfrt.com",
+        "seconds": 2.79,
+        "prompt_tokens": 1359,
+        "completion_tokens": 383,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "chillway.co.uk",
+        "seconds": 2.73,
+        "prompt_tokens": 1307,
+        "completion_tokens": 355,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "fly-transport.com",
+        "seconds": 2.53,
+        "prompt_tokens": 1556,
+        "completion_tokens": 321,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 3,
+        "discarded": 1
+      },
+      {
+        "domain": "sandlfastrack.co.uk",
+        "seconds": 2.86,
+        "prompt_tokens": 1085,
+        "completion_tokens": 350,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 2,
+        "discarded": 0
+      },
+      {
+        "domain": "hitrans.co.uk",
+        "seconds": 3.0,
+        "prompt_tokens": 2196,
+        "completion_tokens": 408,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "agmchilleddistribution.com",
+        "seconds": 2.56,
+        "prompt_tokens": 912,
+        "completion_tokens": 325,
+        "valid_json": true,
+        "tier": "B",
+        "proposed": 2,
+        "discarded": 0
+      },
+      {
+        "domain": "mgstransport.co.uk",
+        "seconds": 2.09,
+        "prompt_tokens": 1443,
+        "completion_tokens": 327,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "goodalltransport.co.uk",
+        "seconds": 2.5,
+        "prompt_tokens": 1170,
+        "completion_tokens": 388,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "transportservicesuk.com",
+        "seconds": 2.21,
+        "prompt_tokens": 3121,
+        "completion_tokens": 331,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      }
+    ],
+    "nvidia/Nemotron-3_5-Lightning": [
+      {
+        "domain": "templartransport.com",
+        "seconds": 12.72,
+        "prompt_tokens": 2108,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "edwards-transport.com",
+        "seconds": 24.69,
+        "prompt_tokens": 3790,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "transveg.pl",
+        "seconds": 25.79,
+        "prompt_tokens": 2574,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "readyfrt.com",
+        "seconds": 19.99,
+        "prompt_tokens": 2806,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "chillway.co.uk",
+        "seconds": 12.18,
+        "prompt_tokens": 2740,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "fly-transport.com",
+        "seconds": 12.2,
+        "prompt_tokens": 3232,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "sandlfastrack.co.uk",
+        "seconds": 12.24,
+        "prompt_tokens": 2210,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "hitrans.co.uk",
+        "seconds": 12.73,
+        "prompt_tokens": 4516,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "agmchilleddistribution.com",
+        "seconds": 12.05,
+        "prompt_tokens": 1896,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "mgstransport.co.uk",
+        "seconds": 12.28,
+        "prompt_tokens": 2992,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "goodalltransport.co.uk",
+        "seconds": 12.7,
+        "prompt_tokens": 2418,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      },
+      {
+        "domain": "transportservicesuk.com",
+        "seconds": 12.43,
+        "prompt_tokens": 6468,
+        "completion_tokens": 3600,
+        "valid_json": false,
+        "tier": null,
+        "proposed": 0,
+        "discarded": 0
+      }
+    ],
+    "openai/gpt-oss-120b": [
+      {
+        "domain": "templartransport.com",
+        "seconds": 1.28,
+        "prompt_tokens": 1045,
+        "completion_tokens": 442,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 1
+      },
+      {
+        "domain": "edwards-transport.com",
+        "seconds": 1.88,
+        "prompt_tokens": 1823,
+        "completion_tokens": 623,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 4,
+        "discarded": 0
+      },
+      {
+        "domain": "transveg.pl",
+        "seconds": 1.68,
+        "prompt_tokens": 1273,
+        "completion_tokens": 520,
+        "valid_json": true,
+        "tier": "B",
+        "proposed": 4,
+        "discarded": 2
+      },
+      {
+        "domain": "readyfrt.com",
+        "seconds": 1.82,
+        "prompt_tokens": 1387,
+        "completion_tokens": 598,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 4,
+        "discarded": 0
+      },
+      {
+        "domain": "chillway.co.uk",
+        "seconds": 2.04,
+        "prompt_tokens": 1335,
+        "completion_tokens": 703,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 1
+      },
+      {
+        "domain": "fly-transport.com",
+        "seconds": 1.88,
+        "prompt_tokens": 1590,
+        "completion_tokens": 587,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 3,
+        "discarded": 3
+      },
+      {
+        "domain": "sandlfastrack.co.uk",
+        "seconds": 1.5,
+        "prompt_tokens": 1125,
+        "completion_tokens": 504,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 2,
+        "discarded": 0
+      },
+      {
+        "domain": "hitrans.co.uk",
+        "seconds": 1.85,
+        "prompt_tokens": 2229,
+        "completion_tokens": 597,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "agmchilleddistribution.com",
+        "seconds": 1.49,
+        "prompt_tokens": 952,
+        "completion_tokens": 496,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 1,
+        "discarded": 0
+      },
+      {
+        "domain": "mgstransport.co.uk",
+        "seconds": 1.64,
+        "prompt_tokens": 1482,
+        "completion_tokens": 527,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 0
+      },
+      {
+        "domain": "goodalltransport.co.uk",
+        "seconds": 1.47,
+        "prompt_tokens": 1213,
+        "completion_tokens": 485,
+        "valid_json": true,
+        "tier": "C",
+        "proposed": 2,
+        "discarded": 2
+      },
+      {
+        "domain": "transportservicesuk.com",
+        "seconds": 2.82,
+        "prompt_tokens": 3147,
+        "completion_tokens": 750,
+        "valid_json": true,
+        "tier": "A",
+        "proposed": 3,
+        "discarded": 1
+      }
+    ]
+  }
+}

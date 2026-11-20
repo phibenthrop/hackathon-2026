@@ -31,6 +31,8 @@ class LLMConfig:
     api_key: str
     timeout: float = 45.0
     max_tokens: int = 2500
+    max_retries: int = MAX_RETRIES  # the live agent uses 1: a demo cannot wait 4 x timeout
+    reasoning_effort: str | None = None  # Nebius "reasoning_effort" (none/low/medium/high); None = model default
 
     @classmethod
     def from_env(cls) -> "LLMConfig | None":
@@ -70,6 +72,7 @@ class Usage:
     calls: int = 0
     prompt_tokens: int = 0
     completion_tokens: int = 0
+    reasoning_tokens: int = 0
     errors: int = 0
     retries: int = 0
     log: list = field(default_factory=list)
@@ -82,15 +85,18 @@ class LLMClient:
 
     def chat(self, messages: list[dict], temperature: float = 0.0) -> str:
         url = self.config.base_url.rstrip("/") + "/chat/completions"
-        body = json.dumps({
+        payload = {
             "model": self.config.model,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": self.config.max_tokens,
             "response_format": {"type": "json_object"},
-        }).encode()
+        }
+        if self.config.reasoning_effort:
+            payload["reasoning_effort"] = self.config.reasoning_effort
+        body = json.dumps(payload).encode()
         last_exc: Exception | None = None
-        for attempt in range(MAX_RETRIES + 1):
+        for attempt in range(self.config.max_retries + 1):
             req = urllib.request.Request(url, data=body, method="POST", headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.config.api_key}",
@@ -102,18 +108,20 @@ class LLMClient:
                 u = data.get("usage") or {}
                 self.usage.prompt_tokens += int(u.get("prompt_tokens") or 0)
                 self.usage.completion_tokens += int(u.get("completion_tokens") or 0)
+                d = u.get("completion_tokens_details") or {}
+                self.usage.reasoning_tokens += int(d.get("reasoning_tokens") or 0)
                 msg = data["choices"][0]["message"]
                 return msg.get("content") or ""
             except urllib.error.HTTPError as exc:
                 last_exc = exc
-                if exc.code not in RETRY_STATUS or attempt == MAX_RETRIES:
+                if exc.code not in RETRY_STATUS or attempt == self.config.max_retries:
                     self.usage.errors += 1
                     hint = " (credit balance exhausted: add funds)" if exc.code == 402 else ""
                     raise RuntimeError(f"HTTP {exc.code} from LLM endpoint{hint}") from None
                 wait = float(exc.headers.get("Retry-After") or 0) or (2 ** attempt)
             except (urllib.error.URLError, TimeoutError) as exc:
                 last_exc = exc
-                if attempt == MAX_RETRIES:
+                if attempt == self.config.max_retries:
                     self.usage.errors += 1
                     raise RuntimeError(f"LLM endpoint unreachable: {type(exc).__name__}") from None
                 wait = 2 ** attempt

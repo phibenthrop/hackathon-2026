@@ -50,7 +50,7 @@ def offline(monkeypatch):
 def fake_models(monkeypatch, score_quote="All our temperature controlled transport is audited under BRCGS every year."):
     calls = []
 
-    def chat(model, messages, max_tokens, timeout, budget):
+    def chat(model, messages, max_tokens, timeout, budget, reasoning=None):
         budget.take_model()
         calls.append(model)
         system = messages[0]["content"]
@@ -215,3 +215,22 @@ def test_name_only_finds_official_site():
     b = Budget()
     res = run_research(parse_target("Chillspeed"), "k", b, client=FakeTavily(b))
     assert b.tavily_used <= research.MAX_TAVILY_CALLS and res.sources
+
+
+def test_write_falls_back_when_primary_overloaded(client, monkeypatch):
+    calls = fake_models(monkeypatch)
+    inner = outreach.nebius_chat
+    primary = outreach.steps()["write"].model
+
+    def flaky(model, messages, max_tokens, timeout, budget, reasoning=None):
+        if model == primary:
+            budget.take_model()
+            raise outreach.ModelError(f"Nebius call failed for {model}: HTTP 529 from LLM endpoint")
+        return inner(model, messages, max_tokens, timeout, budget, reasoning)
+    monkeypatch.setattr(outreach, "nebius_chat", flaky)
+    out = full_run(client)
+    w = out["write"]
+    assert w["fallback_from"] == primary and w["model"] != primary
+    assert "529" in w["fallback_reason"] and w["result"]["draft"]["body"]
+    assert w["totals"]["model_calls"] <= outreach.Budget().model_max
+    assert calls[-1] == w["model"]
