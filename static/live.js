@@ -12,6 +12,33 @@ const WHY = {};              // step -> short reason from the registry
 let CREDIT_USD = 0.008;      // Tavily price per credit, read from the registry when possible
 const RESULTS = {};          // step -> result of the shown run
 
+// Profile presets for the "Selling what, to whom" fields. "coldtrace" is filled from the server defaults.
+const PRESETS = {
+  eulogistics: {
+    product: "ColdTrace (fictional): wireless temperature sensors and automatic audit reports for temperature-controlled logistics.",
+    icp: ["Industry: logistics provider (road freight, contract logistics, air and sea freight)",
+      "Region: headquartered in continental Europe (e.g. Germany, France, Netherlands, Austria)",
+      "Size: large group with a network of branches or warehouses in several countries",
+      "Signal: offers food or temperature-controlled logistics",
+      "Signal: audit / compliance pressure (certifications, quality standards)",
+      "Signal: sustainability or emissions programme"],
+  },
+  saas: {
+    product: "Onboardly (fictional): customer onboarding analytics for B2B software companies.",
+    icp: ["Industry: develops and sells its own software (SaaS or licence)",
+      "Customers: sells to businesses (B2B), not consumers",
+      "Size: mid-size, roughly 50 to 2,000 employees",
+      "Signal: hiring for sales, customer success or engineering",
+      "Signal: recent funding, new product, or expansion to new markets"],
+  },
+};
+function applyPreset(key) {
+  const p = key === "coldtrace" ? { product: CFG.default_product, icp: CFG.default_icp } : PRESETS[key];
+  if (!p) return;
+  $("product").value = p.product; $("icp").value = p.icp.join("\n");
+  document.querySelectorAll("[data-preset]").forEach((b) => b.classList.toggle("on", b.dataset.preset === key));
+}
+
 function srcUrl(n) { const s = SOURCES.find((x) => x.n === n); return s ? s.url : null; }
 // Escape text, then turn [n] into links to source n; unknown numbers are flagged.
 function linkRefs(text) {
@@ -45,8 +72,10 @@ function meta(m) {
     return mark(`<b>Tavily</b>`) + (WHY.research ? `<span class="live-why">${esc(WHY.research)}</span>` : "") +
       mark(`${m.calls} calls`) + mark(`${m.tavily_credits} credits`) + mark(`${m.seconds} s`);
   }
-  return mark(`<b>${esc(m.model)}</b>`) + (WHY[m.step] ? `<span class="live-why">${esc(WHY[m.step])}</span>` : "") +
-    mark(`${m.seconds} s`) + mark(`${num((m.prompt_tokens || 0) + (m.completion_tokens || 0))} tokens`) + mark(money(m.cost_usd));
+  const fb = m.fallback_from
+    ? `<div class="live-fallback" title="${esc(m.fallback_reason || "")}">fallback: ${esc(m.model)}, primary ${esc(m.fallback_from)} ${/timed? ?out|timeout/i.test(m.fallback_reason || "") ? "timed out" : "overloaded"}</div>` : "";
+  return mark(`<b>${esc(m.model)}</b>`) + (WHY[m.step] && !m.fallback_from ? `<span class="live-why">${esc(WHY[m.step])}</span>` : "") +
+    mark(`${m.seconds} s`) + mark(`${num((m.prompt_tokens || 0) + (m.completion_tokens || 0))} tokens`) + mark(money(m.cost_usd)) + fb;
 }
 
 function renderResearch(r) {
@@ -283,6 +312,8 @@ async function init() {
   const cfg = CFG = await (await fetch("/api/live/config")).json();
   $("product").value = cfg.default_product;
   $("icp").value = cfg.default_icp.join("\n");
+  document.querySelectorAll("[data-preset]").forEach((b) => { b.onclick = () => applyPreset(b.dataset.preset); });
+  applyPreset("coldtrace");
   $("mode").textContent = cfg.live ? `live · ${cfg.runs_left} runs left today` : "recorded only";
   $("mode").className = "badge " + (cfg.live ? "llm" : "rules");
   cfg.registry.forEach((r) => {
@@ -294,7 +325,7 @@ async function init() {
   $("example").hidden = !cfg.example;
   $("go").onclick = run;
   $("example").onclick = example;
-  document.querySelectorAll(".live-chip").forEach((b) => { b.onclick = () => { $("company").value = b.textContent; $("company").focus(); }; });
+  document.querySelectorAll("#chips .live-chip").forEach((b) => { b.onclick = () => { $("company").value = b.textContent; $("company").focus(); }; });
   $("company").addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
   if (!cfg.live) {
     $("notice").textContent = cfg.message + ". Showing the recorded example.";
