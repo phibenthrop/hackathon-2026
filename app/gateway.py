@@ -80,7 +80,7 @@ def guard_check(text: str) -> dict:
 def info() -> dict:
     if not active():
         return {"name": None, "active": False}
-    return {"name": "Mozilla Otari", "active": True, "base_url": base_url(), "key_set": bool(api_key()),
+    return {"name": "Mozilla Otari", "active": True, "self_hosted": True, "key_set": bool(api_key()),
             "provider": "nebius (Token Factory, behind the gateway)",
             "users": list(USER_BUDGETS), "default_user": DEFAULT_USER, "guard_profile": GUARD_PROFILE,
             "policies": {s: policy_name(s) for s in ("score", "plan", "write")},
