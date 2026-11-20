@@ -125,7 +125,7 @@ def main() -> int:
            "dataset": "data/real (similarcompanies.ai snapshot, cached website texts)",
            "companies": [s.company.domain for s in sites], "reference_model": args.models[0].partition("@")[0],
            "note": (f"{n} companies from the real snapshot, same prompt and quote gate as the app. "
-                    f"Tier agreement is against {args.models[0].partition('@')[0]}; cost from the Nebius catalog prices of 2026-11-20."),
+                    "Cost from the Nebius catalog prices of 2026-11-20."),
            "models": summary, "rows": {r["model"]: r["rows"] for r in results}}
     OUT.write_text(json.dumps(out, indent=2))
     for s in summary:

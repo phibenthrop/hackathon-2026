@@ -1,5 +1,5 @@
 {
-  "run_id": "142e81b72605",
+  "run_id": "7783c8196798",
   "input": {
     "company": "dachser.de",
     "product": "ColdTrace (fictional): wireless temperature sensors and automatic audit reports for temperature-controlled logistics.",
@@ -17,7 +17,7 @@
       "step": "research",
       "model": "Tavily",
       "calls": 4,
-      "seconds": 1.8,
+      "seconds": 0.84,
       "prompt_tokens": 0,
       "completion_tokens": 0,
       "cost_usd": null,
@@ -59,45 +59,45 @@
           },
           {
             "n": 4,
-            "url": "https://finance.yahoo.com/economy/articles/dachser-grows-despite-economic-headwinds-082000469.html",
-            "title": "Dachser grows despite economic headwinds",
-            "excerpt": "HONG KONG, April 15, 2026 /PRNewswire/ -- Logistics provider Dachser increased its revenue to around EUR 8.3 billion in the 2025 financial year. This is 3.1 percent higher than the previous year and sets a new record for the company. The tonnage transported rose to 46.7 million metric tons (+5.8 percent), while the number of shipments increased to 86.2 million (+3.6 percent). [...] Revenue in the ",
+            "url": "https://www.linkedin.com/posts/air-cargo-news_dachser-boosts-north-american-airfreight-activity-7491526230597586944-aG87",
+            "title": "Dachser boosts North American airfreight forwarding presence with stake in Synergie Canada - Air Cargo News | Air Cargo News",
+            "excerpt": "Established in 2008, the company has built a strong reputation in international logistics, specialising in air and sea freight across transatlantic and transpacific routes. Its customer base spans key industries including engineering, technology, fashion, and aerospace. As one of the G7 economies, it is closely connected to markets across the Americas and Europe—regions that are central to our gro",
             "kind": "news",
-            "published": "Wed, 15 Apr 2026 00:00:00 GMT",
-            "chars": 5000
+            "published": "Fri, 07 Aug 2026 16:10:39 GMT",
+            "chars": 2319
           },
           {
             "n": 5,
-            "url": "https://www.dachser.com/en/mediaroom/DACHSER-grows-despite-economic-headwinds-30675",
-            "title": "DACHSER grows despite economic headwinds",
-            "excerpt": "Read DACHSER at the CosmeticBusiness 2024 in Munich [...] Revenue in the European Logistics business line broke EUR 5 billion for the first time to reach EUR 5.1 billion. DACHSER grew here by 5.9 percent compared to the previous year. Developments in food logistics were particularly positive. Our growth strategy in food logistics is bearing fruit. By integrating our acquisitions, we’ve nearly doub",
+            "url": "https://theprint.in/ani-press-releases/dachser-grows-despite-economic-headwinds/2905465",
+            "title": "Dachser grows despite economic headwinds – ThePrint – ANIPressReleases",
+            "excerpt": "PRNewswire Hong Kong, April 15: Logistics provider Dachser increased its revenue to around EUR 8.3 billion in the 2025 financial year. This is 3.1 percent higher than the previous year and sets a new record for the company. The tonnage transported rose to 46.7 million metric tons (+5.8 percent), while the number of shipments increased to 86.2 million (+3.6 percent). [...] Revenue in the European L",
             "kind": "news",
-            "published": "Tue, 14 Apr 2026 00:00:00 GMT",
-            "chars": 4674
+            "published": "Wed, 15 Apr 2026 09:00:30 GMT",
+            "chars": 2429
           },
           {
             "n": 6,
-            "url": "https://www.dachser.com/en/mediaroom/DACHSER-acquires-scottish-partner-Drummond-31752",
-            "title": "DACHSER acquires scottish partner Drummond",
-            "excerpt": "Read DACHSER builds new warehouse in Memmingen DACHSER is expanding its Allgäu logistics center with high-bay storage for non-chilled food and food packaging. Designed for sustainable operations, the new warehouse is due to open in summer 2022. Read [...] Logistics provider DACHSER increased its revenue to around EUR 8.3 billion in the 2025 financial year. This is 3.1 percent higher than the previ",
+            "url": "https://www.manilatimes.net/2026/04/15/tmt-newswire/pr-newswire/dachser-grows-despite-economic-headwinds/2320732",
+            "title": "Dachser grows despite economic headwinds | The Manila Times",
+            "excerpt": "Revenue in the European Logistics business line broke EUR 5 billion for the first time to reach EUR 5.1 billion. Dachser grew here by 5.9 percent compared to the previous year. Developments in food logistics were particularly positive. Boosted by recent acquisitions, Dachser increased its revenue in the Food Logistics business line by 10.1 percent to over EUR 1.8 billion. All three contributed ful",
             "kind": "news",
-            "published": "Wed, 23 Sep 2026 00:00:00 GMT",
-            "chars": 3927
+            "published": "Wed, 15 Apr 2026 08:41:52 GMT",
+            "chars": 4143
           },
           {
             "n": 7,
             "url": "https://finance.yahoo.com/news/dachser-broadens-horizons-opening-dachser-140000507.html",
             "title": "Dachser Broadens Its Horizons With the Opening of Dachser Argentina",
-            "excerpt": "With a staff of 21,650 employees in 37 countries at 347 locations all over the globe, in 2012, Dachser generated a revenue of EUR 4.41 billion and handled 49.8 million shipments weighing a total of 37.46 million tons. For more information about Dachser, please visit www.dachser.com Terms and Privacy Policy Privacy Dashboard More Info Recommended Stories [...] \"The air and sea freight business know",
+            "excerpt": "With a staff of 21,650 employees in 37 countries at 347 locations all over the globe, in 2012, Dachser generated a revenue of EUR 4.41 billion and handled 49.8 million shipments weighing a total of 37.46 million tons. For more information about Dachser, please visit www.dachser.com Terms and Privacy Policy Privacy Dashboard More Info Recommended Stories",
             "kind": "search",
             "published": null,
             "chars": 4264
           },
           {
             "n": 8,
-            "url": "https://www.dachser.us/en",
-            "title": "Global logistics company with customer centricity | DACHSER",
-            "excerpt": "In total, the logistics service provider is expanding its fleet by fifteen Renault Trucks vehicles. The all-electric trucks complete local and long-distance transport tours at seven DACHSER locations in Germany every weekday. The offices in Miami and New York are now situated in more strategic locations, in line with current customer and market needs. Read (Mediaroom) Learn more Facts DACHSER Amer",
+            "url": "https://www.encyclopedia.com/books/politics-and-business-magazines/dachser-gmbh-co-kg",
+            "title": "Dachser GmbH & Co. KG | Encyclopedia.com",
+            "excerpt": "Dachser GmbH & Co. KG is Europe’s fourth largest freight forwarding company based in Kempten in southern Germany. The company’s 15,000 employees dispatch roughly 33 million shipments for over 20,000 customers, using Dachser’s sophisticated proprietary logistics, warehouse management, and financial management software developed in-house by some 240 information technology (IT) specialists. The lion’",
             "kind": "search",
             "published": null,
             "chars": 5000
@@ -107,28 +107,28 @@
           {
             "call": "extract",
             "query": "https://dachser.de",
-            "seconds": 0.47,
+            "seconds": 0.26,
             "results": 1,
             "credits": 1
           },
           {
             "call": "search (general)",
             "query": "\"Dachser\" dachser.de company",
-            "seconds": 0.43,
+            "seconds": 0.15,
             "results": 3,
             "credits": 1
           },
           {
             "call": "search (news)",
             "query": "\"Dachser\" news",
-            "seconds": 0.43,
+            "seconds": 0.24,
             "results": 3,
             "credits": 1
           },
           {
             "call": "search (general)",
             "query": "\"Dachser\" locations depots fleet employees",
-            "seconds": 0.45,
+            "seconds": 0.16,
             "results": 3,
             "credits": 1
           }
@@ -139,11 +139,11 @@
       "step": "score",
       "model": "zai-org/GLM-5.3-Flash",
       "calls": 1,
-      "seconds": 1.79,
-      "prompt_tokens": 4850,
-      "completion_tokens": 340,
-      "reasoning_tokens": 1,
-      "cost_usd": 0.000897,
+      "seconds": 1.96,
+      "prompt_tokens": 4749,
+      "completion_tokens": 316,
+      "reasoning_tokens": 6,
+      "cost_usd": 0.00087,
       "result": {
         "tier": "A",
         "score": 1.0,
@@ -153,7 +153,7 @@
             "criterion_id": "custom1",
             "label": "Industry: logistics provider (road freight, contract logistics, air and sea freight)",
             "status": "met",
-            "reason": "DACHSER is a logistics provider covering European, air & sea, and food logistics plus contract logistics.",
+            "reason": "Dachser is a logistics provider covering road, contract, air and sea freight.",
             "quote": "DACHSER is involved in the European Logistics, Air & Sea Logistics, and Food Logistics business segments.",
             "page": "[2]",
             "url": "https://en.wikipedia.org/wiki/Dachser#:~:text=DACHSER%20is%20involved%20in,Food%20Logistics%20business%20segments.",
@@ -165,9 +165,9 @@
             "label": "Region: headquartered in continental Europe (e.g. Germany, France, Netherlands, Austria)",
             "status": "met",
             "reason": "Headquartered in Kempten, Germany.",
-            "quote": "Their headquarters are stationed in Kempten in the Allgäu region.",
+            "quote": "headquarters are stationed in Kempten in the Allgäu region",
             "page": "[2]",
-            "url": "https://en.wikipedia.org/wiki/Dachser#:~:text=Their%20headquarters%20are%20stationed,in%20the%20Allg%C3%A4u%20region.",
+            "url": "https://en.wikipedia.org/wiki/Dachser#:~:text=headquarters%20are%20stationed%20in,in%20the%20Allg%C3%A4u%20region",
             "source_link": null,
             "source_n": 2
           },
@@ -175,21 +175,21 @@
             "criterion_id": "custom3",
             "label": "Size: large group with a network of branches or warehouses in several countries",
             "status": "met",
-            "reason": "Large group with global network of branches and warehouses and EUR 8.3 billion revenue.",
-            "quote": "DACHSER’s global transport and warehouse network enables seamless supply chains",
-            "page": "[3]",
-            "url": "https://www.dachser.com/en/facts-figures-44#:~:text=DACHSER%E2%80%99s%20global%20transport%20and,enables%20seamless%20supply%20chains",
+            "reason": "Large group with 427 locations and country organizations in 42 countries.",
+            "quote": "some 37,500 employees at 427 locations all over the globe",
+            "page": "[5]",
+            "url": "https://theprint.in/ani-press-releases/dachser-grows-despite-economic-headwinds/2905465#:~:text=some%2037%2C500%20employees%20at,all%20over%20the%20globe",
             "source_link": null,
-            "source_n": 3
+            "source_n": 5
           },
           {
             "criterion_id": "custom4",
             "label": "Signal: offers food or temperature-controlled logistics",
             "status": "met",
-            "reason": "Food Logistics is a dedicated business segment and continues to expand.",
-            "quote": "Food Logistics continues to expand",
+            "reason": "Dedicated Food Logistics business line with temperature-controlled storage for food.",
+            "quote": "total storage capacity for industrial goods and food to over four million pallet spaces",
             "page": "[5]",
-            "url": "https://www.dachser.com/en/mediaroom/DACHSER-grows-despite-economic-headwinds-30675#:~:text=Food%20Logistics%20continues%20to%20expand",
+            "url": "https://theprint.in/ani-press-releases/dachser-grows-despite-economic-headwinds/2905465#:~:text=total%20storage%20capacity%20for,four%20million%20pallet%20spaces",
             "source_link": null,
             "source_n": 5
           },
@@ -197,10 +197,10 @@
             "criterion_id": "custom5",
             "label": "Signal: audit / compliance pressure (certifications, quality standards)",
             "status": "met",
-            "reason": "Company site lists Corporate Compliance, compliance reporting system and quality management.",
-            "quote": "Integrity in Logistics Compliance reporting system",
+            "reason": "Website lists Corporate Compliance with integrity, reporting system and value-based supply chain.",
+            "quote": "Corporate Compliance Integrity in Logistics Compliance reporting system Value-based supply chain",
             "page": "[3]",
-            "url": "https://www.dachser.com/en/facts-figures-44#:~:text=Integrity%20in%20Logistics%20Compliance%20reporting%20system",
+            "url": "https://www.dachser.com/en/facts-figures-44#:~:text=Corporate%20Compliance%20Integrity%20in,system%20Value-based%20supply%20chain",
             "source_link": null,
             "source_n": 3
           },
@@ -208,49 +208,52 @@
             "criterion_id": "custom6",
             "label": "Signal: sustainability or emissions programme",
             "status": "met",
-            "reason": "Sustainability programme with environmental and climate protection and climate action investments.",
-            "quote": "in digitalization and climate action",
-            "page": "[5]",
-            "url": "https://www.dachser.com/en/mediaroom/DACHSER-grows-despite-economic-headwinds-30675#:~:text=in%20digitalization%20and%20climate%20action",
+            "reason": "Sustainability programme with environmental and climate protection; investments in climate action.",
+            "quote": "invested some EUR 325 million in expanding its network, in its employees, and in digitalization and climate action",
+            "page": "[6]",
+            "url": "https://www.manilatimes.net/2026/04/15/tmt-newswire/pr-newswire/dachser-grows-despite-economic-headwinds/2320732#:~:text=invested%20some%20EUR%20325,digitalization%20and%20climate%20action",
             "source_link": null,
-            "source_n": 5
+            "source_n": 6
           }
         ],
         "discarded": 0,
-        "proposed": 6
+        "proposed": 6,
+        "tier_rule": "How the tier is computed: weighted share of criteria met with a verified quote (partial counts half, no quote counts zero). A: 0.75 or more. B: 0.45 to below 0.75. C: below 0.45, or a must-have criterion not met; no draft for C unless you ask."
       }
     },
     {
       "step": "plan",
       "model": "moonshotai/Kimi-K3",
       "calls": 1,
-      "seconds": 8.42,
-      "prompt_tokens": 4375,
-      "completion_tokens": 2288,
+      "seconds": 6.68,
+      "prompt_tokens": 4467,
+      "completion_tokens": 1865,
       "reasoning_tokens": 0,
-      "cost_usd": 0.047445,
+      "cost_usd": 0.041376,
       "result": {
         "plan": {
-          "fit_summary": "Tier A fit: DACHSER, headquartered in Kempten, Germany [2], operates a Food Logistics segment that 'continues to expand' [5] and runs an 'Integrity in Logistics Compliance reporting system' [3], matching ColdTrace's temperature-monitoring and audit-report ICP.",
+          "fit_summary": "Tier A fit: DACHSER is headquartered in Kempten, Germany [2] and runs a Food Logistics business line that grew 10.1 percent to over EUR 1.8 billion in 2025 [6], so temperature monitoring and audit reporting are core to its operations.",
           "who": [
             {
               "role": "Head of Food Logistics",
-              "why": "Owns the segment that 'continues to expand' [5]; wireless temperature sensors and automatic audit reports serve exactly this temperature-controlled operation."
+              "why": "Owns the business line that grew 10.1 percent to over EUR 1.8 billion in 2025 [6], where temperature-controlled transport and warehousing sit."
             },
             {
               "role": "Head of Quality Management / Compliance",
-              "why": "DACHSER maintains an 'Integrity in Logistics Compliance reporting system' [3]; automated audit reports cut the manual effort behind such compliance documentation."
+              "why": "DACHSER operates a compliance reporting system [3], so audit-ready temperature documentation falls in this remit."
             }
           ],
-          "hook": "DACHSER's Food Logistics 'continues to expand' [5] — every added food route and warehouse increases the temperature-documentation and audit workload that ColdTrace automates.",
-          "channel": "Phone call first to the Food Logistics or Quality Management team. DACHSER is headquartered in Kempten, Germany [2]; German law (UWG § 7 (2) no. 2) requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail. A call about temperature monitoring for their food logistics operations falls within the recipient's trade, so presumed consent is plausible; a letter is the alternative. Use the email draft only after consent or send it as a letter. Not legal advice.",
+          "hook": "DACHSER increased its Food Logistics revenue by 10.1 percent to over EUR 1.8 billion in 2025 [6]. That growth means more customers asking for temperature proof in audits — ColdTrace automates exactly that documentation.",
+          "channel": "Phone call to the Kempten headquarters [2], asking for the Head of Food Logistics. DACHSER is based in Germany, where UWG § 7 (2) no. 2 requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail — so no cold email or LinkedIn/XING DM as first touch. A B2B call needs at least presumed consent, which is plausible here because temperature monitoring in food logistics is directly tied to the recipient's trade; a letter is the fallback. Not legal advice.",
+          "channel_kind": "call",
           "avoid": [
-            "Do not allege temperature-monitoring gaps or audit failures at DACHSER — no source documents any; frame ColdTrace as support for growth instead.",
-            "Do not present the Drummond acquisition as food or temperature-controlled business — it concerns groupage for industrial and consumer goods [6].",
-            "Do not open with a cold email or LinkedIn/XING message — the company is Germany-based [2], so electronic mail requires prior express consent."
+            "Do not use cold email or LinkedIn/XING DM as the first touch — German law requires prior express consent for electronic mail, also in B2B.",
+            "Do not claim DACHSER has temperature-monitoring gaps or audit problems — no source supports that.",
+            "Do not name or guess an individual contact; address roles only.",
+            "Do not quote the '427 locations' figure — it does not appear word for word in the provided source text."
           ],
           "questions": [
-            "How is temperature data currently recorded and compiled into audit reports across your Food Logistics warehouses and transports?"
+            "How do you currently produce temperature documentation for customer audits across your food logistics warehouses — manually or from an automated system?"
           ]
         },
         "language": "German",
@@ -258,7 +261,6 @@
           "cited": [
             2,
             3,
-            5,
             6
           ],
           "invalid_refs": [],
@@ -268,36 +270,45 @@
     },
     {
       "step": "write",
-      "model": "zai-org/GLM-5.3",
+      "model": "moonshotai/Kimi-K3",
       "calls": 1,
-      "seconds": 3.75,
-      "prompt_tokens": 3585,
-      "completion_tokens": 129,
-      "reasoning_tokens": 16,
-      "cost_usd": 0.005587,
+      "seconds": 13.34,
+      "prompt_tokens": 4249,
+      "completion_tokens": 141,
+      "reasoning_tokens": 0,
+      "cost_usd": 0.014862,
+      "fallback_from": "zai-org/GLM-5.3",
+      "fallback_reason": "Nebius call failed for zai-org/GLM-5.3: LLM endpoint unreachable: TimeoutError",
       "result": {
         "draft": {
-          "subject": "Temperaturdokumentation im Wachstum",
-          "body": "Guten Tag,\n\nIhr Geschäftsbereich Food Logistics expandiert laut Ihrer Unternehmenskommunikation weiterhin [5]. Jede zusätzliche Lebensmittelroute und jedes neue Lager erhöht häufig den Aufwand für Temperaturdokumentation und Auditberichte. Mit unseren drahtlosen Temperatursensoren und automatisierten Auditberichten unterstützen wir Sie genau dabei. Ist das bei Ihnen gerade ein Thema?\n\nViele Grüße\n[Sender]"
+          "subject": "",
+          "body": "Laut Presseberichten ist Ihr Umsatz in der Food Logistics 2025 um 10,1 Prozent auf über 1,8 Milliarden Euro gewachsen. Solch ein Wachstum bedeutet häufig, dass mehr Kunden lückenlose Temperaturnachweise für Audits verlangen. ColdTrace automatisiert genau diese Dokumentation mit drahtlosen Sensoren und prüfungsfertigen Berichten. Ist das bei Ihnen gerade ein Thema?",
+          "format": "call"
         },
         "language": "German",
         "checks": {
           "cited": [
-            5
+            6
           ],
           "invalid_refs": [],
           "unsourced_numbers": []
-        }
+        },
+        "channel": "Phone call to the Kempten headquarters [2], asking for the Head of Food Logistics. DACHSER is based in Germany, where UWG § 7 (2) no. 2 requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail — so no cold email or LinkedIn/XING DM as first touch. A B2B call needs at least presumed consent, which is plausible here because temperature monitoring in food logistics is directly tied to the recipient's trade; a letter is the fallback. Not legal advice.",
+        "kind": "call",
+        "title": "Call opener",
+        "source": 6,
+        "issues": [],
+        "rewritten": false
       }
     }
   ],
   "totals": {
-    "seconds": 15.76,
-    "model_cost_usd": 0.053929,
+    "seconds": 22.82,
+    "model_cost_usd": 0.057108,
     "tavily_credits": 4,
-    "tokens": 15567,
-    "model_calls": 3,
+    "tokens": 15787,
+    "model_calls": 4,
     "tavily_calls": 4
   },
-  "recorded_at": "2026-11-20T13:03"
+  "recorded_at": "2026-11-20T13:24"
 }

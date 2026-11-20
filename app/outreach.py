@@ -35,7 +35,7 @@ from .research import (
     MAX_INPUT_CHARS, Budget, BudgetExceeded, Research, Target, clean_input, keys_present, parse_target,
     run_research,
 )
-from .scoring import enforce_evidence, summarize, tier_for
+from .scoring import TIER_A, TIER_B, enforce_evidence, summarize, tier_for
 from .sources import Company, Website
 
 log = logging.getLogger("icp.live")
@@ -65,7 +65,7 @@ class ModelError(RuntimeError):
 
 
 def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: float, budget: Budget,
-                reasoning: str | None = None) -> dict:
+                reasoning: str | None = None, retries: int = 1) -> dict:
     """One chat completion through the shared client in app/llm.py (JSON mode, capped retries).
 
     Returns {"content", "seconds", "prompt_tokens", "completion_tokens"}; raises ModelError."""
@@ -75,7 +75,7 @@ def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: floa
         raise ModelError(NO_KEYS_MSG)
     client = LLMClient(LLMConfig(base_url=NEBIUS_BASE_URL, model=model, api_key=key,
                                  timeout=timeout, max_tokens=max_tokens, reasoning_effort=reasoning,
-                                 max_retries=1))
+                                 max_retries=retries))
     t0 = time.monotonic()
     try:
         content = client.chat(messages, temperature=0.2)
@@ -93,15 +93,19 @@ def step_chat(st, messages: list[dict], budget: Budget) -> dict:
     """Primary model of a step; on overload/timeout/error one try with the step's fallback model.
 
     The returned dict carries "model" (the one that answered) and "fallback_from" if it switched."""
+    t0 = time.monotonic()
     try:
-        return {**nebius_chat(st.model, messages, st.max_tokens, st.timeout, budget, st.reasoning), "model": st.model}
+        return {**nebius_chat(st.model, messages, st.max_tokens, st.timeout, budget, st.reasoning,
+                              retries=st.retries), "model": st.model}
     except ModelError as exc:
+        lost = time.monotonic() - t0  # time spent on the failed primary counts in the step's seconds
         if not st.fallback or "402" in str(exc):
             raise
         model, _, effort = st.fallback.partition("@")
         log.warning("%s failed (%s); falling back to %s", st.model, exc, model)
-        c = nebius_chat(model, messages, st.max_tokens, st.timeout, budget, effort or None)
-        return {**c, "model": model, "fallback_from": st.model, "fallback_reason": str(exc)[:160]}
+        c = nebius_chat(model, messages, st.max_tokens, st.fallback_timeout or st.timeout, budget, effort or None)
+        return {**c, "seconds": round(c["seconds"] + lost, 2), "model": model, "fallback_from": st.model,
+                "fallback_reason": str(exc)[:160]}
 
 
 def chat_json(st, messages: list[dict], budget: Budget, valid) -> tuple[list[dict], dict]:
@@ -230,7 +234,7 @@ Rules:
   message as the first touch: German law (UWG § 7 (2) no. 2) requires prior express consent for electronic
   mail, also in B2B, and courts treat social-network messages as electronic mail. Recommend a phone call
   with a specific business reason tied to the recipient's trade (a B2B call needs at least presumed
-  consent), or a letter, and say that the email draft is for use after consent or as a letter.
+  consent), or a letter. The draft step writes for the channel you choose in channel_kind.
   For other EU countries say that the rules differ by country and must be checked before sending.
   For the UK, email to a limited company is possible without consent if the sender is identified and an
   opt-out line is included; not to sole traders. End the channel text with "Not legal advice."
@@ -242,43 +246,99 @@ Reply with JSON only:
   "who": [{{"role": "...", "why": "... [n]"}}],
   "hook": "the opening angle, one or two sentences with [n]",
   "channel": "phone / letter / email and why",
+  "channel_kind": "call" or "letter" or "email" (the first touch you recommend),
   "avoid": ["what not to say, and why"],
   "questions": ["one discovery question"]}}"""
 
-WRITE_SYSTEM = f"""You write a first outreach email to a company that has never heard of the seller.
+WRITE_SYSTEM = f"""You write the first outreach message to a company that has never heard of the seller.
 It is a DRAFT: a person will edit it and decide whether it goes out.
 {UNTRUSTED_RULE}
+FORMAT is given by the outreach plan's channel and is binding:
+- "email": an email with a subject.
+- "letter": the text of a short business letter (subject line = the letter's "Betreff"/re: line). Never
+  mention email, never say "this email".
+- "call": a call opener a person says on the phone: 2 or 3 short spoken sentences, then ONE question.
+  subject = "". No greeting line, no sign-off, no "[Sender]".
 Rules:
+- Obey every item of the plan's AVOID list. Never imply the company has gaps, manual or inconsistent
+  processes, problems or failures: describe what such a fact often demands in general, not a flaw.
 - Language: write in the language given as LANGUAGE. German: formal "Sie", no anglicisms where a German word exists.
-- German only: open with "Guten Tag," on its own line (it does not count as a sentence). Write the subject
-  in normal German capitalisation. Close with a natural interest question such as
+- German email/letter only: open with "Guten Tag," on its own line (it does not count as a sentence). Write
+  the subject in normal German capitalisation. Close with a natural interest question such as
   "Ist das bei Ihnen gerade ein Thema?", never a word-for-word translation of the English example.
-- Length: 60 to 90 words in the body (German: 45 to 80, strictly; count before you answer). Four sentences
-  at most, then the sign-off.
-- Sentence 1, the hook: ONE specific, checkable fact about the recipient's company taken from ONE source,
-  marked [n]: an occasion or a concrete observation (news, a new site, a stated plan), never general
-  encyclopaedia knowledge such as "you operate X and Y". Use the hook from the plan.
-  Name the source in words inside the sentence (for example "according to your annual report") so the
-  sentence still stands when the [n] mark is removed.
+- Length (email/letter): 60 to 90 words in the body (German: 45 to 80, strictly). Four sentences at most,
+  then the sign-off. Call: 25 to 55 words.
+- Sentence 1, the hook: ONE specific, checkable fact about the recipient's company taken from ONE source:
+  an occasion or a concrete observation (news, a new site, a stated plan), never general encyclopaedia
+  knowledge. Use the hook from the plan. Name the source in words inside the sentence (for example
+  "according to your annual report", "on your website"). NEVER write source marks like [1] or [5] in the
+  subject or body; put the number of that source in the field "source" instead. Never use web jargon
+  such as "mediaroom", "newsroom" or "landing page" as the source name.
   No compliment, no "I saw that", no "I hope this finds you well", no "I am writing to the head of ...".
-- Sentence 2: the problem this fact probably causes them, in their words, not in product words. Phrase it
-  as a likely consequence ("often means", "häufig"), never as a fact about the recipient and never with
-  "in our experience" or "erfahrungsgemäß".
-- Sentence 3 (optional): one plain sentence on what the seller does about that problem. No feature list,
-  no numbers about the seller, no customer names, no claims you were not given.
+- Sentence 2: what this fact often demands of a company like theirs, phrased as a general consequence
+  ("often means", "häufig"), never as a fact about the recipient and never with "in our experience".
+- Sentence 3: one plain sentence on what the seller does about that, naming the product name PRODUCT_NAME
+  exactly once. No feature list, no numbers about the seller, no customer names, no claims you were not given.
 - Last sentence: exactly ONE question that asks about interest ("Is this something you are looking at?").
-  No meeting request, no calendar link, no second question, no alternative offer after it
-  (no "or I can send a one-pager"). No numbers in the ask (no "15 minutes").
+  No meeting request, no calendar link, no second question, no alternative offer after it. No numbers in the ask.
 - Say "you/your" more often than "we/our". Never start with "I am" or "We are".
-- Never write a break-up, unsubscribe or removal line ("before I drop you from our list", "I'll remove
-  you from our outreach list", "last email"): this is a first contact, not a follow-up.
-- Facts about the recipient only with [n]. If no sourced fact is available, write {{"subject": "", "body": ""}}.
+- Never write a break-up, unsubscribe or removal line: this is a first contact, not a follow-up.
+- If no sourced fact is available, write {{"format": "...", "subject": "", "body": "", "source": null}}.
 - Address the role, never a named person. No placeholders except the sign-off.
-- Always end the body with a sign-off on its own lines: "Best regards,\n[Sender]" (German:
+- Email/letter: end the body with a sign-off on its own lines: "Best regards,\n[Sender]" (German:
   "Viele Grüße\n[Sender]").
-- Subject: 2 to 4 words, no punctuation, no product name, sounds like an internal note. English: lower
-  case. German: normal German capitalisation (nouns capitalised).
-Reply with JSON only: {{"subject": "...", "body": "..."}}"""
+- Subject (email/letter): 2 to 4 words, no punctuation, no product name, sounds like an internal note.
+  English: lower case. German: normal German capitalisation.
+Reply with JSON only: {{"format": "email|letter|call", "subject": "...", "body": "...", "source": 1}}"""
+
+DRAFT_TITLES = {"email": "Email draft", "letter": "Letter draft", "call": "Call opener"}
+
+
+def channel_kind(plan: dict) -> str:
+    """The first-touch channel of the plan: the model's channel_kind, else read from the channel text."""
+    k = str(plan.get("channel_kind") or "").strip().lower()
+    if k in DRAFT_TITLES:
+        return k
+    text = str(plan.get("channel") or "").lower()
+    pos = {kind: m.start() for kind, pat in (("call", r"\b(phone|call|telephone|anruf|telefon)"),
+                                             ("letter", r"\b(letter|brief|post)\b"))
+           if (m := re.search(pat, text))}
+    return min(pos, key=pos.get) if pos else "email"
+
+
+def product_name(product: str) -> str:
+    """'ColdTrace (fictional): sensors ...' -> 'ColdTrace'."""
+    return re.split(r"[(:,.;-]| - ", product, maxsplit=1)[0].strip()[:60]
+
+
+_MARK = re.compile(r"[ \t]*\[\d{1,2}\]")
+
+
+_GERMAN = re.compile(r"Guten Tag|Viele Grüße|\b(Ihre|Ihrer|für|und|bei)\b")
+_ENGLISH = re.compile(r"\bHello\b|Best regards|\b(your|the|and|with)\b")
+NOT_ENGLISH = "The previous draft was not in English. Rewrite it in English."
+NOT_GERMAN = "The previous draft was not in German. Rewrite it in German."
+
+
+def draft_issues(draft: dict, kind: str, product: str, language: str = "") -> list[str]:
+    """Code checks after writing: wrong language, source marks in the text, wrong channel, product name missing."""
+    issues = []
+    text0 = draft.get("subject", "") + " " + draft.get("body", "")
+    if language == "English" and _GERMAN.search(text0):
+        issues.append(NOT_ENGLISH)
+    if language == "German" and len(_ENGLISH.findall(text0)) >= 3:
+        issues.append(NOT_GERMAN)
+    text = draft.get("subject", "") + " " + draft.get("body", "")
+    if not draft.get("body", "").strip():
+        return issues
+    if _MARK.search(text):
+        issues.append("source marks like [n] in the text")
+    if str(draft.get("format") or "").strip().lower() != kind:
+        issues.append(f"written as {draft.get('format') or 'unknown'}, the plan says {kind}")
+    name = product_name(product)
+    if name and name.lower() not in draft.get("body", "").lower():
+        issues.append(f"product name {name} missing")
+    return issues
 
 
 def detect_language(research: Research) -> str:
@@ -301,6 +361,11 @@ def research_site(research: Research) -> Website:
     comp = Company(id="live", name=t.name, domain=t.domain or "web")
     return Website(comp, pages={f"[{s.n}]": s.body for s in research.sources},
                    urls={f"[{s.n}]": s.url for s in research.sources})
+
+
+TIER_RULE = (f"How the tier is computed: weighted share of criteria met with a verified quote (partial counts half, no quote "
+             f"counts zero). A: {TIER_A:.2f} or more. B: {TIER_B:.2f} to below {TIER_A:.2f}. C: below {TIER_B:.2f}, "
+             f"or a must-have criterion not met; no draft for C unless you ask.")
 
 
 def step_score(run: dict) -> dict:
@@ -344,8 +409,24 @@ def step_score(run: dict) -> dict:
         rows.append(d)
     tier, score = tier_for(findings, criteria)
     run["score"] = {"tier": tier, "score": score, "summary": summarize(findings), "findings": rows,
-                    "discarded": discarded, "proposed": len(proposed)}
+                    "discarded": discarded, "proposed": len(proposed), "tier_rule": TIER_RULE}
     return {**_meta("score", st.model, calls), "result": run["score"]}
+
+
+def _flat(x) -> str:
+    """All strings of a plan, one per line, so the number check never reads JSON punctuation as a sentence."""
+    if isinstance(x, dict):
+        return "\n".join(_flat(v) for v in x.values())
+    if isinstance(x, list):
+        return "\n".join(_flat(v) for v in x)
+    return str(x) if x is not None else ""
+
+
+def plan_checks(plan: dict, research: Research) -> dict:
+    """References checked everywhere; numbers not in the avoid list (a "do not quote 427" line is no claim)."""
+    c = check_refs(_flat(plan), research)
+    c["unsourced_numbers"] = check_refs(_flat({k: v for k, v in plan.items() if k != "avoid"}), research)["unsourced_numbers"]
+    return c
 
 
 def step_plan(run: dict) -> dict:
@@ -362,25 +443,80 @@ def step_plan(run: dict) -> dict:
     run["plan"] = plan
     run["language"] = detect_language(research)
     return {**_meta("plan", st.model, calls), "result": {"plan": plan, "language": run["language"],
-                                                       "checks": check_refs(json.dumps(plan, ensure_ascii=False), research)}}
+                                                       "checks": plan_checks(plan, research)}}
 
 
 def step_write(run: dict) -> dict:
     research: Research = run["research"]
     st = steps()["write"]
-    user = (f"LANGUAGE: {run['language']}\n\nSELLER PRODUCT:\n<untrusted>{run['product']}</untrusted>\n\n"
-            f"OUTREACH PLAN (from our strategist):\n{json.dumps(run['plan'], ensure_ascii=False)[:3000]}\n\n"
-            f"SOURCES:\n{_sources_block(research, 1200)}")
-    calls, draft = chat_json(st, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}],
-                             run["budget"], lambda d: isinstance(d, dict) and isinstance(d.get("body"), str))
-    draft = {"subject": str(draft.get("subject") or "")[:200], "body": draft["body"][:3000]}
-    run["draft"] = draft
-    return {**_meta("write", st.model, calls), "result": {"draft": draft, "language": run["language"],
-                                                        "checks": check_refs(draft["body"], research)}}
+    plan = run["plan"]
+    kind = channel_kind(plan)
+    avoid = plan.get("avoid") if isinstance(plan.get("avoid"), list) else [plan.get("avoid")]
+    avoid = [json.dumps(a, ensure_ascii=False) if isinstance(a, dict) else str(a) for a in avoid if a]
+    name = product_name(run["product"])
+    user = (f"FORMAT: {kind}\nLANGUAGE: {run['language']}\nPRODUCT_NAME: {name}\n\n"
+            f"SELLER PRODUCT:\n<untrusted>{run['product']}</untrusted>\n\n"
+            f"CHANNEL (from the plan, binding): {str(plan.get('channel') or '')[:600]}\n\n"
+            f"AVOID (from the plan, binding):\n" + "\n".join(f"- {a[:300]}" for a in avoid[:6]) + "\n\n"
+            f"OUTREACH PLAN (from our strategist):\n{json.dumps(plan, ensure_ascii=False)[:3000]}\n\n"
+            f"SOURCES:\n{_sources_block(research, 1200)}\n\n"
+            + (f"Write subject and body in {run['language']} only. If English: open with \"Hello,\" and close with "
+               f"\"Best regards,\\n[Sender]\". Use no German words." if run["language"] == "English" else
+               f"Write subject and body in {run['language']} only."))
+    msgs = [{"role": "system", "content": WRITE_SYSTEM.replace("PRODUCT_NAME", name or "the product")},
+            {"role": "user", "content": user}]
+    ok = lambda d: isinstance(d, dict) and isinstance(d.get("body"), str)  # noqa: E731
+    calls, draft = chat_json(st, msgs, run["budget"], ok)
+    lang = run["language"]
+    issues = draft_issues(draft, kind, run["product"], lang)
+    rewritten = False
+    if issues:  # one rewrite with the code's findings, then show what is still wrong
+        fix = msgs + [{"role": "assistant", "content": json.dumps(draft, ensure_ascii=False)},
+                      {"role": "user", "content": "Rewrite. The code check found: " + "; ".join(issues)
+                       + f". FORMAT must be {kind}. Reply with JSON only."}]
+        try:
+            c2, d2 = chat_json(replace(st, fallback=None) if calls[-1].get("fallback_from") else st, fix,
+                               run["budget"], ok)
+            calls += c2
+            draft, issues, rewritten = d2, draft_issues(d2, kind, run["product"], lang), True
+        except (ModelError, BudgetExceeded):
+            pass
+    if NOT_ENGLISH in issues:  # still German after the rewrite: the label follows the text, not the guess
+        lang = "German"
+        issues = [i for i in issues if i != NOT_ENGLISH] + ["written in German although English was asked"]
+    if NOT_GERMAN in issues:
+        lang = "English"
+        issues = [i for i in issues if i != NOT_GERMAN] + ["written in English although German was asked"]
+    marks = sorted({int(x) for x in re.findall(r"\[(\d{1,2})\]", draft.get("subject", "") + draft["body"])})
+    valid = {s.n for s in research.sources}
+    src = draft.get("source")
+    src = int(src) if isinstance(src, int) or (isinstance(src, str) and src.isdigit()) else None
+    cited = sorted({n for n in ([src] if src else []) + marks if n in valid})
+    body = _MARK.sub("", draft["body"])[:3000]
+    out = {"subject": "" if kind == "call" else _MARK.sub("", str(draft.get("subject") or ""))[:200],
+           "body": body, "format": kind}
+    run["draft"] = out
+    checks = check_refs(body, research)
+    # A number in the draft is sourced if it appears in the cited source's text.
+    texts = " ".join(s.body for s in research.sources if s.n in cited)
+    checks["unsourced_numbers"] = [x for x in checks["unsourced_numbers"] if not numbers_in(x, texts)]
+    checks["cited"] = cited
+    return {**_meta("write", st.model, calls), "result": {
+        "draft": out, "language": lang, "checks": checks, "channel": str(plan.get("channel") or ""),
+        "kind": kind, "title": DRAFT_TITLES[kind], "source": cited[0] if cited else None,
+        "issues": issues, "rewritten": rewritten}}
 
 
-_LEGAL_REF = re.compile(r"§+\s*\d+[a-z]?(\s*(\(\d+\)|Abs\.?\s*\d+|para\.?\s*\d+|S\.\s*\d+|Satz\s*\d+|Nr\.?\s*\d+|no\.?\s*\d+))*"
-                        r"|\b(Art\.|Article)\s*\d+(\s*\(\d+\))*|\b\d+\s*U\s*\d+/\d+", re.I)
+_SUB = r"(\s*(\(\d+[a-z]?\)|\([a-z]\)|(Abs|para|paragraph|S|Satz|sentence|Nr|no|number|lit|point|subsection|sub)\.?\s*\d+[a-z]?|,|and|und))*"
+def numbers_in(sentence: str, text: str) -> bool:
+    """Every number of the sentence appears in the text; only the decimal separator may differ (10,1 = 10.1)."""
+    nums = re.findall(r"\d+(?:[.,]\d+)*", sentence)
+    return bool(nums) and all(n in text or n.replace(",", "\0").replace(".", ",").replace("\0", ".") in text
+                              for n in nums)
+
+
+_LEGAL_REF = re.compile(r"(§+|\b(Sections?|Sec|Art|Articles?|Arts|Regulation|Directive|Reg)\.?)\s*\d+[a-z]?(/\d+)*" + _SUB
+                        + r"|\b\d+\s*U\s*\d+/\d+|\b(EU|EC|EEC)\s*\d+/\d+", re.I)
 
 
 def check_refs(text: str, research: Research) -> dict:
@@ -389,7 +525,7 @@ def check_refs(text: str, research: Research) -> dict:
     used = [int(x) for x in re.findall(r"\[(\d{1,2})\]", text)]
     bad = sorted({n for n in used if n not in valid})
     unsourced = []
-    for sent in re.split(r"(?<=[.!?])\s+|\n+", _LEGAL_REF.sub("§", text)):  # legal refs first: "no. 2" splits
+    for sent in re.split(r"(?<=[.!?])\s+|\n+", re.sub(r"\bB2[BC]\b", "B-to-B", _LEGAL_REF.sub("§", text))):  # legal refs first: "no. 2" splits
         if sent.strip().endswith("?"):
             continue  # the ask: numbers there are a prompt-rule matter, not an unsourced claim
         if re.search(r"\d", re.sub(r"\[\d{1,2}\]", "", sent)) and not re.search(r"\[\d{1,2}\]", sent):

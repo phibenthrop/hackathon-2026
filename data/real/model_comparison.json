@@ -17,7 +17,7 @@
     "transportservicesuk.com"
   ],
   "reference_model": "zai-org/GLM-5.3-Flash",
-  "note": "12 companies from the real snapshot, same prompt and quote gate as the app. Tier agreement is against zai-org/GLM-5.3-Flash; cost from the Nebius catalog prices of 2026-11-20.",
+  "note": "12 companies from the real snapshot, same prompt and quote gate as the app. Cost from the Nebius catalog prices of 2026-11-20.",
   "models": [
     {
       "model": "zai-org/GLM-5.3-Flash",

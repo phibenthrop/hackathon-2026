@@ -29,6 +29,8 @@
   .cols .box { font-size: clamp(.9rem, 1.8vw, 1.6rem); line-height: 1.4; }
   .biglink { font-size: clamp(1.6rem, 4vw, 3.4rem); font-weight: 700; }
   .biglink a { color: var(--accent); }
+  #live-cmp table, #live-cmp td, #live-cmp th { font-size: 20px; }
+  #live-cmp p { font-size: 14px; }
   ul.small li { font-size: clamp(.9rem, 1.7vw, 1.5rem); }
 </style>
 </head>
@@ -37,7 +39,7 @@
 <section class="slide active">
   <h1>Is this company worth an email?</h1>
   <p>A yes or no you can check. Quotes that are not in the source are thrown out, visibly.</p>
-  <p class="muted">An agent researches a company, scores it against your ICP with word-for-word quotes, and drafts the first email. About 20 seconds, 6 to 9 cents.</p>
+  <p class="muted">An agent researches a company, scores it against your ICP with word-for-word quotes, and drafts the first message. Usually 15 to 25 seconds; the slowest run we measured took 46. 6 to 9 cents.</p>
   <p><span class="motto">Agent drafts, a person decides.</span></p>
 </section>
 
@@ -54,8 +56,8 @@
 <section class="slide">
   <h2>Demo</h2>
   <div style="display:flex;gap:2vw;align-items:center;min-height:0;flex:1">
-    <img src="/static/demo.png" alt="A live run: verdict with quotes, plan and draft" style="max-height:62vh;max-width:70%;border:1px solid var(--line);border-radius:6px">
-    <p class="biglink" style="flex:1"><a href="/live">Live: /live - type any company</a></p>
+    <figure style="margin:0;max-width:92%"><img src="/static/demo.png" alt="Tier A for dachser.de: every line is a word-for-word quote with a link to the page." style="max-height:70vh;max-width:100%;border:1px solid var(--line);border-radius:6px"><figcaption style="font-size:clamp(.9rem,1.4vw,1.2rem)">Tier A for dachser.de: every line is a word-for-word quote with a link to the page.</figcaption></figure>
+    <p class="biglink" style="flex:0 0 auto;font-size:clamp(1rem,2vw,1.8rem)"><a href="/live">Live: /live - type any company</a></p>
   </div>
 </section>
 
@@ -63,9 +65,9 @@
 <!-- live-agent slide (branch live-agent): model per step + comparison, filled from /api/live/config -->
 <section class="slide" id="live-models">
   <h2>Live agent: which model does which step</h2>
-  <table style="width:100%;font-size:.8em"><tbody id="live-reg"><tr><td>Research</td><td>Tavily search + extract</td></tr></tbody></table>
+  <table style="width:100%;font-size:.8em"><tbody id="live-reg"><tr><td><b>Research the company</b></td><td><code>Tavily (search + extract)</code></td><td>Live web: the company's own site plus three targeted searches. Every source keeps its URL.</td></tr><tr><td><b>Score against the ICP</b></td><td><code>zai-org/GLM-5.3-Flash</code></td><td>Small, fast, cheap: one call per company, JSON out. Code checks every quote afterwards, so we pay for speed, not brilliance. On 12 real companies: 100% valid JSON, 3% of quotes discarded, vs 29% for gpt-oss-120b. Reasoning 'low': at the default it returned no JSON.</td></tr><tr><td><b>Plan the outreach</b></td><td><code>moonshotai/Kimi-K3</code></td><td>Strong reasoning: one call per company, and choosing the role, the hook and the channel is where a mistake costs a lead.</td></tr><tr><td><b>Write the draft (email, letter or call opener)</b></td><td><code>zai-org/GLM-5.3</code></td><td>Multilingual writer: natural voice, German and English tested, fast enough to watch, a third of the planner's output price. Reasoning 'low'; if overloaded (HTTP 529, seen today) it falls back to Kimi-K3. Capped at 12 s: a slow answer goes to Kimi-K3 instead of making the demo wait.</td></tr></tbody></table>
   <h3 style="margin-top:1em">Scoring: GLM-5.3-Flash, cheapest, 3% of quotes thrown out (gpt-oss-120b: 29%)</h3>
-  <div id="live-cmp" style="font-size:.75em">No comparison recorded yet.</div>
+  <div id="live-cmp"><!-- static copy of data/real/model_comparison.json; JS refreshes it --><table style="width:100%"><tr><th>Model</th><th>s / firm</th><th>USD / firm</th><th>valid JSON</th><th>quotes discarded</th></tr><tr><td>zai-org/GLM-5.3-Flash</td><td>3.34</td><td>$0.00039</td><td>100%</td><td>3% of 36</td></tr><tr><td>nvidia/Nemotron-3_5-Lightning</td><td>-</td><td>$0.00105</td><td>0%</td><td>-</td></tr><tr><td>openai/gpt-oss-120b</td><td>1.78</td><td>$0.00057</td><td>100%</td><td>29% of 35</td></tr></table><p>12 companies from the real snapshot, same prompt and quote gate as the app. Cost from the Nebius catalog prices of 2026-11-20.</p></div>
   <p style="font-size:.7em">Open <a href="/live">/live</a> and type any company.</p>
 </section>
 <script>
@@ -87,44 +89,26 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
   <h2>Before / after</h2>
   <div class="cols">
     <div class="box"><strong>Before</strong>An SDR opens the website, LinkedIn and news in ten tabs, skims, guesses the fit and writes from memory. Manual research: several tabs per company (not timed). Claims in the email cannot be traced.</div>
-    <div class="box us"><strong>After</strong><!--AFTER-->Types the company. Reads four steps, clicks the quotes, edits the draft, decides. Recorded run (dachser.de, European logistics profile): Tier A in 16 s for $0.09, model calls plus web research, 0 of 6 quotes rejected; German draft of 48 words, phone or letter recommended. Companies that do not fit are stopped before anyone writes.<!--/AFTER--></div>
+    <div class="box us"><strong>After</strong><!--AFTER-->Types the company. Reads four steps, clicks the quotes, edits the draft, decides. Recorded run (dachser.de, European logistics profile): Tier A in 23 s for $0.09, model calls plus web research, 0 of 6 quotes rejected; phone recommended, German call opener of 52 words. Companies that do not fit are stopped before anyone writes.<!--/AFTER--></div>
   </div>
 </section>
 
 <section class="slide">
-  <h2>Solution</h2>
-  <h1>ICP Qualifier: every verdict comes with a quote.</h1>
+  <h2>What you can test right now</h2>
   <ul>
-    <li>Derives your ICP from the websites of your three best customers, as editable criteria.</li>
-    <li>Reads each candidate's website and judges every criterion.</li>
-    <li>Tier A/B/C with a verbatim quote and a link to the passage. No quote, no verdict: "no evidence" lowers the tier.</li>
+    <li>Type any company: a fit verdict, one sourced reason to reach out, a first draft.</li>
+    <li>Every verdict carries a word-for-word quote. Code checks it, not the model.</li>
+    <li>Try to fool the gate: paste a made-up quote and it turns red.</li>
+    <li>Tier C stops before the draft. No email for a non-fit.</li>
+    <li>Research: Tavily search + extract. Reasoning: three open models on Nebius Token Factory.</li>
   </ul>
   <p><span class="motto">Agent drafts, a person decides.</span></p>
 </section>
 
-<section class="slide">
-  <h2>How it works</h2>
-  <ol>
-    <li><strong>Best customers in</strong> - ICP derived: industry terms, size range, region, signals.</li>
-    <li><strong>Similar companies</strong> from a company source; existing customers removed automatically.</li>
-    <li><strong>Agent qualifies</strong> each website; every quote is checked character by character against the source text.</li>
-    <li><strong>Review and export</strong> - sort, filter, expand the evidence, export CSV for the campaign tool or CRM.</li>
-  </ol>
-  <p class="muted">Model behind an OpenAI-compatible interface (open models on Nebius Token Factory); it also says whether a company is an operator at all or a publisher, manufacturer or spam page, with a verbatim quote. Without a key the app replays precomputed verdicts or runs a deterministic rule scorer.</p>
-</section>
 
 
-<section class="slide">
-  <h2>Where it sits</h2>
-  <div class="flow">
-    <div class="box"><strong>similarcompanies.ai</strong>Returns companies similar to your customers. "Qualification, people and CRM come from your agent's other tools."</div>
-    <div class="arrow">&#8594;</div>
-    <div class="box us"><strong>ICP Qualifier</strong>Qualifies each company against your ICP, with evidence. Removes existing customers. Tiers A/B/C.</div>
-    <div class="arrow">&#8594;</div>
-    <div class="box"><strong>Needle / CRM</strong>Runs the outbound campaign from the reviewed lead list. A human decides what is sent.</div>
-  </div>
-  <p><strong>Real data path in this demo:</strong> three seed companies &#8594; <code>find_companies</code> on the similarcompanies.ai MCP server (paged only by search id) &#8594; seed brands and duplicate domains removed &#8594; public company websites fetched (robots.txt respected, no contact, team or legal pages, personal data filtered out by a heuristic) &#8594; every verdict passes the verbatim-quote check and links to the real page. Pulled once on our box and stored as a snapshot, so the public demo needs no token.</p>
-</section>
+
+
 
 <section class="slide">
   <h2>Limits</h2>
@@ -145,6 +129,29 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
     <li>Hand A-tier leads to a Needle campaign as drafts for human review.</li>
     <li>Learn from won and lost deals to adjust criteria weights.</li>
   </ul>
+</section>
+
+<section class="slide">
+  <h2>Appendix: lead list - how it works (page /, stored snapshot)</h2>
+  <ol>
+    <li><strong>Best customers in</strong> - ICP derived: industry terms, size range, region, signals.</li>
+    <li><strong>Similar companies</strong> from a company source; existing customers removed automatically.</li>
+    <li><strong>Agent qualifies</strong> each website; every quote is checked character by character against the source text.</li>
+    <li><strong>Review and export</strong> - sort, filter, expand the evidence, export CSV for the campaign tool or CRM.</li>
+  </ol>
+  <p class="muted">Model behind an OpenAI-compatible interface (open models on Nebius Token Factory); it also says whether a company is an operator at all or a publisher, manufacturer or spam page, with a verbatim quote. Without a key the app replays precomputed verdicts or runs a deterministic rule scorer.</p>
+</section>
+
+<section class="slide">
+  <h2>Appendix: lead list - where it sits</h2>
+  <div class="flow">
+    <div class="box"><strong>similarcompanies.ai</strong>Returns companies similar to your customers. "Qualification, people and CRM come from your agent's other tools."</div>
+    <div class="arrow">&#8594;</div>
+    <div class="box us"><strong>ICP Qualifier</strong>Qualifies each company against your ICP, with evidence. Removes existing customers. Tiers A/B/C.</div>
+    <div class="arrow">&#8594;</div>
+    <div class="box"><strong>Needle / CRM</strong>Runs the outbound campaign from the reviewed lead list. A human decides what is sent.</div>
+  </div>
+  <p><strong>Real data path in this demo:</strong> three seed companies &#8594; <code>find_companies</code> on the similarcompanies.ai MCP server (paged only by search id) &#8594; seed brands and duplicate domains removed &#8594; public company websites fetched (robots.txt respected, no contact, team or legal pages, personal data filtered out by a heuristic) &#8594; every verdict passes the verbatim-quote check and links to the real page. Pulled once on our box and stored as a snapshot, so the public demo needs no token.</p>
 </section>
 
 <div class="foot">Arrow keys or click to navigate · <span id="pos"></span> · <a href="/">open the app</a> · fictional dataset: invented companies · real dataset: similarcompanies.ai snapshot 2026-11-20, quotes from public company websites</div>

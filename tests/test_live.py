@@ -50,7 +50,7 @@ def offline(monkeypatch):
 def fake_models(monkeypatch, score_quote="All our temperature controlled transport is audited under BRCGS every year."):
     calls = []
 
-    def chat(model, messages, max_tokens, timeout, budget, reasoning=None):
+    def chat(model, messages, max_tokens, timeout, budget, reasoning=None, **kw):
         budget.take_model()
         calls.append(model)
         system = messages[0]["content"]
@@ -66,8 +66,9 @@ def fake_models(monkeypatch, score_quote="All our temperature controlled transpo
             content = {"fit_summary": "Refrigerated fleet [1].", "who": [{"role": "Head of Operations", "why": "runs the fleet [1]"}],
                        "hook": "New depot in Leeds [2].", "channel": "email", "avoid": ["price talk"], "questions": ["How do you log temperatures?"]}
         else:
-            content = {"subject": "Your new Leeds depot [2]",
-                       "body": "Hello,\nyou opened a new depot in Leeds [2]. We have 300 customers.\n[Sender]"}
+            content = {"format": "email", "subject": "your new Leeds depot", "source": 2,
+                       "body": "Hello,\nyour news page says you opened a new depot in Leeds. ColdTrace helps. "
+                               "We have 300 customers.\n[Sender]"}
         return {"content": json.dumps(content), "seconds": 0.1, "prompt_tokens": 1000, "completion_tokens": 200}
     monkeypatch.setattr(outreach, "nebius_chat", chat)
     return calls
@@ -222,7 +223,7 @@ def test_write_falls_back_when_primary_overloaded(client, monkeypatch):
     inner = outreach.nebius_chat
     primary = outreach.steps()["write"].model
 
-    def flaky(model, messages, max_tokens, timeout, budget, reasoning=None):
+    def flaky(model, messages, max_tokens, timeout, budget, reasoning=None, **kw):
         if model == primary:
             budget.take_model()
             raise outreach.ModelError(f"Nebius call failed for {model}: HTTP 529 from LLM endpoint")
@@ -301,3 +302,84 @@ def test_check_quote_uses_the_gate(client, monkeypatch):
     bad = client.post(f"/api/live/{rid}/check_quote", json={"quote": "Chillspeed is opening ten warehouses in France"})
     assert bad.status_code == 200 and bad.json()["found"] is False
     assert client.post("/api/live/nope/check_quote", json={"quote": "a b c"}).status_code == 404
+
+
+def test_legal_refs_in_english_wording_are_not_numbers():
+    from app.outreach import check_refs
+    from app.research import Research, Source, Target
+    r = Research(target=Target(raw="x.de", name="X", domain="x.de"),
+                 sources=[Source(n=1, url="https://x.de", title="X", excerpt="", body="b", kind="website")])
+    for t in ["First touch by phone or letter, not cold email (UWG § 7 (2) no. 2). Not legal advice.",
+              "UWG Section 7(2) No. 2 requires consent; see also Art. 6(1)(f) GDPR. Not legal advice.",
+              "Under §7(2)(2) UWG and § 7 Abs. 3 a call needs presumed consent."]:
+        assert check_refs(t, r)["unsourced_numbers"] == [], t
+    assert check_refs("Section 7 applies. You run 40 depots.", r)["unsourced_numbers"] == ["You run 40 depots."]
+
+
+def test_channel_kind_and_product_name():
+    from app.outreach import channel_kind, draft_issues, product_name
+    assert channel_kind({"channel_kind": "letter"}) == "letter"
+    assert channel_kind({"channel": "First touch by phone or letter, not cold email (UWG § 7 (2) no. 2)."}) == "call"
+    assert channel_kind({"channel": "Email is fine for a UK limited company."}) == "email"
+    assert product_name("ColdTrace (fictional): wireless sensors") == "ColdTrace"
+    d = {"format": "letter", "subject": "x", "body": "Laut Ihrem Bericht [5] ... ColdTrace ..."}
+    assert draft_issues(d, "letter", "ColdTrace (fictional): x") == ["source marks like [n] in the text"]
+    d = {"format": "email", "subject": "x", "body": "Hello"}
+    issues = draft_issues(d, "call", "ColdTrace (fictional): x")
+    assert any("plan says call" in i for i in issues) and any("ColdTrace" in i for i in issues)
+
+
+def test_write_follows_plan_channel_and_rewrites_once(client, monkeypatch):
+    seen = []
+
+    def chat(model, messages, max_tokens, timeout, budget, reasoning=None, **kw):
+        budget.take_model()
+        system = messages[0]["content"]
+        if "qualify one B2B company" in system:
+            content = {"findings": [{"criterion_id": "industry", "status": "met", "reason": "x",
+                                     "quote": "Chillspeed runs a fleet of refrigerated vans across the United Kingdom.",
+                                     "source": 1}]}
+        elif "plan B2B outreach" in system:
+            content = {"fit_summary": "Fleet [1].", "who": [{"role": "Head of Quality", "why": "[1]"}], "hook": "Fleet [1].",
+                       "channel": "First touch by phone, not cold email (UWG § 7 (2) no. 2). Not legal advice.",
+                       "channel_kind": "call", "avoid": ["Do not imply compliance gaps"], "questions": ["q?"]}
+        else:
+            seen.append(messages)
+            if len(seen) == 1:
+                content = {"format": "email", "subject": "fleet", "body": "Your fleet [1]. Is this a topic?", "source": 1}
+            else:
+                content = {"format": "call", "subject": "", "source": 1,
+                           "body": "Your website says you run refrigerated vans. ColdTrace logs temperatures. Is this a topic?"}
+        return {"content": json.dumps(content), "seconds": 0.1, "prompt_tokens": 10, "completion_tokens": 5}
+    monkeypatch.setattr(outreach, "nebius_chat", chat)
+    out = full_run(client)
+    w = out["write"]["result"]
+    assert "FORMAT: call" in seen[0][1]["content"] and "Do not imply compliance gaps" in seen[0][1]["content"]
+    assert len(seen) == 2 and w["rewritten"] and w["issues"] == []
+    assert w["kind"] == "call" and w["title"] == "Call opener" and w["draft"]["subject"] == ""
+    assert "[" not in w["draft"]["body"] and w["source"] == 1 and w["checks"]["cited"] == [1]
+
+
+def test_draft_number_may_change_decimal_separator_only():
+    from app.outreach import numbers_in
+    src = "Dachser increased its revenue in the Food Logistics business line by 10.1 percent to over EUR 1.8 billion in 2025."
+    assert numbers_in("Ihre Sparte ist 2025 um 10,1 Prozent auf über 1,8 Milliarden Euro gewachsen.", src)
+    assert not numbers_in("Ihre Sparte ist um 11 Prozent gewachsen.", src)
+
+
+def test_b2b_is_not_a_number():
+    from app.outreach import check_refs
+    from app.research import Research, Source, Target
+    r = Research(target=Target(raw="x.de", name="X", domain="x.de"),
+                 sources=[Source(n=1, url="https://x.de", title="X", excerpt="", body="b", kind="website")])
+    assert check_refs("Onboardly helps B2B software companies.", r)["unsourced_numbers"] == []
+    assert check_refs("A B2C shop, see UWG § 7 (2) no. 2. Fine.", r)["unsourced_numbers"] == []
+    assert check_refs("We cut costs by 30 percent.", r)["unsourced_numbers"] == ["We cut costs by 30 percent."]
+
+
+def test_language_check():
+    from app.outreach import NOT_ENGLISH, draft_issues
+    d = {"format": "email", "subject": "x", "body": "Guten Tag, Ihre Website ... ColdTrace ... Viele Grüße"}
+    assert NOT_ENGLISH in draft_issues(d, "email", "ColdTrace (fictional): x", "English")
+    d = {"format": "email", "subject": "x", "body": "Hello, your site says ... ColdTrace. Best regards"}
+    assert draft_issues(d, "email", "ColdTrace (fictional): x", "English") == []

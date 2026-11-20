@@ -44,6 +44,8 @@ class Step:
     timeout: float
     reasoning: str | None = None  # Nebius reasoning_effort for this step
     fallback: str | None = None  # model@effort tried once if the primary is overloaded or times out
+    retries: int = 1  # transport retries of the primary before the fallback
+    fallback_timeout: float | None = None
 
 
 _DEFAULTS = [
@@ -54,10 +56,11 @@ _DEFAULTS = [
     ("plan", "Plan the outreach", "moonshotai/Kimi-K3",
      "Strong reasoning: one call per company, and choosing the role, the hook and the channel is where "
      "a mistake costs a lead.", 2500, 45, None),
-    ("write", "Write the email draft", "zai-org/GLM-5.3",
+    ("write", "Write the draft (email, letter or call opener)", "zai-org/GLM-5.3",
      "Multilingual writer: natural voice, German and English tested, fast enough to watch, a third of "
      "the planner's output price. Reasoning 'low'; if overloaded (HTTP 529, seen today) it falls back "
-     "to Kimi-K3.", 1500, 30, "low"),
+     "to Kimi-K3. Capped at 12 s: a slow answer goes to Kimi-K3 instead of making the demo wait.",
+     900, 12, "low"),
 ]
 
 
@@ -69,7 +72,8 @@ def steps() -> dict[str, Step]:
     for key, title, model, why, max_tokens, timeout, reasoning in _DEFAULTS:
         model = os.environ.get(f"LIVE_MODEL_{key.upper()}", "").strip() or model
         reasoning = os.environ.get(f"LIVE_REASONING_{key.upper()}", "").strip() or reasoning
-        out[key] = Step(key, title, model, why, max_tokens, timeout, reasoning, FALLBACKS.get(key))
+        out[key] = Step(key, title, model, why, max_tokens, timeout, reasoning, FALLBACKS.get(key),
+                        retries=0 if key == "write" else 1, fallback_timeout=20 if key == "write" else None)
     return out
 
 

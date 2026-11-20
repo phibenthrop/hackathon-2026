@@ -29,7 +29,7 @@
 <body>
 <main>
 <h1>ICP Qualifier - video, submission, pitch</h1>
-<p class="note">Demo-Firma: <b>dachser.de</b> mit Profil-Knopf <b>European logistics groups</b> (heute mehrfach Stufe A, rund 15 bis 20 s). Ersatz: <b>edwards-transport.com</b> mit Profil <b>UK cold-chain (ColdTrace)</b> (Stufe vom Bildschirm ablesen). Zahlen im Bild immer vom Bildschirm ablesen.</p>
+<p class="note">Demo-Firma: <b>dachser.de</b> mit Profil-Knopf <b>European logistics groups</b> (heute mehrfach Stufe A, meist 15 bis 25 s). Ersatz: <b>edwards-transport.com</b> mit Profil <b>UK cold-chain (ColdTrace)</b> (Stufe vom Bildschirm ablesen). Zahlen im Bild immer vom Bildschirm ablesen.</p>
 
 <h2>1. Video script (2 min)</h2>
 
@@ -42,19 +42,19 @@
 <p class="do">Klick Profil-Knopf „European logistics groups“. Ins Feld tippen: dachser.de (oder den Beispiel-Knopf „dachser.de“ klicken, der setzt das Profil mit). Klick „Check this company“.</p></div>
 
 <div class="card"><div class="t">0:25</div>
-<p class="say">While it runs: step one is research with Tavily, on the live web. Every source keeps its link. Step two scores the company against my profile. The model must give a word-for-word quote for every point. Then our code checks each quote against the page text. If the quote is not there, it is thrown out. The tier, A, B or C, is computed by code, not by the model.</p>
-<p class="do">Wartezeit, etwa 15 bis 20 s. Nicht klicken; die Seite rollt selbst zum laufenden Schritt, der Sekundenzähler läuft.</p></div>
+<p class="say">While it runs: step one is research with Tavily, on the live web. Every source keeps its link. Step two scores the company against my profile. Every point needs a word-for-word quote. Our code checks each quote against the page text. Not there: thrown out. The tier is computed by code, not by the model.</p>
+<p class="do">Wartezeit, meist 15 bis 25 s (langsamster gemessener Lauf 46 s). Nicht klicken; die Seite rollt selbst zum laufenden Schritt, der Sekundenzähler läuft.</p></div>
 
 <div class="card"><div class="t">0:53</div>
 <p class="say">Here is the result: tier A, with quotes I can click. Now I try to fool the gate. I paste a real quote: found. I change one word: thrown out.</p>
 <p class="do">Zu Schritt 2 rollen. Auf die Stufe zeigen (Buchstaben vom Bildschirm sagen), einen Quellen-Link anklicken, Tab wieder schließen. Dann Feld „Try to fool the gate“: Zitat aus der Evidence-Spalte einfügen, „Check quote“ (grün: „Found word for word“). Ein Wort ändern, „Check quote“ (rot: „Not found word for word“).</p></div>
 
 <div class="card"><div class="t">1:10</div>
-<p class="say">Step three plans the outreach: which role, which hook, which channel. For a German company it says phone or letter, because a cold email needs consent here. Step four writes a short draft in German. It is a draft only. The app cannot send anything. A person decides.</p>
+<p class="say">Step three plans the outreach: which role, which hook, which channel. For a German company it advises against a cold email, because that needs consent here. Step four writes for the channel the plan chose, here in German. It is a draft only. The app cannot send anything. A person decides.</p>
 <p class="do">Langsam durch Schritt 3 (auf „Channel“ zeigen) und Schritt 4 rollen. Bei „draft only“ auf die Zeile unter dem Textfeld zeigen.</p></div>
 
 <div class="card"><div class="t">1:25</div>
-<p class="say">Three open models on Nebius Token Factory. GLM 5.3 Flash scores, because it is small and cheap, and the code checks it anyway. Kimi K3 plans, because that step needs judgement. GLM 5.3 writes. We measured three scoring models on twelve real companies. GLM Flash: three percent of quotes thrown out. GPT OSS 120b: twenty-nine percent. GPT OSS was faster, 1.8 against 3.3 seconds, but we chose the model that quotes correctly.</p>
+<p class="say">Three open models on Nebius Token Factory. GLM 5.3 Flash scores: small, cheap, and the code checks it anyway. Kimi K3 plans. GLM 5.3 writes. We measured the scoring models on twelve real companies. GLM Flash lost three percent of its quotes, GPT OSS 120b twenty-nine. GPT OSS was faster, but we chose the model that quotes correctly.</p>
 <p class="do">Klick „Models and why“ oben (springt zur Tabelle). Mit der Maus die drei Modellzeilen entlang, dann zur Vergleichstabelle darunter, auf die Spalte „Quotes discarded“ zeigen.</p></div>
 
 <div class="card"><div class="t">1:50</div>
@@ -80,15 +80,15 @@
 
 <div class="field"><h3>Project name <button data-copy="f-name">Copy</button></h3><pre id="f-name">ICP Qualifier</pre></div>
 
-<div class="field"><h3>Tagline <button data-copy="f-tag">Copy</button></h3><pre id="f-tag">Type any company. In about 20 seconds: a yes or no you can check, and a first email draft. Every verdict needs a word-for-word quote; quotes that are not in the source are thrown out, visibly. Nothing is sent.</pre></div>
+<div class="field"><h3>Tagline <button data-copy="f-tag">Copy</button></h3><pre id="f-tag">Type any company. Usually in 15 to 25 seconds: a yes or no you can check, and a first draft for the channel the plan recommends. Every verdict needs a word-for-word quote; quotes that are not in the source are thrown out, visibly. Nothing is sent.</pre></div>
 
 <div class="field"><h3>Description <button data-copy="f-desc">Copy</button></h3><pre id="f-desc">Measured today (20 Nov 2026):
 - Scoring model comparison on 12 real companies, same prompt, same quote check:
   GLM-5.3-Flash: 100% valid JSON, 3% of 36 quotes thrown out, 3.3 s, $0.00039 per company.
   gpt-oss-120b: 100% valid JSON, 29% of 35 quotes thrown out, 1.8 s, $0.00057 per company.
   Nemotron-3_5-Lightning: 0% valid JSON.
-- A full live run (research, score, plan, draft): about 20 seconds, 6 to 9 cents with web research.
-  Recorded example: dachser.de, tier A in 16 s for $0.09, 0 of 6 quotes thrown out.
+- A full live run (research, score, plan, draft): usually 15 to 25 seconds; the slowest run we measured took 46; 6 to 9 cents with web research.
+  Recorded example: dachser.de, tier A in 23 s for $0.09, 0 of 6 quotes thrown out, German call opener.
 - Lead list of 40 real UK cold-chain companies (scored earlier with gpt-oss-120b at default reasoning):
   121 quotes checked, 4 thrown out.
 
@@ -98,7 +98,7 @@ You describe your product and your ideal customer profile (or pick one of three 
 1. Research: Tavily searches the live web and reads the company's site. Every source keeps its URL, which is what makes a quote checkable.
 2. Score: GLM-5.3-Flash judges each criterion and must hand over a word-for-word quote. It is small and cheap, and code checks it anyway.
 3. Plan: Kimi-K3 picks the role to address, one hook, the channel and what not to say. For German companies it recommends a phone call with a specific reason or a letter, because cold email and LinkedIn messages need prior consent there.
-4. Draft: GLM-5.3 writes a short first email in the customer's language.
+4. Draft: GLM-5.3 writes a short first draft for the channel the plan chose (email, letter text or call opener) in the customer's language.
 
 All model calls go through Nebius Token Factory. Each step shows its model, seconds, tokens and cost, and each step gets a second try or a fallback model if the first answer is unusable.
 
@@ -108,7 +108,7 @@ The agent drafts, a person decides. The app cannot send.</pre></div>
 
 <div class="field"><h3>Problem / who is it for <button data-copy="f-prob">Copy</button></h3><pre id="f-prob">SDRs and founders doing outbound. Today they open ten tabs per company, skim, guess the fit and write from memory. Lead lists are full of look-alikes that are not buyers, and AI research sounds confident but cannot be checked: in our test, one open model had 29% of its proposed quotes thrown out because they were not in the source.</pre></div>
 
-<div class="field"><h3>What gets better <button data-copy="f-better">Copy</button></h3><pre id="f-better">One input instead of ten tabs, and about 20 seconds instead of a research session. Every reason for the verdict can be checked with one click before anyone writes to the company. Companies that do not fit are stopped before the draft: the agent says "do not contact" and shows why, or "not enough evidence" and names what to check.</pre></div>
+<div class="field"><h3>What gets better <button data-copy="f-better">Copy</button></h3><pre id="f-better">One input instead of ten tabs, and usually 15 to 25 seconds instead of a research session. Every reason for the verdict can be checked with one click before anyone writes to the company. Companies that do not fit are stopped before the draft: the agent says "do not contact" and shows why, or "not enough evidence" and names what to check.</pre></div>
 
 <div class="field"><h3>Limits <button data-copy="f-limits">Copy</button></h3><pre id="f-limits">Built entirely on 20 Nov 2026 at the event; nothing existed before. The app sends nothing: no sending, no CRM write-back, no contact finding. The lead-list page uses a stored snapshot of 40 UK companies, not a live feed. The filter that drops sentences naming people is a heuristic, not a guarantee. The quote check proves a sentence is in the source, not that the source is right; plan and draft are only checked for valid source references. Company size is rarely on the web, so many companies land on B or "not enough evidence". With the UK cold-chain profile most other companies correctly land on tier C; change the profile to test your own case. Three profile presets are one click away. Consent for cold email is flagged, not checked. Not legal advice.</pre></div>
 
@@ -123,7 +123,7 @@ The agent drafts, a person decides. The app cannot send.</pre></div>
 <blockquote>This is ICP Qualifier. I type one company. Tavily researches it on the live web. Then three open models on Nebius Token Factory do three jobs. GLM 5.3 Flash scores, because it is cheap and our code checks it anyway. Kimi K3 plans, because that step needs judgement. GLM 5.3 writes the draft.</blockquote>
 <blockquote>The rule is simple: no quote, no claim. Every verdict needs a word-for-word quote from the source. Code checks it. If it is not there, it is thrown out, and you can try to fool the check yourself.</blockquote>
 <blockquote>We measured it on twelve real companies. GLM Flash: three percent of quotes thrown out. GPT OSS 120b: twenty-nine percent. So we took GLM Flash.</blockquote>
-<blockquote>One company takes about twenty seconds and a few cents. The agent drafts. A person decides. Nothing is sent.</blockquote>
+<blockquote>One company usually takes fifteen to twenty-five seconds and a few cents. The agent drafts. A person decides. Nothing is sent.</blockquote>
 <blockquote>Now give me a company, with its domain.</blockquote>
 </main>
 <script>

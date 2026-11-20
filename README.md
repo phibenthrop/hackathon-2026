@@ -1,7 +1,7 @@
 # ICP Qualifier
 
 > Type any company. An agent researches it on the live web, scores it against your ideal customer
-> profile with verbatim quotes, plans the outreach and drafts a first email. A person decides what goes out.
+> profile with verbatim quotes, plans the outreach and drafts the first message for the recommended channel. A person decides what goes out.
 
 ## Try it in one minute
 
@@ -18,16 +18,16 @@ No key? The page replays a recorded run and says so (`data/live_example.json`, w
 An SDR or founder doing outbound. Before: ten tabs per company, a guess, an email written from memory.
 After: one input, a verdict with quotes that can be checked in one click, and a draft that opens with
 one sourced fact. Companies that do not fit are stopped before anyone writes to them.
-Time and cost per company: about 20 seconds and 6 to 9 cents with web research (totals line of each run; measured per run, not a benchmark).
-Recorded example (`data/live_example.json`, dachser.de, European logistics profile): Tier A in 16 s for $0.09
-(model calls $0.054 plus 4 Tavily credits), 0 of 6 quotes rejected, German draft of 48 words.
+Time and cost per company: usually 15 to 25 seconds; the slowest run we measured took 46; 6 to 9 cents with web research (totals line of each run; measured per run, not a benchmark).
+Recorded example (`data/live_example.json`, dachser.de, European logistics profile): Tier A in 23 s for $0.09
+(model calls $0.057 plus 4 Tavily credits), 0 of 6 quotes rejected, phone recommended, German call opener of 52 words.
 
 ## Which model does which step, and why (summary)
 
 | Step | Model | Why |
 |---|---|---|
 | Research | Tavily search + extract | Live web, every source keeps its URL |
-| Score | `zai-org/GLM-5.3-Flash` | Many calls, JSON out, code checks every quote: pay for speed |
+| Score | `zai-org/GLM-5.3-Flash` | One call per company, JSON out, code checks every quote: pay for speed |
 | Plan | `moonshotai/Kimi-K3` | One call per company, judgement matters: pay for reasoning |
 | Write | `zai-org/GLM-5.3` | Natural voice in the customer's language |
 
@@ -243,7 +243,7 @@ set -a; . /path/to/your.env; set +a     # NEBIUS_API_KEY and TAVILY_API_KEY
 uv run uvicorn app.main:app --host 127.0.0.1 --port 8765
 ```
 
-Open <http://127.0.0.1:8765/live>, type a domain (for example `chillspeed.co.uk`, `stef.com`, or a German company such as `nagel-group.com`) and press **Check this company**. Without keys the page plays the recorded run, if `data/live_example.json` exists. Tests: `uv run pytest -q` (no network).
+Open <http://127.0.0.1:8765/live>, type a domain (for example dachser.de with the profile "European logistics groups", or edwards-transport.com and chillway.co.uk with the UK cold-chain profile) and press **Check this company**. Without keys the page plays the recorded run, if `data/live_example.json` exists. Tests: `uv run pytest -q` (no network).
 
 ## Next step
 

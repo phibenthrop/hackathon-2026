@@ -96,8 +96,8 @@ function renderScore(r) {
     if (f.discarded_quote) ev = `<span class="flag">quote discarded: not found verbatim in the fetched text</span><div class="discarded">${esc(f.discarded_quote)}</div>`;
     return `<tr><td>${esc(f.label)}</td><td><span class="status st-${f.status}">${f.status.replace("_", " ")}</span><div class="reason">${esc(f.reason)}</div></td><td>${ev}</td></tr>`;
   }).join("");
-  return `<p><span class="tier tier-${r.tier}">${r.tier}</span> score ${r.score} - ${esc(r.summary)}
-    <br><span class="hint">Tier computed by the app from the verified findings, not by the model. Quotes proposed: ${r.proposed}, discarded by the quote gate: ${r.discarded}.</span></p>
+  return `<p><span class="tier tier-${r.tier}">${r.tier}</span> ${esc(r.summary)}
+    <br><span class="hint">Tier computed by the app from the verified findings, not by the model.${r.tier_rule ? " " + esc(r.tier_rule) : ""} Quotes proposed: ${r.proposed}, discarded by the quote gate: ${r.discarded}.</span></p>
     <table class="findings"><thead><tr><th>Criterion</th><th>Verdict</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>
     <div class="live-fool"><strong>Try to fool the gate.</strong> Type a sentence you think is on the site, or one you made up. The same code check that judged the quotes above answers. No model is called.
       <div class="live-actions"><input id="fool" maxlength="300" placeholder="${RECORDED ? "Live runs only: start a live run to try this" : "e.g. a claim the company never made"}" ${RECORDED ? "disabled" : ""}>
@@ -134,9 +134,10 @@ function renderPlan(r) {
 }
 
 // Check line over the draft, computed in the browser: words, questions, sourced facts.
-function draftCheck(body, cited, lang) {
-  const min = lang === "German" ? 40 : 50;  // German compounds: fewer, longer words
-  const max = lang === "German" ? 90 : 110;  // body incl. greeting and sign-off; prompt asks 45-80 / 60-90
+function draftCheck(body, cited, lang, kind) {
+  const call = kind === "call";
+  const min = call ? 20 : lang === "German" ? 40 : 50;  // German compounds: fewer, longer words
+  const max = call ? 65 : lang === "German" ? 90 : 110;  // body incl. greeting and sign-off; prompt asks 45-80 / 60-90
   const plain = body.replace(/\[\d{1,2}\]/g, " ");
   const words = (plain.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu) || []).length;
   const q = (plain.match(/\?/g) || []).length;
@@ -146,27 +147,31 @@ function draftCheck(body, cited, lang) {
   if (words < min) issues.push(`${words} words - too short`);
   if (q === 0) issues.push("no question - add one");
   if (q > 1) issues.push(`${q} questions - cut ${q === 2 ? "one" : q - 1}`);
-  if (facts < 1) issues.push("no sourced fact - add one with [n]");
+  if (facts < 1) issues.push("no sourced fact");
   const line = `${words} words · ${q} question${q === 1 ? "" : "s"} · ${facts} sourced fact${facts === 1 ? "" : "s"}`;
   return `<p class="live-check ${issues.length ? "warn" : "good"}">${line}${issues.length ? " - " + esc(issues.join(", ")) : ""}</p>`;
 }
 
 function renderWrite(r) {
-  const d = r.draft;
+  const d = r.draft, kind = r.kind || "email";
+  $("t-write").textContent = r.title || "Email draft";
+  const chan = r.channel ? `<p class="hint">Channel follows the plan: ${linkRefs(r.channel)}</p>` : "";
   if (!String(d.body || "").trim()) {
-    return `<p class="live-empty">No draft: the agent found no sourced fact to open with. That is the intended behaviour.</p>`;
+    return `${chan}<p class="live-empty">No draft: the agent found no sourced fact to open with. That is the intended behaviour.</p>`;
   }
   const cited = (r.checks && r.checks.cited) || [];
   const srcList = cited.map((n) => SOURCES.find((s) => s.n === n)).filter(Boolean)
     .map((s) => `<li value="${s.n}"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a> <span class="url">${esc(s.url)}</span></li>`).join("");
-  return `<p><strong>Subject:</strong> ${linkRefs(d.subject)}</p>
-    <div id="draftcheck">${draftCheck(d.body, cited, r.language)}</div>
-    <textarea class="draftbox" id="draft">${esc(d.body)}</textarea>
-    <div class="live-preview"><span class="hint">[n] marks are for your review. "Copy without source marks" removes them; the sentence names its source in words.</span><br>${linkRefs(d.body).replace(/\n/g, "<br>")}</div>
-    <p class="draftonly">Draft only — a person decides what goes out.</p>
+  const issues = (r.issues || []).length ? `<p class="flag">Code check after writing${r.rewritten ? " (rewritten once)" : ""}: ${esc(r.issues.join("; "))}. Fix before use.</p>` : "";
+  const subj = d.subject ? `<p><strong>${kind === "letter" ? "Re:" : "Subject:"}</strong> ${esc(d.subject)}</p>` : "";
+  return `${chan}${subj}
+    <div id="draftcheck">${draftCheck(d.body, cited, r.language, kind)}</div>
+    <textarea class="draftbox" id="draft">${esc(d.body)}</textarea>${issues}
+    <p><strong>Based on source${cited.length === 1 ? "" : "s"} ${cited.map((n) => "[" + n + "]").join(", ")}:</strong></p>${srcList ? `<ol class="sources">${srcList}</ol>` : "<p class='hint'>none</p>"}
+    <p class="hint">The text names its source in words; the link above is for your review.</p>
+    <p class="draftonly">${kind === "letter" ? "Draft only, as letter text. Email only after consent. A person decides what goes out." : kind === "call" ? "Draft only, as a call opener. Email only after consent. A person decides what goes out." : "Draft only — a person decides what goes out."}</p>
     <p class="live-legal">Germany: cold email and LinkedIn messages need prior express consent, also in B2B. Other countries differ. Check before you send. Not legal advice.</p>
-    <button id="copy">Copy without source marks</button> <button id="discard">Discard</button>
-    <p><strong>Sources in this draft:</strong></p>${srcList ? `<ol class="sources">${srcList}</ol>` : "<p class='hint'>none</p>"}
+    <button id="copy">Copy draft</button> <button id="discard">Discard</button>
     ${checks(r.checks)}<p class="hint">Language: ${esc(r.language)}. The app sends nothing.</p>`;
 }
 
@@ -198,7 +203,7 @@ function show(m) {
 function wireDraft() {
   if (!$("copy")) return;
   const cited = (RESULTS.write.checks && RESULTS.write.checks.cited) || [];
-  $("draft").addEventListener("input", () => { $("draftcheck").innerHTML = draftCheck($("draft").value, cited, RESULTS.write.language); });
+  $("draft").addEventListener("input", () => { $("draftcheck").innerHTML = draftCheck($("draft").value, cited, RESULTS.write.language, RESULTS.write.kind); });
   $("copy").onclick = async () => {
     const text = $("draft").value.replace(/[ \t]*\[\d{1,2}\]/g, "");
     await navigator.clipboard.writeText(text); $("copy").textContent = "Copied";
@@ -221,7 +226,7 @@ function totals(t, researchMeta) {
 function reset() {
   stopTimer();
   STEPS.forEach((s) => { state(s, "", "waiting"); $("m-" + s).innerHTML = ""; $("o-" + s).innerHTML = ""; delete RESULTS[s]; });
-  SOURCES = []; tierBanner();
+  SOURCES = []; tierBanner(); $("t-write").textContent = "Draft";
   $("totals").hidden = true; $("totals").innerHTML = "";
   document.querySelectorAll(".recorded").forEach((e) => e.remove());
 }
