@@ -4,7 +4,12 @@
 
 Built on 20 Nov 2026 at the AI Builders x commIT Hack Day in Berlin. Track: Go-to-Market.
 
-**All companies, domains and website texts in this repository are fictional.** Domains use the reserved `.example` TLD. No real companies or people are used.
+The app ships two demo datasets, switchable in the header (`?dataset=real|fictional`):
+
+- **real** (default when `data/real/` exists): a snapshot of real UK companies from similarcompanies.ai, pulled on 2026-11-20, with evidence quoted from their public websites. See [Real data](#real-data).
+- **fictional**: invented companies, domains under the reserved `.example` TLD, invented website texts. The tests use it, and it is the fallback when no snapshot exists.
+
+The seller in both datasets, ColdTrace, is fictional. No people's names or contact details are stored.
 
 ---
 
@@ -17,7 +22,7 @@ A lookalike search (for example similarcompanies.ai) returns dozens of companies
 ICP Qualifier sits between the company source and the outbound tool (for example Needle):
 
 1. You name your three best customers. The app derives an ICP from their websites (industry terms, size range, region, buying signals) and shows it as an editable list of criteria.
-2. It fetches similar companies through a `CompanySource` interface (today: a canned demo database answer) and removes existing customers.
+2. It fetches similar companies through a `CompanySource` interface (similarcompanies.ai snapshot, or the fictional demo database) and removes existing customers and seed brands.
 3. The agent reads each candidate's website text and judges every criterion. Each verdict needs a **verbatim quote** plus a **link to the passage**. No quote, no verdict: the criterion shows "no evidence" and the tier drops.
 4. You get a sortable, filterable list with expandable evidence and a CSV export for Needle or your CRM.
 
@@ -80,15 +85,20 @@ Keys come only from the environment. `.env` is git-ignored.
 | `app/scoring.py` | Rule scorer, LLM scorer, evidence gate, tiering, draft openers |
 | `app/evidence.py` | Sentence splitting, quote verification, text-fragment links |
 | `app/llm.py` | Minimal OpenAI-compatible client (stdlib only) |
-| `app/main.py` | FastAPI routes |
+| `app/realdata.py` | `SimilarCompaniesSource` (MCP JSON-RPC, stdlib only), `HttpWebsiteReader` (robots.txt, text extraction, personal-data filter), snapshot loader |
+| `app/main.py` | FastAPI routes, dataset switch |
+| `scripts/pull_real.py` | Pulls the real snapshot once on a machine with a token |
 | `static/` | Plain HTML/CSS/JS front end and `/slides`, no build step |
 | `data/companies.json`, `data/sites/*.txt` | 28 fictional companies (3 best customers, 25 candidates incl. 2 existing customers) |
+| `data/real/` | Real snapshot: `search.json` (raw search results), `companies.json` (3 seeds, 40 candidates), `sites/*.json` (cleaned page texts with their URLs) |
 
 The model never sets the tier: it returns per-criterion verdicts with quotes, the app verifies the quotes and computes the tier.
 
 ### API
 
-- `GET /api/config` - scorer mode, demo customers
+Every route takes an optional `dataset` (`real` or `fictional`; query parameter on GET, body field on POST).
+
+- `GET /api/config` - scorer mode, datasets, source line, demo customers
 - `POST /api/icp` `{"best_customers": ["kaltquell-logistik.example", ...]}` - derived criteria
 - `POST /api/candidates` - similar companies minus existing customers
 - `POST /api/qualify` `{"best_customers": [...], "criteria": [...]}` - tiered results with evidence (both fields optional)
@@ -97,12 +107,29 @@ The model never sets the tier: it returns per-criterion verdicts with quotes, th
 ## Status and limits
 
 - Runs: full flow offline with the rule scorer; LLM scorer is implemented and unit-tested with a fake model, not yet against a live endpoint.
-- Demo stand-ins: the company source (canned answer) and the website reader (local text files).
+- Real dataset: replayed from the stored snapshot; live pulls need a token and run only through `scripts/pull_real.py`. The snapshot has no company size and no similarity score, so neither is shown or scored.
 - Rule scorer limits: keyword and regex matching with simple sentence-level negation; it can be fooled by unusual wording.
+
+## Real data
+
+The real dataset is pulled once on a machine that holds a similarcompanies.ai token and stored in `data/real/`. The app only replays that snapshot, so a public deployment needs no token and makes no calls to similarcompanies.ai or to company websites.
+
+```
+uv run python scripts/pull_real.py search   # find_companies, at most 6 calls in total, paged only by search_id
+uv run python scripts/pull_real.py sites    # fetch public websites: homepage + up to 2 about/product pages
+uv run python scripts/pull_real.py build    # write data/real/companies.json
+uv run python scripts/pull_real.py reclean  # re-apply text cleaning to stored pages, offline
+```
+
+- Token: read at runtime from `SIMILARCOMPANIES_TOKEN`, else from the local Claude Code MCP credentials. It is held in a variable only; it is never printed, logged or written to a file, and there is no token in this repository.
+- Search: three seed companies (small UK temperature-controlled logistics operators) plus a short profile text, limited to Great Britain. Seed brands and side domains are removed and results are deduplicated by registrable domain.
+- Websites: user agent `icp-qualifier-demo/0.1`, robots.txt respected, 8 s timeout. Contact, team, legal, careers, news and review pages are never fetched. Emails, phone numbers, sentences naming people and quoted testimonials are removed from the stored text. Each text keeps its page URL, so evidence links go to the real page with a text fragment.
+- ICP: industry terms are taken from the similarcompanies.ai industry and keyword fields and kept if at least two of the three seed websites use them. similarcompanies.ai returned no profile for the seeds themselves, so the terms are counted on the seed websites.
+- The seeds are examples of the target profile, not actual customers.
 
 ## Next step
 
-Plug the similarcompanies.ai API in behind `CompanySource`, fetch live websites behind `WebsiteReader`, and set the three `LLM_*` variables for an open model on Nebius.
+Run the source and website reader live per request, add a source for company size, and set the three `LLM_*` variables for an open model on Nebius.
 
 ## License
 

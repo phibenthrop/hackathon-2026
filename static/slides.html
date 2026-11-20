@@ -75,20 +75,21 @@
     <div class="arrow">&#8594;</div>
     <div class="box"><strong>Needle / CRM</strong>Runs the outbound campaign from the reviewed lead list. A human decides what is sent.</div>
   </div>
+  <p><strong>Real data path in this demo:</strong> three seed companies &#8594; <code>find_companies</code> on the similarcompanies.ai MCP server (paged only by search id) &#8594; seed brands and duplicate domains removed &#8594; public company websites fetched (robots.txt respected, no contact, team or legal pages, no personal data kept) &#8594; every verdict passes the verbatim-quote check and links to the real page. Pulled once on our box and stored as a snapshot, so the public demo needs no token.</p>
 </section>
 
 <section class="slide">
   <h2>Next steps</h2>
   <ul>
-    <li>Plug in the similarcompanies.ai API behind the existing <code>CompanySource</code> interface.</li>
-    <li>Fetch live websites (respecting robots.txt) instead of the cached demo texts.</li>
+    <li>Run similarcompanies.ai and the website reader live per request instead of the stored snapshot.</li>
+    <li>Get company size from a source that has it; today the real dataset has no size data, so size is not scored.</li>
     <li>Switch the scorer to an open model on Nebius via the OpenAI-compatible endpoint; the quote check stays.</li>
     <li>Hand A-tier leads to a Needle campaign as drafts for human review.</li>
     <li>Learn from won and lost deals to adjust criteria weights.</li>
   </ul>
 </section>
 
-<div class="foot">Arrow keys or click to navigate · <span id="pos"></span> · <a href="/">open the app</a> · all demo companies are fictional</div>
+<div class="foot">Arrow keys or click to navigate · <span id="pos"></span> · <a href="/">open the app</a> · fictional dataset: invented companies · real dataset: similarcompanies.ai snapshot 2026-11-20, quotes from public company websites</div>
 <script>
   const slides = [...document.querySelectorAll(".slide")];
   let i = Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1);
