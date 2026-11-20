@@ -1,0 +1,1733 @@
+{
+ "model": "openai/gpt-oss-120b",
+ "provider": "Nebius Token Factory",
+ "computed": "2026-11-20",
+ "criteria": [
+  "industry",
+  "sector",
+  "region",
+  "sig_expansion"
+ ],
+ "stats": {
+  "companies": 40,
+  "failed": [],
+  "http_calls": 40,
+  "prompt_tokens": 76882,
+  "completion_tokens": 55342,
+  "est_cost_usd": 0.0447,
+  "price_basis_usd_per_1m": [
+   0.15,
+   0.6
+  ],
+  "duration_s": 45.3,
+  "quotes_checked": 121,
+  "quotes_not_verbatim": 4,
+  "verdicts_without_quote": 23
+ },
+ "companies": {
+  "templartransport.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport and distribution services",
+    "quote": "provides temperature controlled distribution throughout the UK.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one indicative term (temperature controlled) is present",
+     "quote": "provides temperature controlled distribution throughout the UK.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions distribution and transport services",
+     "quote": "provides temperature controlled distribution throughout the UK.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "explicitly states operation throughout the UK",
+     "quote": "provides temperature controlled distribution throughout the UK.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "chillxpress.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services",
+    "quote": "we can ensure that any refrigerated goods we transport will reach their destination in the same condition as they left yours.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "uses multiple industry terms",
+     "quote": "Our fleet of trailers offer temperature-controlled transport, delivering ambient, chilled, and frozen food",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions distribution and transport",
+     "quote": "EXPERT DISTRIBUTION IN REFRIGERATED TRANSPORT",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "specifies UK region",
+     "quote": "Based in the Midlands & close to all major Motorway networks",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no evidence of new site or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "247haulageservices.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled distribution and transport services",
+    "quote": "24/7 Haulage Services are an established UK's leading Temperature Controlled distribution service provider, delivering exceptional around the clock services to new and existing clients",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "uses multiple industry terms such as temperature‑controlled, frozen and chilled",
+     "quote": "All our vehicles are dual temperature controlled providing frozen, chilled or ambient services",
+     "page": "/services",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions distribution and transport activities",
+     "quote": "Our fuly insured fleet of specialised vehicles offer a range of SWB-LWB while accommodating temperature controlled shipments ... or transporting items from a simple envelope",
+     "page": "/",
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "states location in Central Scotland between Glasgow and Edinburgh",
+     "quote": "Based in Central Scotland located between Glasgow & Edinburgh",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no mention of new site, warehouse or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "edwards-transport.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "The company operates its own temperature‑controlled transport fleet and chilled storage facilities.",
+    "quote": "Our fleet of over 60 trucks, including milk tankers, tautliners and fridges means we are well-equipped to transport many different items.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "Only one industry term is explicitly shown.",
+     "quote": "Temperature Controlled Storage Warehouse",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Multiple sector terms (transport, distribution, storage) are present.",
+     "quote": "Transport, Distribution & Storage Services",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Company location in Shropshire, UK is stated.",
+     "quote": "Based in Shropshire we are conveniently situated to the road network",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Announcement of a new site opening indicates expansion.",
+     "quote": "Opening of new site in Eccleshall, which specialises in chilled storage",
+     "page": "/about-us/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "broughtontransport.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services for customers",
+    "quote": "Specialising in UK and International transport using temperature controlled transport and ambient transport, with our modern fleet of vehicles we offer chilled, frozen and ambient deliveries across the UK and Europe.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "contains multiple indicative terms (refrigerated, temperature controlled)",
+     "quote": "Our fleet of refrigerated vehicles offer temperature control led deliveries in the U.K. and Europe.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions logistics and transport services",
+     "quote": "We are a family run logistics company in Wiltshire which has established an enviable reputation both locally and internationally for the quality of our haulage transport and pallet transport services.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "company location is stated in the United Kingdom (Wiltshire)",
+     "quote": "We are a family run logistics company in Wiltshire which has established an enviable reputation both locally and internationally for the quality of our haulage transport and pallet transport services.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "no mention of new site, warehouse, or expansion",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "iceotemp.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled transport and storage services",
+    "quote": "Our vehicles are designed specifically for the transportation of temperature-controlled products, for refrigerated transport that goes the extra mile.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms",
+     "quote": "Our vehicles are designed specifically for the transportation of temperature-controlled products, for refrigerated transport that goes the extra mile.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions distribution and storage solutions",
+     "quote": "Our depot in Somerset has a sophisticated storage system.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References many UK locations",
+     "quote": "From London and the South East to Bristol and the South West, Cambridgeshire and the Midlands, right up to Leeds and Manchester in the North.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "No mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "transveg.pl": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates refrigerated transport services directly",
+    "quote": "Our specialty is transport of chilled, frozen and temperature-controlled goods.",
+    "page": "/en/about-us/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms for refrigerated transport",
+     "quote": "Our specialty is transport of chilled, frozen and temperature-controlled goods.",
+     "page": "/en/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions transport services, a logistics sector term",
+     "quote": "We carry out transport services in Western Europe, mainly to Italy, Germany, Austria, Belgium, France, the Netherlands, Spain, Britain and Greece.",
+     "page": "/en/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References Britain as a service region",
+     "quote": "We carry out transport services in Western Europe, mainly to Italy, Germany, Austria, Belgium, France, the Netherlands, Spain, Britain and Greece.",
+     "page": "/en/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Announces fleet growth indicating expansion",
+     "quote": "Transveg fleet becomes bigger",
+     "page": "/en/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "mrct.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services",
+    "quote": "MRCT have been delivering chilled food products since 1969.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one indicative term found in quoted passage",
+     "quote": "From the innovative beginnings of refrigerated containers fixed to flatbed trailers",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions logistics and haulage services",
+     "quote": "MRCT offers nationwise logistics and haulage services",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "registered in England and Wales",
+     "quote": "Registered in England and Wales.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no evidence of new site or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "transkold.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates its own refrigerated transport and cold storage services.",
+    "quote": "Dedicated fleet to undertake food deliveries in and around the London area.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms such as cold storage and refrigerated transport.",
+     "quote": "Refrigerated Transport and distribution services",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions transport, distribution and storage services.",
+     "quote": "Refrigerated Transport and distribution services",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References locations in London, UK.",
+     "quote": "We are the closest Cold Store to Central London",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Announces a build program to increase facility size.",
+     "quote": "We are currently undertaking a build program to increase this square footage to 10,000 sqft of modern serviced offices.",
+     "page": "/about-us/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "readyfrt.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services",
+    "quote": "Ready Freight Ltd is a well established haulage company specialising in ambient, temperature‑controlled transport, container services and traction‑only solutions.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one indicative term (temperature‑controlled) is present",
+     "quote": "Ambient & Temperature controlled Transport",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "both transport and logistics terms are used",
+     "quote": "Our company’s commitment to punctuality, health and safety, and cargo security positions us as the perfect partner for your transportation and logistics demands.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "explicitly states operation throughout the UK",
+     "quote": "At Ready Freight, we specialise in short sea and deep sea container transportation throughout the UK",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "partial",
+     "reason": "mentions service expansion but no new site or capacity",
+     "quote": "Since then, we’ve expanded our services to include temperature‑controlled and ambient transport, as well as traction‑only solutions.",
+     "page": "/about-us/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "polarinternational.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled transport and storage services",
+    "quote": "Polar International provide a Freight Transport and Logistics Service throughout Ireland, the UK and Europe.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms (Chilled, Frozen)",
+     "quote": "Ambient / Chilled / Frozen transport",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics and transport services",
+     "quote": "Polar International provide a Freight Transport and Logistics Service throughout Ireland, the UK and Europe.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Specifies operation in the United Kingdom",
+     "quote": "Polar International provide a Freight Transport and Logistics Service throughout Ireland, the UK and Europe.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "No mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "tsctransportltd.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled distribution services for customers",
+    "quote": "In addition to road transport, we excel in temperature-controlled distribution. Our state-of-the-art facilities and specialized vehicles ensure the safe and precise transportation of goods requiring specific temperature conditions.",
+    "page": "/about-us/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "uses multiple industry terms for refrigerated transport",
+     "quote": "From pharmaceuticals to perishables, we understand the importance of temperature-controlled environments, providing a seamless cold chain to safeguard the integrity of your goods throughout their journey.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions logistics and transport sector terms",
+     "quote": "Profesional haulage and logistics services",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "explicitly references the United Kingdom",
+     "quote": "Reliable UK & European Transport",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "no mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "chillway.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport for customers",
+    "quote": "Chillway Express Specials Ltd is a UK-based, transport-only logistics provider specialising in the controlled movement of ambient, chilled, and frozen goods.",
+    "page": "/about-us/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "uses multiple industry terms",
+     "quote": "Reliable, compliant transport solutions for ambient, chilled and frozen goods.",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions logistics and transport",
+     "quote": "transport-only logistics provider",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "states UK location",
+     "quote": "UK-based",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "no mention of expansion or new site",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "stef.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled transport and warehousing services for customers",
+    "quote": "Deliver your fresh and frozen goods across the UK with ease. Our dual-temperature-controlled trailers and real-time tracking provide reliability and transparency every step of the way.",
+    "page": "/united-kingdom/long-lane-deliveries-has-joined-the-stef-group",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "Only one industry term explicitly found",
+     "quote": "Our dual-temperature-controlled trailers and real-time tracking provide reliability and transparency every step of the way.",
+     "page": "/united-kingdom/long-lane-deliveries-has-joined-the-stef-group",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions both transport and logistics services",
+     "quote": "By joining the STEF Group, Langdons has strengthened its ability to provide exceptional temperature-controlled transport and logistics services across the UK and Europe.",
+     "page": "/united-kingdom/who-we-are/stef-and-langdons",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Lists multiple UK locations",
+     "quote": "Our depot network allows us to support businesses in small villages and big cities, including London, Essex, Kent, Surrey, Oxford, Northamptonshire, Milton Keynes, Reading, Slough, Watford and Stevenage, and beyond.",
+     "page": "/united-kingdom/who-we-help/foodservice-distribution",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No explicit mention of new site, warehouse or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "frosttransportsolutions.co.uk": {
+   "fit": {
+    "verdict": "other",
+    "reason": "operates transport services but no indication of temperature‑controlled operations",
+    "quote": "We are a nationwide transport / logistics provider based in Bingham, Nottinghamshire.",
+    "page": "/about-us/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "no temperature‑controlled or cold‑storage terms found",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "contains logistics and transport terms",
+     "quote": "We are a nationwide transport / logistics provider based in Bingham, Nottinghamshire.",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "mentions UK and Nottinghamshire locations",
+     "quote": "Based centrally in the UK we run our haulage operations from Nottinghamshire, allowing us to travel nationwide to ensure no location is out of reach.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "states fleet is constantly expanding",
+     "quote": "A fleet that is constantly expanding, and transport services that continue to improve so that the local region around Nottinghamshire and the surrounding counties is even better served.",
+     "page": "/about-us/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "fly-transport.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "The company operates temperature‑controlled transport services for customers.",
+    "quote": "With our extensive fleet of tautliners and temperature-controlled trailers, we handle a wide range of cargo—from chilled and frozen goods to products requiring ambient conditions.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple indicative terms for refrigerated/temperature‑controlled transport.",
+     "quote": "With our extensive fleet of tautliners and temperature-controlled trailers, we handle a wide range of cargo—from chilled and frozen goods to products requiring ambient conditions.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics and transport terminology.",
+     "quote": "When you partner with FLY Transport Ltd, you gain more than a carrier—you gain a logistics ally committed to your success.",
+     "page": "/services",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Specifies operation throughout the United Kingdom.",
+     "quote": "operate throughout the UK to move your cargo efficiently from port to destination.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "No mention of new site, warehouse, or expansion activity.",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "turners-distribution.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport and storage services",
+    "quote": "Specialists operations include:\nTemperature controlled transport and bulk storage.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "uses multiple industry terms for refrigerated transport and storage",
+     "quote": "Temperature controlled transport and bulk storage.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions logistics and transport sector terms",
+     "quote": "one of the largest and most successful privately owned Transport companies in the United Kingdom",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "explicitly references United Kingdom",
+     "quote": "one of the largest and most successful privately owned Transport companies in the United Kingdom",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "describes a completed site development phase indicating expansion",
+     "quote": "Phase 6 of our site development was completed in November 2009.",
+     "page": "/index.php/home/about-us.html",
+     "quote_verified": true
+    }
+   ]
+  },
+  "runitcool.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled transport services for customers",
+    "quote": "Run It Cool offers reliable refrigerated delivery services, delivering chilled and frozen food and drink products across the UK.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms (refrigerated, chilled, frozen)",
+     "quote": "Run It Cool offers reliable refrigerated delivery services, delivering chilled and frozen food and drink products across the UK.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics sector",
+     "quote": "Run It Cool are experts in temperature-controlled logistics.",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Specifies UK regions (Scotland, England, UK)",
+     "quote": "Our network currently includes 3 depots in Scotland and England, which allows us to easily provide our chilled delivery service and frozen courier service across the UK.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No evidence of new site, warehouse or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "sandlfastrack.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates refrigerated transport vehicles for customers",
+    "quote": "Our refrigerated transport vehicles are able to transport food, metal, pharmaceuticals, samples, ice sculptures and even flowers.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one indicative term (refrigerated transport) is present",
+     "quote": "Our refrigerated transport vehicles are able to transport food, metal, pharmaceuticals, samples, ice sculptures and even flowers.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "contains logistics and transport related terms",
+     "quote": "Our team is full of experienced logistics members and drivers who know the area like the back of their hand.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "no_evidence",
+     "reason": "no UK location mentioned in the text",
+     "quote": null,
+     "page": null
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no mention of new site, expansion or additional capacity",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "abslogistics.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates refrigerated transport services",
+    "quote": "We specialise in refrigerated and containerised transport.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one industry term (refrigerated) found",
+     "quote": "We specialise in refrigerated and containerised transport.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "partial",
+     "reason": "only one sector term (transport) found",
+     "quote": "We specialise in refrigerated and containerised transport.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "company location and operation area are in the UK",
+     "quote": "ABS SOUTHERN LOGISTICS LTD are based in Portsmouth, we operate throughout the UK and Europe delivering varied loads, from waste paper to champagne!",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no mention of new site, warehouse, or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "jhptransport.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates refrigerated transport, chilled and frozen logistics and warehousing",
+    "quote": "Our expertise in transporting chilled, ambient & frozen goods put us in the forefront of refrigerated transport",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "contains multiple industry terms",
+     "quote": "Our expertise in transporting chilled, ambient & frozen goods put us in the forefront of refrigerated transport",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions logistics, transport and storage terms",
+     "quote": "JHP Transport have been successfully providing warehousing and distribution services along with road haulage solutions",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "references UK locations",
+     "quote": "Based just outside Glasgow and situated with easy access to all major transportation routes",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "hitrans.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled haulage for chilled and frozen goods",
+    "quote": "We provide transport for ambient, frozen and chilled products throughout England.",
+    "page": "/services/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "No indicative terms such as \"refrigerated transport\" or \"cold storage\" appear in the text",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Uses multiple sector terms like \"Logistic\" and \"transport\"",
+     "quote": "HI Transport is a young and energetic Logistic company that seeks to offer a fun and personable transport experience.",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Mentions operating throughout England and the UK",
+     "quote": "We provide transport for ambient, frozen and chilled products throughout England.",
+     "page": "/services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "No mention of new warehouse, site, hub or expansion",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "mamtransport.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates refrigerated transport services",
+    "quote": "For all your major projects, we can supply you with refrigerated trailers, tautliners, mega trailers, maxi trailers and box vans.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "only one indicative term (refrigerated) is present",
+     "quote": "For all your major projects, we can supply you with refrigerated trailers, tautliners, mega trailers, maxi trailers and box vans.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "contains multiple sector terms",
+     "quote": "Our experienced team of managers, drivers, and administrative staff combine their efforts to provide you with efficient, economic logistical solutions.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "mentions United Kingdom as operating area",
+     "quote": "Our vehicles are on the move 24 hours a day, 7 days a week, so we attach great importance on the presentation of our equipment, our drivers and our base depots. ... across all sectors of industry and commerce, in the United Kingdom and Europe.",
+     "page": "/",
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no evidence of new site, warehouse or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "arcticcouriers.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services",
+    "quote": "Our modern, purpose equipped fleet provides reliable temperature-controlled transport, with the flexibility to handle both chilled and heated deliveries.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "uses multiple industry terms (temperature‑controlled transport, chilled)",
+     "quote": "Our modern, purpose equipped fleet provides reliable temperature-controlled transport, with the flexibility to handle both chilled and heated deliveries.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "mentions transport as a logistics activity",
+     "quote": "Our modern, purpose equipped fleet provides reliable temperature-controlled transport, with the flexibility to handle both chilled and heated deliveries.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "states location in Newcastle upon Tyne, UK",
+     "quote": "Based in Newcastle upon Tyne, Arctic Couriers provides reliable same-day and urgent deliveries for businesses across the North East and beyond.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "agmchilleddistribution.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services",
+    "quote": "Using a modern fleet of fixed body vehicles ranging from 7.5 tonne to 26 tonne, we can carry loads ranging through frozen, chilled or ambient, with some vehicles having the option to carry a combination of temperature controlled and ambient products.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one industry term (temperature controlled) appears",
+     "quote": "some vehicles having the option to carry a combination of temperature controlled and ambient products.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "no_evidence",
+     "reason": "sector terms such as logistics, transport, distribution not mentioned",
+     "quote": null,
+     "page": null
+    },
+    {
+     "criterion_id": "region",
+     "status": "no_evidence",
+     "reason": "no specific UK region mentioned",
+     "quote": null,
+     "page": null
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "no expansion signal found",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "gah.co.uk": {
+   "fit": {
+    "verdict": "manufacturer",
+    "reason": "The company designs, manufactures and maintains refrigeration systems for vans and trucks.",
+    "quote": "We design, manufacture and maintain refrigeration systems for vans and 3.5 to 18 tonne chassis cabs for any size of company whether that is for a single refrigerated van or a fleet of vehicles.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "Only one industry term (cold chain distribution) is present; a second term is missing.",
+     "quote": "cold chain distribution fleets",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Both transport and distribution terms are mentioned.",
+     "quote": "transport refrigeration systems",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Company location in the United Kingdom is stated.",
+     "quote": "Built In Britain",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No mention of new site, warehouse, or expansion.",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "manfreight.eu": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Manfreight operates temperature‑controlled transport, logistics and storage services for its customers.",
+    "quote": "Manfreight provide efficient, flexible logistics solutions with high levels of client care to the food and beverage sector. Working within their customers’ supply chains, Manfreight provide seamless temperature controlled logistics solutions, handling and storing food goods safely and according to best practice on behalf of their clients.",
+    "page": "/about",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Multiple industry terms such as chilled, frozen and temperature‑controlled are used.",
+     "quote": "With extensive sector specific experience of ambient, chilled and frozen foods.",
+     "page": "/about",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics, transport and storage solutions.",
+     "quote": "Manfreight services include Irish, UK and European transport, logistics and food grade logistics solutions.",
+     "page": "/about",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References locations across the United Kingdom.",
+     "quote": "strategically located sites throughout Ireland and the UK",
+     "page": "/about",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Announces investment in a new hub and a new depot.",
+     "quote": "In recent times, we have invested close on £1m in our County Armagh hub, while a new depot in Lancashire will enable us to enhance our service and support to customers throughout the UK.",
+     "page": "/about",
+     "quote_verified": true
+    }
+   ]
+  },
+  "mgstransport.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "The company operates its own chilled, frozen and ambient goods transport services.",
+    "quote": "MGS Transport Services: Helping you deliver your chilled, frozen & ambient goods across the UK and Europe",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms such as frozen, chilled and temperature‑controlled.",
+     "quote": "We specialise in frozen, chilled & ambient goods transportation.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions transport and distribution services, which are logistics sector activities.",
+     "quote": "MGS Transport Services specialises in providing our customers with transportation and distribution services.",
+     "page": "/services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References operating across the United Kingdom and specific UK nations.",
+     "quote": "MGS Transport Services: Helping you deliver your chilled, frozen & ambient goods across the UK and Europe",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "No mention of new sites, warehouses or expansion activities.",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "brianclosetransport.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport and storage for customers",
+    "quote": "Offering a dedicated service throughout Great Britain and Ireland, all fridges are multi‑temp ensuring we can meet every customer’s needs.",
+    "page": "/our-services/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "no explicit industry terms found",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "includes transport and distribution terminology",
+     "quote": "Dry Freight Transport",
+     "page": "/our-services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "mentions location in the United Kingdom",
+     "quote": "Now boasting over 15 employees, we are conveniently located in Enkalon Industrial Estate, Antrim almost equidistant from the ports of Belfast and Larne.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "states ongoing expansion and fleet growth",
+     "quote": "Continued expansion and exploration of more haulage options both in NI and in GB meant that 6 new units were purchased between 2013 and 2014 with a further 2 arriving in 2015",
+     "page": "/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "kcharleshaulage.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled haulage services for customers",
+    "quote": "Through temperature-controlled haulage, we support food producers, beverage suppliers, pharmaceutical companies, and cold-chain distributors that require chilled or frozen transport with consistent temperature control throughout the journey.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple temperature‑controlled transport terms",
+     "quote": "Through temperature-controlled haulage, we support food producers, beverage suppliers, pharmaceutical companies, and cold-chain distributors that require chilled or frozen transport with consistent temperature control throughout the journey.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics as core activity",
+     "quote": "Our streamlined logistics systems allow us to plan routes efficiently, monitor shipments, and maintain full accountability throughout the process.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Based in a UK county and serves the United Kingdom",
+     "quote": "Based in Aylesford, Kent, we operate with a modern fleet and a highly experienced team committed to safe, efficient, and punctual transportation.",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "States that the fleet has been expanded",
+     "quote": "Starting as a small operation, we steadily expanded our fleet and capability, building a reputation for flexibility and responsiveness.",
+     "page": "/about-us/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "goodalltransport.co.uk": {
+   "fit": {
+    "verdict": "other",
+    "reason": "Provides haulage and storage services but does not operate refrigerated transport",
+    "quote": "Your Trusted Haulage and Storage Partner",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "No refrigerated or temperature‑controlled terms are mentioned",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions haulage (transport) and storage",
+     "quote": "Your Trusted Haulage and Storage Partner",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Specifies location in West Yorkshire, UK",
+     "quote": "Based in Sowerby Bridge, West Yorkshire",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No mention of new site, warehouse or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "chillspeed.co.uk": {
+   "fit": {
+    "verdict": "spam",
+    "reason": "Website content is about gambling sites, not temperature‑controlled transport",
+    "quote": "Bookies Not On Gamstop",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "no_evidence",
+     "reason": "No mention of refrigerated transport or cold storage",
+     "quote": null,
+     "page": null
+    },
+    {
+     "criterion_id": "sector",
+     "status": "no_evidence",
+     "reason": "No mention of logistics, transport or storage solutions",
+     "quote": null,
+     "page": null
+    },
+    {
+     "criterion_id": "region",
+     "status": "no_evidence",
+     "reason": "No location information related to the UK",
+     "quote": null,
+     "page": null
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "no_evidence",
+     "reason": "No signal of new site or capacity expansion",
+     "quote": null,
+     "page": null
+    }
+   ]
+  },
+  "caspianrolimited.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "operates temperature‑controlled transport services",
+    "quote": "including full and part loads, express deliveries, and temperature-controlled transport.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "only one industry term (temperature‑controlled transport) is present",
+     "quote": "including full and part loads, express deliveries, and temperature-controlled transport.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "sector term 'logistics' appears",
+     "quote": "leave the transportation logistics to us.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "mentions UK region and specific county",
+     "quote": "Based in Lincolnshire, serving the UK",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "no evidence of new site, warehouse or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "transportservicesuk.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled transport services with its own fleet",
+    "quote": "Whether you need a Curtain Side, Box, Temperature Controlled, or Flat Bed Trailer we have you covered.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms for refrigerated/frozen transport",
+     "quote": "Refrigerated and Frozen Goods",
+     "page": "/services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics and transport services",
+     "quote": "Your Solution to Seamless Logistics and Supply Chain Management",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References multiple UK locations",
+     "quote": "From strategic locations across the UK, including Felixstowe, Tilbury, Southampton, London Gateway, Grangemouth, Greenock and Wakefield",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "tcsandd.com": {
+   "fit": {
+    "verdict": "publisher",
+    "reason": "The site describes TCS&D as a magazine covering temperature‑controlled logistics.",
+    "quote": "TCS&D magazine – the tried and tested impartial magazine.",
+    "page": "/about/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms such as \"Temperature Controlled\" and \"cold storage\".",
+     "quote": "Temperature Controlled Storage and Distribution (TCS&D)",
+     "page": "/about/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics‑related activities like storage, distribution and multi‑modal operations.",
+     "quote": "cold and chill storage, primary and local distribution, truck and trailer rental, inter – and multi-modal operations",
+     "page": "/about/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References UK locations such as Birmingham and Yorkshire.",
+     "quote": "The UK’s premier event for the cold chain returns to the NEC, Birmingham",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Announces a new consolidation centre, indicating site expansion.",
+     "quote": "Culina Groups – CML – support Aldi and Lidl market growth with new Lutterworth Consolidation Centre",
+     "page": "/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "on-timelogistics.co.uk": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates chilled and ambient distribution services for customers",
+    "quote": "Our core services consist of container transport, chilled and ambient distribution built up over many years",
+    "page": "/our-services/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms such as chilled, ambient and temperature controlled",
+     "quote": "Our core services consist of container transport, chilled and ambient distribution built up over many years",
+     "page": "/our-services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics and transport services",
+     "quote": "Transport & Logistics Services",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Specifies UK location and operation area",
+     "quote": "Based in Kent, we’ve been around for more than 16 years and operate out of all the main ports throughout the United Kingdom.",
+     "page": "/about-us/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No mention of new site, warehouse or expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "cc-refrigeration.co.uk": {
+   "fit": {
+    "verdict": "supplier",
+    "reason": "Provides transport refrigeration services rather than operating transport itself",
+    "quote": "CC Refrigeration Ltd has been a trusted provider of transport refrigeration services for over 20 years.",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "Only one industry term appears in the quoted text",
+     "quote": "Maintaining your refrigerated transportation is the ideal way to avoid interruptions to your products and services.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Sector term present",
+     "quote": "We understand the 24 hour business of logistics that mean unforeseen problems.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "UK location stated",
+     "quote": "Sutton-in-Ashfield NG17 9BX, UK",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No expansion signal found on the site",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  },
+  "dhdtransport.com": {
+   "fit": {
+    "verdict": "candidate",
+    "reason": "Operates temperature‑controlled transport services directly for customers",
+    "quote": "TEMPERATURE CONTROLLED & AMBIENT TRANSPORT SERVICES - SCHEDULED & UNSCHEDULED",
+    "page": "/",
+    "quote_verified": false
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "met",
+     "reason": "Uses multiple industry terms such as temperature‑controlled and refrigerated",
+     "quote": "TEMPERATURE CONTROLLED DELIVERY SERVICE | REFRIGERATED DELIVERY SERVICE UK",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions logistics and transport services",
+     "quote": "LOGISTICS PARTNER | B2B LOGISTICS SOLUTIONS",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "States coverage across the United Kingdom",
+     "quote": "Yes, we deliver all over the UK.",
+     "page": "/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Indicates expansion of service offering",
+     "quote": "We expanded our offering beyond cold-chain logistics to include reliable, professional, same‑day delivery services, all backed by the same values: speed, transparency, and care.",
+     "page": "/about-us/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "thermo-king.co.uk": {
+   "fit": {
+    "verdict": "supplier",
+    "reason": "Provides sales, installation and service of refrigeration units to transport fleet operators, not operating transport itself.",
+    "quote": "Thermo King UK ... is the UK’s largest independent commercial vehicle service organisation, keeping customers across the distribution industry on the road by providing nationwide sales, installation, service, and parts support.",
+    "page": "/about/",
+    "quote_verified": false
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "partial",
+     "reason": "Only one industry term explicitly mentioned",
+     "quote": "We provide transport fleets around the UK with sales and installation for a comprehensive range of ... refrigerated transport systems and products",
+     "page": "/products/",
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Mentions distribution industry",
+     "quote": "keeping customers across the distribution industry on the road",
+     "page": "/about/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "References United Kingdom and UK",
+     "quote": "our team of over 200 mobile engineers offers ... across the UK",
+     "page": "/",
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "met",
+     "reason": "Announces new service locations",
+     "quote": "Thermo King UK has expanded with 3 new service locations",
+     "page": "/",
+     "quote_verified": true
+    }
+   ]
+  },
+  "rogerstransport.co.uk": {
+   "fit": {
+    "verdict": "other",
+    "reason": "Company does not operate temperature‑controlled transport, distribution or cold storage",
+    "quote": "Specialised Transport services covering the UK",
+    "page": "/",
+    "quote_verified": true
+   },
+   "findings": [
+    {
+     "criterion_id": "industry",
+     "status": "not_met",
+     "reason": "No refrigerated or temperature‑controlled terms found",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    },
+    {
+     "criterion_id": "sector",
+     "status": "met",
+     "reason": "Website mentions transport and logistical services",
+     "quote": "At Rogers Transport our experience guarantees you peace of mind that your logistical requirements are in safe hands!",
+     "page": "/services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "region",
+     "status": "met",
+     "reason": "Mentions United Kingdom and depot locations across the country",
+     "quote": "We have 120 depot locations across the United Kingdom and work with a range of clients offering reliable next day pallet deliveries.",
+     "page": "/services/",
+     "quote_verified": true
+    },
+    {
+     "criterion_id": "sig_expansion",
+     "status": "not_met",
+     "reason": "No mention of new warehouse, site, hub or capacity expansion",
+     "quote": null,
+     "page": null,
+     "quote_verified": false
+    }
+   ]
+  }
+ }
+}

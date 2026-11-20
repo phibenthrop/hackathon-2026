@@ -60,8 +60,14 @@ def find_sizes(site: Website) -> list[tuple[str, str, int]]:
     return out
 
 
+# typographic variants models emit for plain characters (gpt-oss writes U+2011 for "-")
+_TYPO = str.maketrans({"\u2019": "'", "\u2018": "'", "\u201c": '"', "\u201d": '"', "\u2010": "-",
+                       "\u2011": "-", "\u2012": "-", "\u2013": "-", "\u2212": "-", "\u00a0": " ",
+                       "\u202f": " "})
+
+
 def collapse_ws(s: str) -> str:
-    s = s.replace("’", "'").replace("“", '"').replace("”", '"')
+    s = s.translate(_TYPO)
     return re.sub(r"\s+", " ", s).strip()
 
 

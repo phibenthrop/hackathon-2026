@@ -88,7 +88,7 @@ def main_(argv: list[str] | None = None) -> int:
         results = [first] + list(ex.map(one, keep_rest))
     duration = time.monotonic() - t0
 
-    out, calls, pt, ct, failed, discarded, checked = {}, 0, 0, 0, [], 0, 0
+    out, calls, pt, ct, failed, discarded, checked, unquoted = {}, 0, 0, 0, [], 0, 0, 0
     for company, site, raw, usage, _secs in results:
         calls += usage.calls
         pt += usage.prompt_tokens
@@ -106,8 +106,7 @@ def main_(argv: list[str] | None = None) -> int:
                 rec["quote_verified"] = verify_quote(site, rec["quote"], rec["page"]) is not None
                 discarded += not rec["quote_verified"]
             elif rec["status"] != "no_evidence":
-                checked += 1
-                discarded += 1
+                unquoted += 1  # a verdict without a quote: the gate turns it into no_evidence
                 rec["quote_verified"] = False
             findings.append(rec)
         fit = raw.get("fit") if isinstance(raw.get("fit"), dict) else None
@@ -130,7 +129,8 @@ def main_(argv: list[str] | None = None) -> int:
         "stats": {"companies": len(keep), "failed": failed, "http_calls": calls,
                   "prompt_tokens": pt, "completion_tokens": ct, "est_cost_usd": cost,
                   "price_basis_usd_per_1m": [pin, pout], "duration_s": round(duration, 1),
-                  "quotes_checked": checked, "quotes_not_verbatim": discarded},
+                  "quotes_checked": checked, "quotes_not_verbatim": discarded,
+                  "verdicts_without_quote": unquoted},
         "companies": out,
     }
     Path(a.out).write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

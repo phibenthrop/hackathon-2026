@@ -131,6 +131,8 @@ Use ONLY the website text you are given.
    A signal counts only if the company itself shows it (e.g. moving a customer's goods to a new location is not expansion).
 
 Every quote must be copied exactly from one page, without changes, ellipses or merged sentences.
+Keep each quote short (one sentence or one line, 6 to 25 words); a line break in the text ends the quote.
+Use plain ASCII hyphens and quotes as in the text. A verdict other than "no_evidence" needs a quote.
 Reply with JSON only:
 {{"fit": {{"verdict": "...", "reason": "...", "quote": "...", "page": "..."}},
  "findings": [{{"criterion_id": "...", "status": "...", "reason": "...", "quote": "...", "page": "..."}}]}}"""

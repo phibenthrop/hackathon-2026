@@ -133,3 +133,9 @@ def test_no_api_key_in_tracked_files():
         p = ROOT / f
         if p.is_file() and p.suffix in {".py", ".json", ".md", ".html", ".js", ".toml", ".txt", ".example", ""}:
             assert not pat.search(p.read_text(encoding="utf-8", errors="ignore")), f
+
+
+def test_gate_normalizes_typographic_hyphens_but_not_words():
+    # gpt-oss writes U+2011 (non-breaking hyphen) where the page has "-"
+    assert collapse_ws("temperature‑controlled vans") == collapse_ws("temperature-controlled vans")
+    assert collapse_ws("temperature controlled") != collapse_ws("temperature-controlled")
