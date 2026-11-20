@@ -249,23 +249,59 @@ MIT, see `LICENSE`.
 
 ## Otari variant
 
-Branch `otari` only; `main` is unchanged. With `LLM_GATEWAY=otari` every model call goes
+On branch `otari` only (`main` is unchanged), one switch, `LLM_GATEWAY=otari`, sends every model call
 through a self-hosted [Mozilla Otari](https://github.com/mozilla-ai/otari) gateway (Apache 2.0,
-OpenAI-compatible, no account) and Otari forwards to **Nebius Token Factory**: same models,
-addressed as `nebius:<model>`. Unset, the app calls Nebius directly as before.
+OpenAI-compatible, no account), which forwards to the same Nebius Token Factory models
+(addressed as `nebius:<model>`); unset, the app calls Nebius directly as before. The gateway reports
+its own metered cost for every call (`usage.cost_usd`, shown per step as "gateway: $…"), and a hard
+USD ceiling per calendar day sits on the app's key (default 1 USD), enforced by the gateway, not by the app.
 
-What the gateway adds: its own metered cost per call (`usage.cost_usd`, shown per step as
-`gateway_cost_usd`) and a hard USD ceiling (default 1 USD/day) on the app key.
-`/api/live/config` reports `gateway`, and the live page badge says "via Mozilla Otari gateway".
+Start, after the one-time setup below (two commands):
+
+```bash
+(cd .otari-gw && NEBIUS_API_KEY=... OTARI_API_KEY=... .venv/bin/otari serve --config config.yml)   # gateway on :8000
+LLM_GATEWAY=otari OTARI_API_KEY=... NEBIUS_API_KEY=... TAVILY_API_KEY=... uv run uvicorn app.main:app --port 8771
+```
+
+### Recorded run through the gateway (2026-11-20)
+
+dachser.de with the profile "European logistics groups", driven through the live page in a headless
+browser: Tier A, 6 of 6 criteria met, 0 quotes rejected, 13 s, $0.08 including web research.
+Response data: [`docs/otari/run.json`](docs/otari/run.json) (person names removed).
+
+| Step | Model | Seconds | Cost per gateway (`usage.cost_usd`) | Cost per own price table |
+|---|---|---:|---:|---:|
+| Research | Tavily (4 calls, not via the gateway) | 1.82 | n/a | 4 credits |
+| Score | zai-org/GLM-5.3-Flash | 2.57 | $0.000957 | $0.000957 |
+| Plan | moonshotai/Kimi-K3 | 6.19 | $0.038313 | $0.038313 |
+| Write | zai-org/GLM-5.3 | 2.02 | $0.005088 | $0.005088 |
+| **Models total** | 3 calls, 14,686 tokens | 10.78 | **$0.044358** | **$0.044358** |
+
+Daily ceiling, shown live: with the ceiling briefly set to $0.01 (already spent that day), one call on
+the app key came back `HTTP 403 {"detail":"API key has exceeded budget limit","code":"budget_exceeded"}`;
+the ceiling was then set back to 1 USD.
+
+Live page with the gateway badge ("via Mozilla Otari gateway"):
+
+![Live page via Mozilla Otari gateway](docs/otari/1-live-page.png)
+
+Each step shows the app's own cost and, in green, the cost the gateway metered:
+
+![Score step](docs/otari/2-step-score.png)
+![Plan step](docs/otari/3-step-plan.png)
+![Write step](docs/otari/4-step-write.png)
+
+Totals, with the gateway-metered model cost next to the app's own table:
+
+![Totals](docs/otari/5-totals.png)
+
+### One-time setup
 
 ```bash
 git clone --depth 1 https://github.com/mozilla-ai/otari .otari-gw && (cd .otari-gw && uv sync --no-dev)
 uv run python scripts/otari_config.py .otari-gw/config.yml          # sqlite, nebius provider, prices, budget
 export OTARI_API_KEY=$(python3 -c "import secrets; print('tk-' + secrets.token_urlsafe(48))")
-(cd .otari-gw && NEBIUS_API_KEY=... .venv/bin/otari serve --config config.yml)   # :8000
-LLM_GATEWAY=otari OTARI_API_KEY=$OTARI_API_KEY NEBIUS_API_KEY=... TAVILY_API_KEY=... \
-  uv run uvicorn app.main:app --port 8771
 ```
 
-Measured 2026-11-20 (one live run, tive.com): score 3.6 s / $0.000653, plan 8.6 s / $0.039345,
+Earlier measurement the same day (one live run, tive.com): score 3.6 s / $0.000653, plan 8.6 s / $0.039345,
 write 32.0 s / $0.003425; the gateway's metered cost matched the app's own price table to the cent.

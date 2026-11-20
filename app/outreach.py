@@ -385,7 +385,9 @@ def _totals(run: dict) -> dict:
             "model_cost_usd": round(sum(m.get("cost_usd") or 0 for m in metas), 6),
             "tavily_credits": run["research"].credits,
             "tokens": sum((m.get("prompt_tokens") or 0) + (m.get("completion_tokens") or 0) for m in metas),
-            "model_calls": run["budget"].model_used, "tavily_calls": run["budget"].tavily_used}
+            "model_calls": run["budget"].model_used, "tavily_calls": run["budget"].tavily_used,
+            **({"gateway_cost_usd": round(sum(m.get("gateway_cost_usd") or 0 for m in metas), 6)}
+               if any("gateway_cost_usd" in m for m in metas) else {})}
 
 
 # ---------------------------------------------------------------- API

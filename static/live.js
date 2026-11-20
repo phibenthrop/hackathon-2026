@@ -75,7 +75,8 @@ function meta(m) {
   const fb = m.fallback_from
     ? `<div class="live-fallback" title="${esc(m.fallback_reason || "")}">fallback: ${esc(m.model)}, primary ${esc(m.fallback_from)} ${/timed? ?out|timeout/i.test(m.fallback_reason || "") ? "timed out" : "overloaded"}</div>` : "";
   return mark(`<b>${esc(m.model)}</b>`) + (WHY[m.step] && !m.fallback_from ? `<span class="live-why">${esc(WHY[m.step])}</span>` : "") +
-    mark(`${m.seconds} s`) + mark(`${num((m.prompt_tokens || 0) + (m.completion_tokens || 0))} tokens`) + mark(money(m.cost_usd)) + fb;
+    mark(`${m.seconds} s`) + mark(`${num((m.prompt_tokens || 0) + (m.completion_tokens || 0))} tokens`) + mark(money(m.cost_usd)) +
+    (m.gateway_cost_usd != null ? mark(`gateway: ${money(m.gateway_cost_usd)}`, "live-gw") : "") + fb;
 }
 
 function renderResearch(r) {
@@ -192,6 +193,7 @@ function totals(t, researchMeta) {
   else if (researchMeta) { seconds = researchMeta.seconds; credits = researchMeta.tavily_credits; usd = credits * CREDIT_USD; }
   else return;
   const parts = [`${Math.round(seconds)} s`, "$" + usd.toFixed(2), `${SOURCES.length} sources`];
+  if (t && t.gateway_cost_usd != null) parts.push(`gateway-metered models $${t.gateway_cost_usd.toFixed(4)} (own table $${t.model_cost_usd.toFixed(4)})`);
   if (RESULTS.score) parts.push(`${RESULTS.score.discarded} quote${RESULTS.score.discarded === 1 ? "" : "s"} rejected`);
   $("totals").hidden = false;
   $("totals").innerHTML = `<div class="live-big">${esc(parts.join(" · "))}</div>

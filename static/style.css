@@ -107,6 +107,7 @@ html.live { font-size: 112.5%; }
 .live-page .state.run { color: var(--accent); } .live-page .state.ok { color: var(--a); } .live-page .state.err { color: var(--bad); }
 .live-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 0 0 1rem; }
 .live-mark { font-size: .85rem; padding: .25rem .5rem; border-radius: 6px; background: #eef1f4; font-variant-numeric: tabular-nums; }
+.live-mark.live-gw { background: #e6f4ea; }
 .live-mark b { color: var(--ink); }
 .live-why { color: var(--muted); font-size: .85rem; margin-right: .5rem; }
 .live-banner { background: #fde8e7; color: var(--bad); border: 1px solid #f3b9b4; border-left: 4px solid var(--bad); border-radius: 6px; padding: .5rem 1rem; margin: 0 0 1rem; font-weight: 700; }
