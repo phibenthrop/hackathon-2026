@@ -1,7 +1,7 @@
 "use strict";
 
 const $ = (s) => document.querySelector(s);
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const STATUS_TEXT = { met: "met", partial: "partial", not_met: "not met", no_evidence: "no evidence" };
 
 const state = { criteria: [], results: [], runId: null, tier: "ALL", open: new Set() };
