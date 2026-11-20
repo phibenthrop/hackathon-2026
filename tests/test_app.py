@@ -88,7 +88,7 @@ def test_disabling_criteria_changes_result(client):
 
 def test_pages_and_csv(client, run):
     home = client.get("/")
-    assert home.status_code == 200 and "Agent drafts, human sends." in home.text
+    assert home.status_code == 200 and "Agent drafts, a person decides." in home.text
     assert "Next steps" in client.get("/slides").text
     csv_resp = client.get(f"/api/export/{run['run_id']}.csv?tiers=A")
     assert csv_resp.status_code == 200
