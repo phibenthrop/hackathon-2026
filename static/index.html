@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICP Qualifier - evidence-backed lead lists</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>ICP Qualifier</h1>
+    <p class="sub">Similar companies in, evidence-backed A/B/C lead list out.</p>
+  </div>
+  <div class="top-right">
+    <span class="motto">Agent drafts, human sends.</span>
+    <span id="mode" class="badge">loading...</span>
+    <a class="small-link" href="/slides">Slides</a>
+  </div>
+</header>
+<p class="notice">Demo data: all companies, domains and website texts are fictional. Seller in this demo: <strong id="seller">ColdTrace (fictional)</strong>, <span id="offer"></span></p>
+
+<main>
+  <section class="step" id="step1">
+    <h2><span class="num">1</span> Your three best customers</h2>
+    <div class="seeds">
+      <input id="seed0" list="customers" aria-label="Best customer 1">
+      <input id="seed1" list="customers" aria-label="Best customer 2">
+      <input id="seed2" list="customers" aria-label="Best customer 3">
+      <datalist id="customers"></datalist>
+      <button id="btn-icp" class="primary">Derive ICP</button>
+    </div>
+    <div id="icp-wrap" hidden>
+      <p class="hint">Derived from the websites of your best customers. Edit anything: switch criteria on or off, change terms, ranges and weights.</p>
+      <table class="criteria">
+        <thead><tr><th>On</th><th>Criterion</th><th>Terms / range</th><th>Weight</th><th>Must-have</th></tr></thead>
+        <tbody id="criteria-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="step" id="step2">
+    <h2><span class="num">2</span> Similar companies</h2>
+    <button id="btn-cand" disabled>Fetch similar companies</button>
+    <div id="cand-wrap" hidden>
+      <p id="cand-meta"></p>
+      <div id="cand-list" class="chips"></div>
+    </div>
+  </section>
+
+  <section class="step" id="step3">
+    <h2><span class="num">3</span> Qualify with evidence</h2>
+    <button id="btn-run" class="primary" disabled>Run agent</button>
+    <span id="run-status" class="hint"></span>
+    <div id="results-wrap" hidden>
+      <div class="toolbar">
+        <div class="filters" role="group" aria-label="Filter by tier">
+          <button class="filter active" data-tier="ALL">All</button>
+          <button class="filter" data-tier="A">A</button>
+          <button class="filter" data-tier="B">B</button>
+          <button class="filter" data-tier="C">C</button>
+        </div>
+        <input id="search" placeholder="Search companies" aria-label="Search">
+        <label>Sort
+          <select id="sort">
+            <option value="tier">Tier, then score</option>
+            <option value="score">Score</option>
+            <option value="name">Name</option>
+            <option value="similarity">Similarity</option>
+          </select>
+        </label>
+        <a id="export" class="button">Export CSV</a>
+      </div>
+      <p class="hint">No verdict without a verbatim quote. "No evidence" lowers the tier. Export is a draft list for Needle or your CRM; nothing is sent.</p>
+      <table class="results">
+        <thead><tr><th>Tier</th><th>Company</th><th>Score</th><th>Why</th><th></th></tr></thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<footer>ICP Qualifier - Hack Day demo, 20 Nov 2026. Fictional data only.</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>

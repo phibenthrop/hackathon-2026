@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICP Qualifier - slides</title>
+<style>
+  :root { --ink: #16202a; --muted: #5b6672; --accent: #0b5cad; --line: #d9dee3; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #10161d; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .slide { display: none; position: absolute; inset: 0; margin: auto; width: min(96vw, 170vh); height: min(54vw, 94vh);
+           background: #fff; color: var(--ink); padding: 5% 7%; border-radius: 8px; flex-direction: column; justify-content: center; }
+  .slide.active { display: flex; }
+  h1 { font-size: clamp(1.6rem, 4.2vw, 3.6rem); margin: 0 0 .4em; line-height: 1.1; }
+  h2 { font-size: clamp(1rem, 1.6vw, 1.4rem); color: var(--accent); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 .6em; }
+  p, li { font-size: clamp(1rem, 2vw, 1.8rem); line-height: 1.4; }
+  ul, ol { margin: 0; padding-left: 1.2em; } li { margin: .3em 0; }
+  .muted { color: var(--muted); }
+  .motto { display: inline-block; border: 3px solid var(--accent); color: var(--accent); font-weight: 700; padding: .2em .6em; border-radius: 8px; }
+  .flow { display: flex; align-items: stretch; gap: 1.2vw; margin-top: 1em; }
+  .box { flex: 1; border: 2px solid var(--line); border-radius: 10px; padding: 1.2vw; font-size: clamp(.8rem, 1.5vw, 1.4rem); }
+  .box strong { display: block; font-size: 1.15em; margin-bottom: .3em; }
+  .box.us { border-color: var(--accent); background: #eef3f9; }
+  .arrow { align-self: center; font-size: clamp(1.2rem, 3vw, 2.6rem); color: var(--muted); }
+  .shot { flex: 1; border: 3px dashed var(--line); border-radius: 10px; display: grid; place-items: center; color: var(--muted); font-size: clamp(1rem, 2vw, 1.8rem); text-align: center; padding: 1em; }
+  .foot { position: fixed; bottom: 10px; left: 0; right: 0; text-align: center; color: #9aa4ae; font-size: 14px; }
+  .foot a { color: #9aa4ae; }
+</style>
+</head>
+<body>
+
+<section class="slide active">
+  <h2>Problem</h2>
+  <h1>Lookalike lists are easy. Deciding who is worth an email is not.</h1>
+  <ul>
+    <li>A similar-companies search returns dozens of names in seconds.</li>
+    <li>Someone still opens every website to check fit: industry, size, region, buying signals.</li>
+    <li>A generic AI "fit score" without a source is a guess; one wrong claim in a first email burns the lead.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>Solution</h2>
+  <h1>ICP Qualifier: every verdict comes with a quote.</h1>
+  <ul>
+    <li>Derives your ICP from the websites of your three best customers, as editable criteria.</li>
+    <li>Reads each candidate's website and judges every criterion.</li>
+    <li>Tier A/B/C with a verbatim quote and a link to the passage. No quote, no verdict: "no evidence" lowers the tier.</li>
+  </ul>
+  <p><span class="motto">Agent drafts, human sends.</span></p>
+</section>
+
+<section class="slide">
+  <h2>How it works</h2>
+  <ol>
+    <li><strong>Best customers in</strong> - ICP derived: industry terms, size range, region, signals.</li>
+    <li><strong>Similar companies</strong> from a company source; existing customers removed automatically.</li>
+    <li><strong>Agent qualifies</strong> each website; every quote is checked character by character against the source text.</li>
+    <li><strong>Review and export</strong> - sort, filter, expand the evidence, export CSV for the campaign tool or CRM.</li>
+  </ol>
+  <p class="muted">Model behind an OpenAI-compatible interface; without a key a deterministic rule scorer runs the same pipeline.</p>
+</section>
+
+<section class="slide">
+  <h2>Demo</h2>
+  <div class="shot">[ Screenshot placeholder: tiered result list with one company expanded, showing quotes and source links ]</div>
+</section>
+
+<section class="slide">
+  <h2>Where it sits</h2>
+  <div class="flow">
+    <div class="box"><strong>similarcompanies.ai</strong>Returns companies similar to your customers. "Qualification, people and CRM come from your agent's other tools."</div>
+    <div class="arrow">&#8594;</div>
+    <div class="box us"><strong>ICP Qualifier</strong>Qualifies each company against your ICP, with evidence. Removes existing customers. Tiers A/B/C.</div>
+    <div class="arrow">&#8594;</div>
+    <div class="box"><strong>Needle / CRM</strong>Runs the outbound campaign from the reviewed lead list. A human decides what is sent.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Next steps</h2>
+  <ul>
+    <li>Plug in the similarcompanies.ai API behind the existing <code>CompanySource</code> interface.</li>
+    <li>Fetch live websites (respecting robots.txt) instead of the cached demo texts.</li>
+    <li>Switch the scorer to an open model on Nebius via the OpenAI-compatible endpoint; the quote check stays.</li>
+    <li>Hand A-tier leads to a Needle campaign as drafts for human review.</li>
+    <li>Learn from won and lost deals to adjust criteria weights.</li>
+  </ul>
+</section>
+
+<div class="foot">Arrow keys or click to navigate · <span id="pos"></span> · <a href="/">open the app</a> · all demo companies are fictional</div>
+<script>
+  const slides = [...document.querySelectorAll(".slide")];
+  let i = Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1);
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle("active", k === i));
+    document.getElementById("pos").textContent = `${i + 1} / ${slides.length}`;
+    history.replaceState(null, "", "#" + (i + 1));
+  }
+  document.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) show(i + 1);
+    if (["ArrowLeft", "PageUp"].includes(e.key)) show(i - 1);
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest("a")) show(e.clientX > innerWidth / 3 ? i + 1 : i - 1); });
+  show(i);
+</script>
+</body>
+</html>
