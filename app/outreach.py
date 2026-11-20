@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+from dataclasses import replace
 import logging
 import os
 import re
@@ -101,6 +102,29 @@ def step_chat(st, messages: list[dict], budget: Budget) -> dict:
         log.warning("%s failed (%s); falling back to %s", st.model, exc, model)
         c = nebius_chat(model, messages, st.max_tokens, st.timeout, budget, effort or None)
         return {**c, "model": model, "fallback_from": st.model, "fallback_reason": str(exc)[:160]}
+
+
+def chat_json(st, messages: list[dict], budget: Budget, valid) -> tuple[list[dict], dict]:
+    """step_chat plus one second try on invalid JSON (with the step's fallback model if it has one)."""
+    c = step_chat(st, messages, budget)
+    calls = [c]
+    out = parse_json(c["content"])
+    if out and valid(out):
+        return calls, out
+    second = st
+    if st.fallback:
+        model, _, effort = st.fallback.partition("@")
+        second = replace(st, model=model, reasoning=effort or None, fallback=None)
+    try:
+        c2 = step_chat(second, messages, budget)
+    except BudgetExceeded:
+        raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.") from None
+    c2 = {**c2, "fallback_from": c.get("model", st.model), "fallback_reason": "no valid JSON"} if second is not st else c2
+    calls.append(c2)
+    out = parse_json(c2["content"])
+    if not out or not valid(out):
+        raise ModelError(f"{c.get('model', st.model)} and {c2.get('model', second.model)} returned no valid JSON.")
+    return calls, out
 
 
 parse_json = extract_json
@@ -196,15 +220,20 @@ Rules:
   If you cannot cite it, leave it out.
 - Numbers (employees, revenue, sites, fleet size, years): only if the exact figure appears word for word
   in the numbered source you cite. Never estimate, round, convert or combine figures.
-- If the tier is C, start fit_summary with "Do not contact:" and give the reason with [n].
-  Then who, hook and questions describe what would have to change, not a pitch.
+- If the tier is C because a criterion is "not_met", start fit_summary with "Do not contact:" and give
+  the reason with [n]. If the tier is C only because criteria have "no_evidence", start with
+  "Not enough evidence:" and name the one fact a person should check first. In both cases who, hook and
+  questions describe what would have to change, not a pitch.
 - Hook: exactly ONE fact from ONE source [n] that is recent or specific (a new site, a certification,
   a stated process). Not a general description of what the company does.
-- Channel: if the company is based in Germany, Austria or another EU country, do not recommend a cold
-  email as the first touch: German law (UWG § 7) requires prior consent for email, also in B2B. Recommend
-  a phone call with a concrete business reason, a letter, or a LinkedIn message, and say that the email
-  draft is for use after consent or as a letter. For the UK or US, email is acceptable; say that an
-  opt-out line is needed. End the channel text with "Not legal advice."
+- Channel: if the company is based in Germany, do not recommend a cold email or a LinkedIn/XING direct
+  message as the first touch: German law (UWG § 7 (2) no. 2) requires prior express consent for electronic
+  mail, also in B2B, and courts treat social-network messages as electronic mail. Recommend a phone call
+  with a specific business reason tied to the recipient's trade (a B2B call needs at least presumed
+  consent), or a letter, and say that the email draft is for use after consent or as a letter.
+  For other EU countries say that the rules differ by country and must be checked before sending.
+  For the UK, email to a limited company is possible without consent if the sender is identified and an
+  opt-out line is included; not to sole traders. End the channel text with "Not legal advice."
 - who: at most two roles.
 - questions: exactly one.
 - Keep it short and concrete.
@@ -212,7 +241,7 @@ Reply with JSON only:
 {{"fit_summary": "one sentence with [n]",
   "who": [{{"role": "...", "why": "... [n]"}}],
   "hook": "the opening angle, one or two sentences with [n]",
-  "channel": "email / LinkedIn / phone and why",
+  "channel": "phone / letter / email and why",
   "avoid": ["what not to say, and why"],
   "questions": ["one discovery question"]}}"""
 
@@ -221,21 +250,34 @@ It is a DRAFT: a person will edit it and decide whether it goes out.
 {UNTRUSTED_RULE}
 Rules:
 - Language: write in the language given as LANGUAGE. German: formal "Sie", no anglicisms where a German word exists.
-- Length: 50 to 90 words in the body (German: 45 to 80). Four sentences at most, then the sign-off.
+- German only: open with "Guten Tag," on its own line (it does not count as a sentence). Write the subject
+  in normal German capitalisation. Close with a natural interest question such as
+  "Ist das bei Ihnen gerade ein Thema?", never a word-for-word translation of the English example.
+- Length: 60 to 90 words in the body (German: 45 to 80, strictly; count before you answer). Four sentences
+  at most, then the sign-off.
 - Sentence 1, the hook: ONE specific, checkable fact about the recipient's company taken from ONE source,
   marked [n]: an occasion or a concrete observation (news, a new site, a stated plan), never general
   encyclopaedia knowledge such as "you operate X and Y". Use the hook from the plan.
+  Name the source in words inside the sentence (for example "according to your annual report") so the
+  sentence still stands when the [n] mark is removed.
   No compliment, no "I saw that", no "I hope this finds you well", no "I am writing to the head of ...".
-- Sentence 2: the problem this fact probably causes them, in their words, not in product words.
+- Sentence 2: the problem this fact probably causes them, in their words, not in product words. Phrase it
+  as a likely consequence ("often means", "häufig"), never as a fact about the recipient and never with
+  "in our experience" or "erfahrungsgemäß".
 - Sentence 3 (optional): one plain sentence on what the seller does about that problem. No feature list,
   no numbers about the seller, no customer names, no claims you were not given.
 - Last sentence: exactly ONE question that asks about interest ("Is this something you are looking at?").
   No meeting request, no calendar link, no second question, no alternative offer after it
   (no "or I can send a one-pager"). No numbers in the ask (no "15 minutes").
 - Say "you/your" more often than "we/our". Never start with "I am" or "We are".
+- Never write a break-up, unsubscribe or removal line ("before I drop you from our list", "I'll remove
+  you from our outreach list", "last email"): this is a first contact, not a follow-up.
 - Facts about the recipient only with [n]. If no sourced fact is available, write {{"subject": "", "body": ""}}.
-- Address the role, never a named person. No placeholders except the sign-off line "[Sender]".
-- Subject: 2 to 4 words, lower case, no punctuation, no product name, sounds like an internal note.
+- Address the role, never a named person. No placeholders except the sign-off.
+- Always end the body with a sign-off on its own lines: "Best regards,\n[Sender]" (German:
+  "Viele Grüße\n[Sender]").
+- Subject: 2 to 4 words, no punctuation, no product name, sounds like an internal note. English: lower
+  case. German: normal German capitalisation (nouns capitalised).
 Reply with JSON only: {{"subject": "...", "body": "..."}}"""
 
 
@@ -315,13 +357,11 @@ def step_plan(run: dict) -> dict:
             f"TARGET COMPANY:\n<untrusted>{research.target.raw}</untrusted>\n\n"
             f"ICP FIT (computed by the app, tier {run['score']['tier']}):\n{fit}\n\n"
             f"SOURCES:\n{_sources_block(research, 1800)}")
-    c = step_chat(st, [{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": user}], run["budget"])
-    plan = parse_json(c["content"])
-    if not plan:
-        raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.")
+    calls, plan = chat_json(st, [{"role": "system", "content": PLAN_SYSTEM}, {"role": "user", "content": user}],
+                            run["budget"], lambda d: isinstance(d, dict) and bool(d))
     run["plan"] = plan
     run["language"] = detect_language(research)
-    return {**_meta("plan", st.model, [c]), "result": {"plan": plan, "language": run["language"],
+    return {**_meta("plan", st.model, calls), "result": {"plan": plan, "language": run["language"],
                                                        "checks": check_refs(json.dumps(plan, ensure_ascii=False), research)}}
 
 
@@ -331,14 +371,16 @@ def step_write(run: dict) -> dict:
     user = (f"LANGUAGE: {run['language']}\n\nSELLER PRODUCT:\n<untrusted>{run['product']}</untrusted>\n\n"
             f"OUTREACH PLAN (from our strategist):\n{json.dumps(run['plan'], ensure_ascii=False)[:3000]}\n\n"
             f"SOURCES:\n{_sources_block(research, 1200)}")
-    c = step_chat(st, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}], run["budget"])
-    draft = parse_json(c["content"])
-    if not draft or not isinstance(draft.get("body"), str):
-        raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.")
+    calls, draft = chat_json(st, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}],
+                             run["budget"], lambda d: isinstance(d, dict) and isinstance(d.get("body"), str))
     draft = {"subject": str(draft.get("subject") or "")[:200], "body": draft["body"][:3000]}
     run["draft"] = draft
-    return {**_meta("write", st.model, [c]), "result": {"draft": draft, "language": run["language"],
-                                                        "checks": check_refs(draft["subject"] + "\n" + draft["body"], research)}}
+    return {**_meta("write", st.model, calls), "result": {"draft": draft, "language": run["language"],
+                                                        "checks": check_refs(draft["body"], research)}}
+
+
+_LEGAL_REF = re.compile(r"§+\s*\d+[a-z]?(\s*(\(\d+\)|Abs\.?\s*\d+|para\.?\s*\d+|S\.\s*\d+|Satz\s*\d+|Nr\.?\s*\d+|no\.?\s*\d+))*"
+                        r"|\b(Art\.|Article)\s*\d+(\s*\(\d+\))*|\b\d+\s*U\s*\d+/\d+", re.I)
 
 
 def check_refs(text: str, research: Research) -> dict:
@@ -347,7 +389,9 @@ def check_refs(text: str, research: Research) -> dict:
     used = [int(x) for x in re.findall(r"\[(\d{1,2})\]", text)]
     bad = sorted({n for n in used if n not in valid})
     unsourced = []
-    for sent in re.split(r"(?<=[.!?])\s+|\n+", text):
+    for sent in re.split(r"(?<=[.!?])\s+|\n+", _LEGAL_REF.sub("§", text)):  # legal refs first: "no. 2" splits
+        if sent.strip().endswith("?"):
+            continue  # the ask: numbers there are a prompt-rule matter, not an unsourced claim
         if re.search(r"\d", re.sub(r"\[\d{1,2}\]", "", sent)) and not re.search(r"\[\d{1,2}\]", sent):
             unsourced.append(sent.strip()[:200])
     return {"cited": sorted(set(used) & valid), "invalid_refs": bad, "unsourced_numbers": unsourced[:5]}
@@ -453,8 +497,12 @@ STEP_FUNCS = {"score": step_score, "plan": step_plan, "write": step_write}
 PREREQ = {"score": None, "plan": "score", "write": "plan"}
 
 
+class StepRequest(BaseModel):
+    force: bool = False  # "Draft anyway": write a draft although the tier is C
+
+
 @router.post("/api/live/{run_id}/{step}")
-def live_step(run_id: str, step: str) -> dict:
+def live_step(run_id: str, step: str, req: StepRequest | None = None) -> dict:
     run = RUNS.get(run_id)
     if run is None:
         raise HTTPException(404, "Run not found (runs are kept in memory). Start again.")
@@ -465,6 +513,8 @@ def live_step(run_id: str, step: str) -> dict:
     need = PREREQ[step]
     if need and need not in run:
         raise HTTPException(409, f"Run the {need} step first.")
+    if step == "write" and run["score"]["tier"] == "C" and not (req and req.force):
+        raise HTTPException(409, "Tier C: no draft is written unless you ask for one (force).")
     try:
         meta = STEP_FUNCS[step](run)
     except BudgetExceeded as exc:

@@ -84,7 +84,7 @@ def full_run(client, company="chillspeed.co.uk"):
     rid = r.json()["run_id"]
     out = {"research": r.json()}
     for step in ("score", "plan", "write"):
-        s = client.post(f"/api/live/{rid}/{step}")
+        s = client.post(f"/api/live/{rid}/{step}", json={"force": True} if step == "write" else None)
         assert s.status_code == 200, s.text
         out[step] = s.json()
     return out
@@ -234,3 +234,48 @@ def test_write_falls_back_when_primary_overloaded(client, monkeypatch):
     assert "529" in w["fallback_reason"] and w["result"]["draft"]["body"]
     assert w["totals"]["model_calls"] <= outreach.Budget().model_max
     assert calls[-1] == w["model"]
+
+
+def test_unsourced_number_ignores_legal_refs_and_the_ask():
+    from app.outreach import check_refs
+    from app.research import Research, Source, Target
+    r = Research(target=Target(raw="x.de", name="X", domain="x.de"),
+                 sources=[Source(n=1, url="https://x.de", title="X", excerpt="", body="b", kind="website")])
+    plan = ("Germany: UWG § 7 (2) no. 2 requires prior express consent. Call instead, see § 7 Abs. 2 Nr. 1 UWG. "
+            "Not legal advice.")
+    assert check_refs(plan, r)["unsourced_numbers"] == []
+    assert check_refs("Would a 15 minute look help?", r)["unsourced_numbers"] == []
+    assert check_refs("You run 40 depots.", r)["unsourced_numbers"] == ["You run 40 depots."]
+    assert check_refs("You run 40 depots [1].", r)["unsourced_numbers"] == []
+
+
+def test_plan_gets_second_try_on_invalid_json(client, monkeypatch):
+    fake_models(monkeypatch)
+    good = outreach.nebius_chat
+    seen = {"plan": 0}
+
+    def chat(model, messages, *a, **kw):
+        if "plan B2B outreach" in messages[0]["content"]:
+            seen["plan"] += 1
+            if seen["plan"] == 1:
+                messages[0]["budget_probe"] = True
+                kw_budget = a[2] if len(a) > 2 else kw.get("budget")
+                kw_budget.take_model()
+                return {"content": "not json", "seconds": 0.1, "prompt_tokens": 10, "completion_tokens": 5}
+        return good(model, messages, *a, **kw)
+    monkeypatch.setattr(outreach, "nebius_chat", chat)
+    out = full_run(client)
+    assert seen["plan"] == 2
+    assert out["plan"]["result"]["plan"]["fit_summary"]
+
+
+def test_tier_c_write_refused_without_force(client, monkeypatch):
+    fake_models(monkeypatch)
+    rid = client.post("/api/live/start", json={"company": "chillspeed.co.uk"}).json()["run_id"]
+    assert client.post(f"/api/live/{rid}/score").status_code == 200
+    assert client.post(f"/api/live/{rid}/plan").status_code == 200
+    outreach.RUNS[rid]["score"]["tier"] = "C"
+    r = client.post(f"/api/live/{rid}/write")
+    assert r.status_code == 409 and "Tier C" in r.json()["detail"]
+    r = client.post(f"/api/live/{rid}/write", json={"force": True})
+    assert r.status_code == 200, r.text

@@ -10,7 +10,8 @@
 <header class="top">
   <div>
     <h1>Is this company worth an email?</h1>
-    <p class="sub">Type any company. In about a minute you get a fit verdict you can check, and a first email draft. Every claim is a verbatim quote with a link. Nothing is sent.</p>
+    <p class="sub">A yes or no you can check. Quotes that are not in the source are thrown out, visibly.</p>
+    <p class="sub2">Type any company. In about 20 seconds (6 to 8 cents with web research): a fit verdict, one sourced reason to reach out, a first draft. Every verdict needs a word-for-word quote. Nothing is sent.</p>
   </div>
   <div class="top-right">
     <span class="motto">Agent drafts, a person decides.</span>
@@ -19,7 +20,7 @@
     <a class="small-link" href="/">Lead list</a> <a class="small-link" href="/slides">Slides</a>
   </div>
 </header>
-<p class="notice" id="notice">For SDRs and founders doing outbound. Models: Nebius Token Factory. Web research: Tavily. Runs live.</p>
+<p class="notice" id="notice">For SDRs and founders doing outbound. Research: Tavily search + extract, every source keeps its link, which is what makes a quote checkable. Reasoning: three open models on Nebius Token Factory, picked per step by measured speed, cost and rejected quotes.</p>
 
 <main>
   <section class="step s-input">
@@ -27,11 +28,11 @@
     <div class="live-grid">
       <div class="live-ask">
         <label class="field"><span>Company domain or name</span>
-          <input id="company" maxlength="200" placeholder="e.g. stef.com, Nagel-Group, chillspeed.co.uk"></label>
+          <input id="company" maxlength="200" placeholder="e.g. dachser.de, edwards-transport.com, chillway.co.uk"></label>
         <div class="live-chips" id="chips">
-          <button type="button" class="live-chip">stef.com</button>
-          <button type="button" class="live-chip">Nagel-Group</button>
-          <button type="button" class="live-chip">chillspeed.co.uk</button>
+          <button type="button" class="live-chip" data-with="eulogistics">dachser.de</button>
+          <button type="button" class="live-chip" data-with="coldtrace">edwards-transport.com</button>
+          <button type="button" class="live-chip" data-with="coldtrace">chillway.co.uk</button>
         </div>
         <p class="hint">Any domain or name. One run: at most 5 web calls and 4 model calls.</p>
         <div class="live-actions">
@@ -51,6 +52,7 @@
           <input id="product" maxlength="200"></label>
         <label class="field"><span>Ideal customer profile (one criterion per line)</span>
           <textarea id="icp" rows="8"></textarea></label>
+        <p class="hint">Fit lines (industry, region, size) say whether the company is the right type. Signal lines say whether now is a good time. Lines you write yourself count equally; the default profile weights industry three times and treats it as a must-have.</p>
       </details>
     </div>
   </section>
@@ -71,11 +73,11 @@
     <table class="reg"><thead><tr><th>Step</th><th>Model</th><th>Why</th><th>Price</th></tr></thead><tbody id="reg"></tbody></table>
   </section>
   <section class="step" id="cmp-wrap" hidden>
-    <h2>Two models on the scoring step: speed, cost, rejected quotes</h2>
+    <h2>Scoring step, three models measured: GLM-5.3-Flash is cheapest and lost 3% of its quotes, gpt-oss-120b 29%</h2>
     <div id="cmp"></div>
   </section>
 </main>
-<footer>Draft only. This app cannot send email. Germany/EU: a cold email needs prior consent, also in B2B (UWG § 7). Not legal advice.</footer>
+<footer>Draft only. This app cannot send email. Germany: a cold email or LinkedIn message needs prior express consent, also in B2B (UWG § 7 (2) no. 2). Rules differ by country. Not legal advice.</footer>
 <script src="/static/live.js"></script>
 </body>
 </html>

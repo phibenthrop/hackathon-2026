@@ -123,12 +123,13 @@ function renderPlan(r) {
 // Check line over the draft, computed in the browser: words, questions, sourced facts.
 function draftCheck(body, cited, lang) {
   const min = lang === "German" ? 40 : 50;  // German compounds: fewer, longer words
+  const max = lang === "German" ? 90 : 110;  // body incl. greeting and sign-off; prompt asks 45-80 / 60-90
   const plain = body.replace(/\[\d{1,2}\]/g, " ");
   const words = (plain.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu) || []).length;
   const q = (plain.match(/\?/g) || []).length;
   const facts = cited.length;
   const issues = [];
-  if (words > 100) issues.push(`${words} words - cut to 100`);
+  if (words > max) issues.push(`${words} words - cut to ${max}`);
   if (words < min) issues.push(`${words} words - too short`);
   if (q === 0) issues.push("no question - add one");
   if (q > 1) issues.push(`${q} questions - cut ${q === 2 ? "one" : q - 1}`);
@@ -148,9 +149,9 @@ function renderWrite(r) {
   return `<p><strong>Subject:</strong> ${linkRefs(d.subject)}</p>
     <div id="draftcheck">${draftCheck(d.body, cited, r.language)}</div>
     <textarea class="draftbox" id="draft">${esc(d.body)}</textarea>
-    <div class="live-preview"><span class="hint">Read with clickable source marks:</span><br>${linkRefs(d.body).replace(/\n/g, "<br>")}</div>
+    <div class="live-preview"><span class="hint">[n] marks are for your review. "Copy without source marks" removes them; the sentence names its source in words.</span><br>${linkRefs(d.body).replace(/\n/g, "<br>")}</div>
     <p class="draftonly">Draft only — a person decides what goes out.</p>
-    <p class="live-legal">Germany/EU: cold email needs prior consent, also in B2B. Check before you send. Not legal advice.</p>
+    <p class="live-legal">Germany: cold email and LinkedIn messages need prior express consent, also in B2B. Other countries differ. Check before you send. Not legal advice.</p>
     <button id="copy">Copy without source marks</button> <button id="discard">Discard</button>
     <p><strong>Sources in this draft:</strong></p>${srcList ? `<ol class="sources">${srcList}</ol>` : "<p class='hint'>none</p>"}
     ${checks(r.checks)}<p class="hint">Language: ${esc(r.language)}. The app sends nothing.</p>`;
@@ -158,11 +159,17 @@ function renderWrite(r) {
 
 const RENDER = { research: renderResearch, score: renderScore, plan: renderPlan, write: renderWrite };
 
+// Tier C has two causes: a criterion quoted as not met (do not contact) or only missing quotes (check first).
+function cIsNotFit() {
+  return ((RESULTS.score && RESULTS.score.findings) || []).some((f) => f.status === "not_met");
+}
 function tierBanner() {
   const c = RESULTS.score && RESULTS.score.tier === "C";
+  const notFit = c && cIsNotFit();
   ["ban-plan", "ban-write"].forEach((id) => {
     $(id).hidden = !c;
-    $(id).textContent = c ? "Tier C - the agent recommends not to contact this company. Plan and draft are shown so you can see why." : "";
+    $(id).className = "live-banner" + (c && !notFit ? " live-banner-check" : "");
+    $(id).textContent = !c ? "" : notFit ? "Tier C, do not contact: a criterion is quoted as not met. Plan and draft are shown so you can see why." : "Tier C, not enough evidence: no criterion is quoted as not met, but key ones have no quote. A missing quote is not proof of a bad fit: check the \"no evidence\" rows. Plan and draft are shown so you can see why.";
   });
 }
 
@@ -243,7 +250,7 @@ function fail(step, e) {
 }
 
 async function stepCall(step) {
-  try { return await post(`/api/live/${RUN_ID}/${step}`); }
+  try { return await post(`/api/live/${RUN_ID}/${step}`, step === "write" && FORCE_DRAFT ? { force: true } : null); }
   catch (e) {
     // A step stopped by the browser timeout may still have finished on the server: fetch its result.
     if (e.status === 409 && /already done/i.test(e.message)) {
@@ -260,7 +267,8 @@ let FORCE_DRAFT = false;
 function stopped() {
   state("write", "", "stopped");
   $("m-write").innerHTML = "";
-  $("o-write").innerHTML = `<p class="live-stop"><strong>Stopped: not a fit. No email drafted.</strong> No model was called for this step (cost $0).</p>
+  const notFit = cIsNotFit();
+  $("o-write").innerHTML = `<p class="live-stop"><strong>${notFit ? "Stopped: not a fit. No email drafted." : "Stopped: not enough evidence. No email drafted."}</strong> ${notFit ? "A criterion is quoted as not met." : "Nothing was quoted as not met, but key criteria have no quote: check the \"no evidence\" rows before you decide."} No model was called for this step (cost $0).</p>
     <button id="force">Draft anyway</button>`;
   $("force").onclick = () => { FORCE_DRAFT = true; runFrom("write").finally(() => { FORCE_DRAFT = false; }); };
 }
@@ -320,7 +328,7 @@ function renderCmp(c) {
   if (!c || !c.models) { $("cmp-wrap").hidden = true; return; }
   $("cmp-wrap").hidden = false;
   const cols = [["model", "Model"], ["companies", "Firms"], ["valid_json_rate", "Valid JSON"], ["discarded_quote_rate", "Quotes discarded"],
-    ["avg_seconds", "Avg s / firm"], ["avg_tokens", "Avg tokens / firm"], ["cost_per_company_usd", "USD / firm"], ["tier_agreement", "Tier agreement"]];
+    ["avg_seconds", "Avg s / firm"], ["avg_tokens", "Avg tokens / firm"], ["cost_per_company_usd", "USD / firm"]];
   const fmt = (k, v) => v == null ? "-" : (k.endsWith("rate") || k === "tier_agreement") ? Math.round(v * 100) + "%" : k.startsWith("cost") ? "$" + v.toFixed(4) : v;
   $("cmp").innerHTML = `<table class="cmp"><thead><tr>${cols.map((c) => `<th>${c[1]}</th>`).join("")}</tr></thead><tbody>${
     c.models.map((m) => `<tr>${cols.map(([k]) => `<td>${k === "model" ? esc(m[k]) : fmt(k, m[k])}</td>`).join("")}</tr>`).join("")}</tbody></table>
@@ -345,7 +353,7 @@ async function init() {
   $("example").hidden = !cfg.example;
   $("go").onclick = run;
   $("example").onclick = example;
-  document.querySelectorAll("#chips .live-chip").forEach((b) => { b.onclick = () => { $("company").value = b.textContent; $("company").focus(); }; });
+  document.querySelectorAll("#chips .live-chip").forEach((b) => { b.onclick = () => { if (b.dataset.with) applyPreset(b.dataset.with); $("company").value = b.textContent; $("company").focus(); }; });
   $("company").addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
   if (!cfg.live) {
     $("notice").textContent = cfg.message + ". Showing the recorded example.";
