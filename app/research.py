@@ -69,6 +69,7 @@ class Target:
     raw: str
     name: str
     domain: str | None
+    by_domain: bool = False  # the user typed a domain (stricter source filter)
 
 
 @dataclass
@@ -93,7 +94,7 @@ def parse_target(raw: str) -> Target:
     if m:
         domain = m.group(1).lower()
         stem = domain.split(".")[0]
-        return Target(raw, stem.replace("-", " ").title(), domain)
+        return Target(raw, stem.replace("-", " ").title(), domain, True)
     return Target(raw, raw, None)
 
 
@@ -155,10 +156,29 @@ def _norm(s: str) -> str:
     return re.sub(r"[\s\-_+&.]+", " ", s.lower()).strip()
 
 
+def _host(url: str) -> str:
+    m = re.match(r"https?://(?:www\.)?([^/:]+)", url or "")
+    return m.group(1).lower() if m else ""
+
+
 def mentions(t: Target, text: str, url: str) -> bool:
-    """A search hit counts only if it names the target (full name or domain)."""
-    hay = _norm(text + " " + url)
-    return bool((t.domain and _norm(t.domain) in hay) or _norm(t.name) in hay)
+    """A search hit counts only if it is on the target's domain or names the target as a whole word.
+
+    With a typed domain, a short name (6 letters or fewer, e.g. "commit") is too common to count on its
+    own: then only the domain itself (on the host or in the text) counts."""
+    if t.domain:
+        host = _host(url)
+        if host == t.domain or host.endswith("." + t.domain):
+            return True
+        if re.search(r"(?<![\w.-])" + re.escape(t.domain) + r"(?![\w-])", text + " " + url, re.I):
+            return True
+        if t.by_domain and len(re.sub(r"[^a-z0-9]", "", t.name.lower())) <= 6:
+            return False
+    words = [w for w in re.split(r"[\s\-_+&.]+", t.name.strip()) if w]
+    if not words:
+        return False
+    pat = r"(?<![\w])" + r"[\s\-_+&.]*".join(re.escape(w) for w in words) + r"(?![\w])"
+    return bool(re.search(pat, text, re.I))
 
 
 def official_domain(t: Target, urls: list[str]) -> str | None:

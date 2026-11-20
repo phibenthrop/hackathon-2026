@@ -130,3 +130,7 @@ html.live { font-size: 112.5%; }
 .live-page .cmp td, .live-page .cmp th { font-size: .85rem; text-align: right; } .live-page .cmp td:first-child, .live-page .cmp th:first-child { text-align: left; }
 .live-page footer { font-size: .85rem; }
 .live-page [hidden] { display: none !important; }
+
+.live-fool { margin-top: 1rem; padding: .75rem 1rem; border: 1px dashed #9aa4ae; border-radius: 8px; }
+.live-fool input { flex: 1; min-width: 20rem; }
+.live-fool .good { color: #1b5e20; font-weight: 600; }

@@ -483,7 +483,8 @@ def live_start(req: StartRequest) -> dict:
            "product": clean_input(req.product) or DEFAULT_PRODUCT, "budget": budget, "steps": []}
     meta = {"step": "research", "model": "Tavily", "calls": len(research.calls), "seconds": seconds,
             "prompt_tokens": 0, "completion_tokens": 0, "cost_usd": None, "tavily_credits": research.credits,
-            "result": {"target": {"name": target.name, "domain": target.domain, "input": target.raw},
+            "result": {"target": {"name": target.name, "domain": target.domain, "input": target.raw,
+                                  "by_domain": target.by_domain},
                        "sources": [s.public() for s in research.sources], "calls": research.calls}}
     run["steps"].append({k: v for k, v in meta.items() if k != "result"})
     run_id = uuid.uuid4().hex[:12]
@@ -495,6 +496,31 @@ def live_start(req: StartRequest) -> dict:
 
 STEP_FUNCS = {"score": step_score, "plan": step_plan, "write": step_write}
 PREREQ = {"score": None, "plan": "score", "write": "plan"}
+
+
+class QuoteRequest(BaseModel):
+    quote: str
+
+
+@router.post("/api/live/{run_id}/check_quote")
+def live_check_quote(run_id: str, req: QuoteRequest) -> dict:
+    """"Try to fool the gate": the same verbatim check the score step uses, on this run's sources. No model."""
+    run = RUNS.get(run_id)
+    if run is None:
+        raise HTTPException(404, "Run not found (runs are kept in memory). Start a live run first.")
+    quote = clean_input(req.quote)[:300]
+    if len(quote.split()) < 3:
+        raise HTTPException(422, "Type at least three words.")
+    research: Research = run["research"]
+    f = Finding(criterion_id="probe", label="probe", status="met", reason="visitor", quote=quote, page=None)
+    f = enforce_evidence(research_site(research), [f])[0]
+    if f.status == "no_evidence":
+        return {"found": False, "quote": quote,
+                "verdict": "Not found word for word in any source of this run. The gate would throw it out."}
+    n = int(f.page.strip("[]"))
+    url = next((x.url for x in research.sources if x.n == n), None)
+    return {"found": True, "quote": quote, "source_n": n, "url": url,
+            "verdict": f"Found word for word in source [{n}]. The gate would keep it."}
 
 
 class StepRequest(BaseModel):

@@ -279,3 +279,25 @@ def test_tier_c_write_refused_without_force(client, monkeypatch):
     assert r.status_code == 409 and "Tier C" in r.json()["detail"]
     r = client.post(f"/api/live/{rid}/write", json={"force": True})
     assert r.status_code == 200, r.text
+
+
+def test_mentions_drops_namesakes():
+    from app.research import mentions, parse_target
+    t = parse_target("commit.de")
+    assert mentions(t, "anything", "https://www.commit.de/about")
+    assert mentions(t, "See commit.de for details.", "https://news.example/x")
+    assert not mentions(t, "Commit Design Agency builds brands.", "https://commit-design.example/")
+    assert not mentions(t, "Fans commit to the team, CBS Sports reports.", "https://cbssports.example/")
+    n = parse_target("Flix")
+    assert mentions(n, "Flix launches new routes.", "https://news.example/a")
+    assert not mentions(n, "Flixbox sells boxes.", "https://news.example/b")
+
+
+def test_check_quote_uses_the_gate(client, monkeypatch):
+    fake_models(monkeypatch)
+    rid = client.post("/api/live/start", json={"company": "chillspeed.co.uk"}).json()["run_id"]
+    ok = client.post(f"/api/live/{rid}/check_quote", json={"quote": "Chillspeed runs a fleet of refrigerated vans"})
+    assert ok.status_code == 200 and ok.json()["found"] is True and ok.json()["source_n"] == 1
+    bad = client.post(f"/api/live/{rid}/check_quote", json={"quote": "Chillspeed is opening ten warehouses in France"})
+    assert bad.status_code == 200 and bad.json()["found"] is False
+    assert client.post("/api/live/nope/check_quote", json={"quote": "a b c"}).status_code == 404

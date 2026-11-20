@@ -81,7 +81,8 @@ function meta(m) {
 function renderResearch(r) {
   SOURCES = r.sources;
   const calls = r.calls.map((c) => `<li><code>${esc(c.call)}</code> ${esc(c.query)}${c.error ? ` <span class="flag">${esc(c.error)}</span>` : ` - ${c.results} results`}</li>`).join("");
-  return `<p>Target: <strong>${esc(r.target.name)}</strong>${r.target.domain ? ` (${esc(r.target.domain)})` : ""}</p>
+  const hint = r.target.by_domain === false ? `<p class="live-banner live-banner-check">Enter a domain for reliable results: a name alone can pull in other companies with a similar name.</p>` : "";
+  return `${hint}<p>Target: <strong>${esc(r.target.name)}</strong>${r.target.domain ? ` (${esc(r.target.domain)})` : ""}</p>
     <details><summary>${r.calls.length} Tavily calls</summary><ul>${calls}</ul></details>
     <ol class="sources">${r.sources.map((s) => `<li value="${s.n}"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>
       <span class="badge">${esc(s.kind)}${s.published ? " · " + esc(s.published.slice(0, 16)) : ""}</span>
@@ -97,7 +98,19 @@ function renderScore(r) {
   }).join("");
   return `<p><span class="tier tier-${r.tier}">${r.tier}</span> score ${r.score} - ${esc(r.summary)}
     <br><span class="hint">Tier computed by the app from the verified findings, not by the model. Quotes proposed: ${r.proposed}, discarded by the quote gate: ${r.discarded}.</span></p>
-    <table class="findings"><thead><tr><th>Criterion</th><th>Verdict</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>`;
+    <table class="findings"><thead><tr><th>Criterion</th><th>Verdict</th><th>Evidence</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="live-fool"><strong>Try to fool the gate.</strong> Type a sentence you think is on the site, or one you made up. The same code check that judged the quotes above answers. No model is called.
+      <div class="live-actions"><input id="fool" maxlength="300" placeholder="${RECORDED ? "Live runs only: start a live run to try this" : "e.g. a claim the company never made"}" ${RECORDED ? "disabled" : ""}>
+      <button id="fool-go" ${RECORDED ? "disabled" : ""}>Check quote</button></div><div id="fool-out"></div></div>`;
+}
+
+async function foolGate() {
+  const q = $("fool").value.trim();
+  if (!q || !RUN_ID) return;
+  try {
+    const r = await post(`/api/live/${RUN_ID}/check_quote`, { quote: q });
+    $("fool-out").innerHTML = `<p class="${r.found ? "good" : "flag"}">${esc(r.verdict)}${r.url ? ` <a class="url" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a>` : ""}</p>`;
+  } catch (e) { $("fool-out").innerHTML = `<p class="live-error">${esc(e.message)}</p>`; }
 }
 
 function checks(c) {
@@ -180,6 +193,7 @@ function show(m) {
   state(m.step, "ok", "done");
   tierBanner();
   if (m.step === "write") wireDraft();
+  if (m.step === "score" && $("fool-go")) { $("fool-go").onclick = foolGate; $("fool").addEventListener("keydown", (e) => { if (e.key === "Enter") foolGate(); }); }
 }
 function wireDraft() {
   if (!$("copy")) return;
