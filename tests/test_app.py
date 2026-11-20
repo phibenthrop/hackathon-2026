@@ -13,7 +13,7 @@ from app.sources import DemoDataset, LocalWebsiteReader
 
 @pytest.fixture(autouse=True)
 def no_llm(monkeypatch):
-    for k in ("LLM_API_KEY", "LLM_BASE_URL", "LLM_MODEL"):
+    for k in ("LLM_API_KEY", "LLM_BASE_URL", "LLM_MODEL", "SIMILARCOMPANIES_TOKEN"):
         monkeypatch.delenv(k, raising=False)
 
 
@@ -24,7 +24,7 @@ def client():
 
 @pytest.fixture
 def run(client):
-    r = client.post("/api/qualify", json={})
+    r = client.post("/api/qualify", json={"dataset": "fictional"})
     assert r.status_code == 200
     return r.json()
 
@@ -79,10 +79,10 @@ def test_negated_mention_does_not_count(run):
 
 
 def test_disabling_criteria_changes_result(client):
-    crit = client.post("/api/icp", json={}).json()["criteria"]
+    crit = client.post("/api/icp", json={"dataset": "fictional"}).json()["criteria"]
     for c in crit:
         c["enabled"] = c["id"] == "industry"
-    r = client.post("/api/qualify", json={"criteria": crit}).json()
+    r = client.post("/api/qualify", json={"dataset": "fictional", "criteria": crit}).json()
     assert all(len(x["findings"]) == 1 for x in r["results"])
 
 
