@@ -29,6 +29,7 @@ from pydantic import BaseModel
 
 from .llm import LLMClient, LLMConfig, extract_json
 from .models import Criterion, Finding
+from . import gateway
 from .models_registry import NEBIUS_BASE_URL, cost_usd, registry_json, steps
 from .research import (
     MAX_INPUT_CHARS, Budget, BudgetExceeded, Research, Target, clean_input, keys_present, parse_target,
@@ -70,9 +71,12 @@ def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: floa
     Returns {"content", "seconds", "prompt_tokens", "completion_tokens"}; raises ModelError."""
     budget.take_model()
     key = os.environ.get("NEBIUS_API_KEY", "").strip()
+    base, sent_model = NEBIUS_BASE_URL, model
+    if gateway.active():  # branch otari: same Nebius model, routed through the Otari gateway
+        key, base, sent_model = gateway.api_key(), gateway.base_url(), gateway.model_name(model)
     if not key:
         raise ModelError(NO_KEYS_MSG)
-    client = LLMClient(LLMConfig(base_url=NEBIUS_BASE_URL, model=model, api_key=key,
+    client = LLMClient(LLMConfig(base_url=base, model=sent_model, api_key=key,
                                  timeout=timeout, max_tokens=max_tokens, reasoning_effort=reasoning,
                                  max_retries=1))
     t0 = time.monotonic()
@@ -85,7 +89,8 @@ def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: floa
         raise ModelError(f"Nebius call failed for {model}: {msg[:160]}") from None
     return {"content": content, "seconds": round(time.monotonic() - t0, 2),
             "prompt_tokens": client.usage.prompt_tokens, "completion_tokens": client.usage.completion_tokens,
-            "reasoning_tokens": client.usage.reasoning_tokens}
+            "reasoning_tokens": client.usage.reasoning_tokens,
+            **({"gateway_cost_usd": client.usage.gateway_cost_usd} if client.usage.gateway_cost_usd is not None else {})}
 
 
 def step_chat(st, messages: list[dict], budget: Budget) -> dict:
@@ -116,6 +121,8 @@ def _meta(step_key: str, model: str, calls: list[dict]) -> dict:
     return {"step": step_key, "model": model, "calls": len(calls), "seconds": round(sum(c["seconds"] for c in calls), 2),
             "prompt_tokens": pt, "completion_tokens": ct, "reasoning_tokens": sum(c.get("reasoning_tokens", 0) for c in calls),
             "cost_usd": round(cost, 6),
+            **({"gateway_cost_usd": round(sum(c.get("gateway_cost_usd") or 0 for c in calls), 6)}
+               if any("gateway_cost_usd" in c for c in calls) else {}),
             **({"fallback_from": fb["fallback_from"], "fallback_reason": fb["fallback_reason"]} if fb else {})}
 
 
@@ -394,7 +401,7 @@ class StartRequest(BaseModel):
 
 @router.get("/api/live/config")
 def live_config() -> dict:
-    return {"live": keys_present(), "message": None if keys_present() else NO_KEYS_MSG,
+    return {"live": keys_present(), "gateway": gateway.info(), "message": None if keys_present() else NO_KEYS_MSG,
             "registry": registry_json(), "default_product": DEFAULT_PRODUCT,
             "default_icp": [c.label for c in default_icp()], "max_input": MAX_INPUT_CHARS,
             "runs_left": max(0, MAX_RUNS_PER_PROCESS - (_counter["runs"] if _counter["day"] == dt.date.today().isoformat() else 0)),

@@ -336,6 +336,7 @@ async function init() {
   applyPreset("coldtrace");
   $("mode").textContent = cfg.live ? `live · ${cfg.runs_left} runs left today` : "recorded only";
   $("mode").className = "badge " + (cfg.live ? "llm" : "rules");
+  if (cfg.gateway && cfg.gateway.active) $("mode").textContent += " · via Mozilla Otari gateway (Nebius behind it)";
   cfg.registry.forEach((r) => {
     WHY[r.step] = String(r.why || "").split(":")[0].trim();
     if (r.step === "research") { const p = /\$([\d.]+)/.exec(r.price || ""); if (p) CREDIT_USD = +p[1]; }

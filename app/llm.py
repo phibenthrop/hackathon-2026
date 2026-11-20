@@ -75,6 +75,7 @@ class Usage:
     reasoning_tokens: int = 0
     errors: int = 0
     retries: int = 0
+    gateway_cost_usd: float | None = None  # set when a gateway (Otari) meters the call
     log: list = field(default_factory=list)
 
 
@@ -110,6 +111,8 @@ class LLMClient:
                 self.usage.completion_tokens += int(u.get("completion_tokens") or 0)
                 d = u.get("completion_tokens_details") or {}
                 self.usage.reasoning_tokens += int(d.get("reasoning_tokens") or 0)
+                if u.get("cost_usd") is not None:
+                    self.usage.gateway_cost_usd = (self.usage.gateway_cost_usd or 0) + float(u["cost_usd"])
                 msg = data["choices"][0]["message"]
                 return msg.get("content") or ""
             except urllib.error.HTTPError as exc:
