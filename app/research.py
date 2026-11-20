@@ -130,6 +130,12 @@ def _squash(s: str | None) -> str:
     return re.sub(r"\s+", " ", s or "").strip()
 
 
+def depersonalize(text: str) -> str:
+    """Drop sentences that name people, e-mails, phones or testimonials (same filter as the snapshot)."""
+    from .realdata import SENT_SPLIT, _personal
+    return " ".join(x for x in SENT_SPLIT.split(_squash(text)) if not _personal(x))
+
+
 def _queries(t: Target) -> list[tuple[str, str, str | None, str]]:
     name = f'"{t.name}"'
     site = f" {t.domain}" if t.domain else ""
@@ -164,7 +170,7 @@ def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | 
     def add(url: str, title: str, body: str, kind: str, snippet: str | None = None, published=None):
         url = (url or "").strip()
         key = url.rstrip("/").lower()
-        body = _squash(body)[:BODY_CHARS]
+        body = depersonalize(body)[:BODY_CHARS]
         if not url.startswith(("http://", "https://")) or key in seen or len(body) < 40 or SKIP_URL.search(url):
             return
         if kind != "website" and not mentions(target, body, url):
@@ -173,7 +179,7 @@ def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | 
             return
         seen.add(key)
         res.sources.append(Source(len(res.sources) + 1, url, _squash(title)[:160] or url,
-                                  _squash(snippet or body)[:EXCERPT_CHARS], body, kind, published))
+                                  depersonalize(snippet or "")[:EXCERPT_CHARS] or body[:EXCERPT_CHARS], body, kind, published))
 
     if target.domain:
         try:
