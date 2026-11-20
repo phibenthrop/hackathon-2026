@@ -81,14 +81,20 @@ def verify_quote(site: Website, quote: str | None, page: str | None = None) -> s
     return None
 
 
-def fragment_url(domain: str, page: str, quote: str) -> str:
-    """Public URL with a text fragment (#:~:text=) pointing at the quote."""
+def fragment_url(domain: str, page: str, quote: str, base_url: str | None = None) -> str:
+    """Public URL with a text fragment (#:~:text=) pointing at the quote.
+
+    ``base_url`` is the page URL as fetched (real data); otherwise https://<domain><page>.
+    """
     words = quote.split()
     if len(words) <= 8:
         frag = urlquote(quote, safe="")
     else:
         frag = urlquote(" ".join(words[:4]), safe="") + "," + urlquote(" ".join(words[-4:]), safe="")
-    return f"https://{domain}{page}#:~:text={frag}"
+    base = (base_url or f"https://{domain}{page}").split("#")[0]
+    if base.count("/") == 2:  # bare origin: https://host -> https://host/
+        base += "/"
+    return f"{base}#:~:text={frag}"
 
 
 def local_source_link(company_id: str, page: str, quote: str) -> str:

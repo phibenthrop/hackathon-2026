@@ -3,13 +3,11 @@
 Two small interfaces keep the demo data swappable:
 
 * ``CompanySource`` answers "which companies are similar to these customers?"
-  Today: ``DemoCompanySource`` replays a canned database answer from
-  ``data/companies.json``. Later: a client for similarcompanies.ai.
+  ``DemoCompanySource`` replays a canned answer from ``data/companies.json``
+  (fictional); ``realdata.SimilarCompaniesSource`` asks similarcompanies.ai.
 * ``WebsiteReader`` returns the text of a company website, page by page.
-  Today: ``LocalWebsiteReader`` reads ``data/sites/<id>.txt``. Later: a fetcher
-  that respects robots.txt.
-
-All demo companies are fictional.
+  ``LocalWebsiteReader`` reads ``data/sites/<id>.txt`` (fictional);
+  ``realdata.HttpWebsiteReader`` fetches public pages, respecting robots.txt.
 """
 
 from __future__ import annotations
@@ -40,6 +38,10 @@ class Company:
 class Website:
     company: Company
     pages: dict[str, str] = field(default_factory=dict)  # path -> text
+    urls: dict[str, str] = field(default_factory=dict)  # path -> fetched public URL (real data only)
+
+    def page_url(self, page: str) -> str:
+        return self.urls.get(page) or f"https://{self.company.domain}{page}"
 
     @property
     def full_text(self) -> str:
