@@ -11,7 +11,7 @@
    Each step shows its model, seconds, tokens and cost.
 4. Click any quote to open its source. Edit the draft. Nothing is sent.
 
-No key? The page replays a recorded run and says so (`data/live_example.json`, written by `scripts/record_live_example.py`).<!--NOEX--> At the time of writing no run has been recorded yet.<!--/NOEX-->
+No key? The page replays a recorded run and says so (`data/live_example.json`, written by `scripts/record_live_example.py`).
 
 ## Who it is for, and what changes
 
