@@ -88,6 +88,29 @@
   </ul>
 </section>
 
+<!-- live-agent slide (branch live-agent): model per step + comparison, filled from /api/live/config -->
+<section class="slide" id="live-models">
+  <h2>Live agent: which model does which step</h2>
+  <table style="width:100%;font-size:.8em"><tbody id="live-reg"><tr><td>Research</td><td>Tavily search + extract</td></tr></tbody></table>
+  <h3 style="margin-top:1em">Scoring step, measured on the real snapshot</h3>
+  <div id="live-cmp" style="font-size:.75em">No comparison recorded yet.</div>
+  <p style="font-size:.7em">Open <a href="/live">/live</a> and type any company.</p>
+</section>
+<script>
+fetch("/api/live/config").then((r) => r.json()).then((c) => {
+  const e = (s) => String(s ?? "").replace(/[&<>]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[x]));
+  document.getElementById("live-reg").innerHTML = c.registry.map((r) => `<tr><td><b>${e(r.title)}</b></td><td><code>${e(r.model)}</code></td><td>${e(r.why)}</td></tr>`).join("");
+  const m = c.comparison && c.comparison.models;
+  if (m) {
+    const pct = (v) => v == null ? "-" : Math.round(v * 100) + "%";
+    document.getElementById("live-cmp").innerHTML = `<table style="width:100%"><tr><th>Model</th><th>s / firm</th><th>USD / firm</th><th>valid JSON</th><th>quotes discarded</th><th>tier agreement</th></tr>` +
+      m.map((x) => `<tr><td>${e(x.model)}</td><td>${x.avg_seconds ?? "-"}</td><td>${x.cost_per_company_usd == null ? "-" : "$" + x.cost_per_company_usd.toFixed(5)}</td><td>${pct(x.valid_json_rate)}</td><td>${pct(x.discarded_quote_rate)}</td><td>${pct(x.tier_agreement)}</td></tr>`).join("") +
+      `</table><p>${e(c.comparison.note)}</p>`;
+  }
+}).catch(() => {});
+</script>
+<!-- end live-agent slide -->
+
 <div class="foot">Arrow keys or click to navigate · <span id="pos"></span> · <a href="/">open the app</a> · fictional dataset: invented companies · real dataset: similarcompanies.ai snapshot 2026-11-20, quotes from public company websites</div>
 <script>
   const slides = [...document.querySelectorAll(".slide")];

@@ -144,6 +144,55 @@ uv run python scripts/pull_real.py reclean  # re-apply text cleaning to stored p
 - ICP: industry terms are taken from the similarcompanies.ai industry and keyword fields and kept if at least two of the three seed websites use them. similarcompanies.ai returned no profile for the seeds themselves, so the terms are counted on the seed websites.
 - The seeds are examples of the target profile, not actual customers.
 
+## Live agent (`/live`)
+
+Open <http://127.0.0.1:8765/live>. Enter your product in one sentence, keep or edit the ICP (pre-filled with the cold-chain ICP the lead list uses) and type **any** company domain or name. The agent runs four visible steps; each shows its model, duration, tokens and cost:
+
+1. **Research** (Tavily): the company's own website (extract) plus three targeted searches: what the company does, news of the last 12 months, sites and size. Hits that do not name the company, social profiles and pages about individual people are dropped; sentences naming people are removed. Each source keeps its URL.
+2. **Score** (small model): a verdict per ICP criterion with a verbatim quote and the source number. The existing quote gate (`scoring.enforce_evidence`) discards any quote that is not in the fetched text and the page shows it as discarded. The app computes the A/B/C tier (`scoring.tier_for`), not the model.
+3. **Plan** (reasoning model): whom to address (roles only; the agent never names or searches people), the hook, the channel, what not to say. Every fact cites `[n]`.
+4. **Draft** (writing model): a short email in the customer's language (German for German sites, English otherwise), every fact with `[n]`. Each `[n]` is a link to the source. References to missing sources and sentences with numbers but no source are flagged. The draft sits in an editable text box with **Copy** and **Discard**; the app sends nothing.
+
+Guards for a public demo: per run at most 5 Tavily calls and 4 model calls, `max_tokens` and a timeout per call, at most 60 runs per process and day, input capped at 200 characters. Web text and form input go to the models inside `<untrusted>` blocks with the instruction never to follow instructions found there. Without `NEBIUS_API_KEY` and `TAVILY_API_KEY` the page says "live mode needs NEBIUS_API_KEY and TAVILY_API_KEY" and plays back a recorded run (`data/live_example.json`, marked as recorded). An empty Nebius balance shows as "Nebius account has no credit".
+
+## Who needs this and how they do it today
+
+A founder or the first GTM hire at a B2B startup who has a target account and twenty minutes. Today they open the company website, search for news, guess whether the account fits, look for a reason to write, and write the email from scratch, or paste the domain into a chatbot that returns confident text with no sources.
+
+## What gets easier
+
+One input, about a minute, and the result is checkable: every ICP verdict has a quote that provably appears in a fetched page, every fact in the plan and the draft links to its source, and claims without a source are flagged. Before: open ten tabs, decide on gut feeling, write from a blank page. After: read the sourced verdicts, accept or fix the plan, edit the draft, send it yourself.
+
+## Which model does which step, and why
+
+All model calls go through Nebius Token Factory; web research goes through Tavily. The mapping lives in one file, `app/models_registry.py`, and each step can be overridden with `LIVE_MODEL_SCORE`, `LIVE_MODEL_PLAN`, `LIVE_MODEL_WRITE`. Prices are from the Nebius catalog on 2026-11-20 (USD per 1M tokens in/out).
+
+| Step | Model | Why |
+|---|---|---|
+| Research | Tavily search + extract | Live web results with URLs; the website extract gives the text the quote gate checks against. |
+| Score | `zai-org/GLM-5.3-Flash` (0.15 / 0.50) | Small, fast, cheap: one call per company, JSON out, and code checks every quote anyway. |
+| Plan | `moonshotai/Kimi-K3` (3 / 15) | Strong reasoning, one call per run: choosing whom to address and which hook needs judgement, the volume is low. |
+| Write | `zai-org/GLM-5.3` (1.40 / 4.40) | Fluent multilingual writer, fast enough for a live demo, cheaper than the planner. |
+
+Comparison of models for the scoring step: `uv run python scripts/compare_models.py --n 12` scores 12 companies of the real snapshot with each model (same prompt and quote gate as the app) and writes `data/real/model_comparison.json`: latency, tokens and cost per company, share of valid JSON, share of discarded quotes, tier agreement. `/live` shows the table.
+
+## Limits: what works, what is unfinished, what existed before the event
+
+- Everything in this repository was built on 20 Nov 2026 at the hack day. Nothing existed before the event except the public APIs (Tavily, Nebius, similarcompanies.ai).
+- Works: live Tavily research on any company, quote gate, app-computed tier, plan and draft with clickable sources, caps, recorded fallback, offline tests with mocked Tavily and Nebius.
+- Unfinished: model numbers depend on the Nebius account having credit; see `data/real/model_comparison.json` for what was actually measured. Language detection is a heuristic (TLD and stop words). The "no source" check for the draft only catches sentences with numbers. Search hits are filtered by name match, so a company with a common name can pull in a namesake.
+- The lead list uses a snapshot (similarcompanies.ai, 2026-11-20); the ICP criteria come from heuristics over three seed websites. The seller ColdTrace is fictional.
+
+## Try it
+
+```
+uv sync
+set -a; . /path/to/your.env; set +a     # NEBIUS_API_KEY and TAVILY_API_KEY
+uv run uvicorn app.main:app --host 127.0.0.1 --port 8765
+```
+
+Open <http://127.0.0.1:8765/live>, type a domain (for example `chillspeed.co.uk`, `stef.com`, or a German company such as `nagel-group.com`) and press **Run the agent**. Without keys the page plays the recorded run. Tests: `uv run pytest -q` (no network).
+
 ## Next step
 
 Run the source and website reader live per request, add a source for company size, and generate `data/real/llm_scores.json` once the Nebius account has credit.

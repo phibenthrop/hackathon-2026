@@ -147,7 +147,7 @@ def _queries(t: Target) -> list[tuple[str, str, str | None, str]]:
 
 
 # pages about individual people are never used (no personal data), nor job/social noise
-SKIP_URL = re.compile(r"linkedin\.com/in/|facebook\.com|instagram\.com|tiktok\.com|x\.com/|twitter\.com|indeed\.|glassdoor\.",
+SKIP_URL = re.compile(r"/people/|/team/|/profile/|/staff/|linkedin\.com/in/|facebook\.com|instagram\.com|tiktok\.com|x\.com/|twitter\.com|indeed\.|glassdoor\.",
                       re.IGNORECASE)
 
 
