@@ -121,14 +121,15 @@ function renderPlan(r) {
 }
 
 // Check line over the draft, computed in the browser: words, questions, sourced facts.
-function draftCheck(body, cited) {
+function draftCheck(body, cited, lang) {
+  const min = lang === "German" ? 40 : 50;  // German compounds: fewer, longer words
   const plain = body.replace(/\[\d{1,2}\]/g, " ");
   const words = (plain.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu) || []).length;
   const q = (plain.match(/\?/g) || []).length;
   const facts = cited.length;
   const issues = [];
   if (words > 100) issues.push(`${words} words - cut to 100`);
-  if (words < 50) issues.push(`${words} words - too short`);
+  if (words < min) issues.push(`${words} words - too short`);
   if (q === 0) issues.push("no question - add one");
   if (q > 1) issues.push(`${q} questions - cut ${q === 2 ? "one" : q - 1}`);
   if (facts < 1) issues.push("no sourced fact - add one with [n]");
@@ -145,8 +146,9 @@ function renderWrite(r) {
   const srcList = cited.map((n) => SOURCES.find((s) => s.n === n)).filter(Boolean)
     .map((s) => `<li value="${s.n}"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a> <span class="url">${esc(s.url)}</span></li>`).join("");
   return `<p><strong>Subject:</strong> ${linkRefs(d.subject)}</p>
-    <div id="draftcheck">${draftCheck(d.body, cited)}</div>
+    <div id="draftcheck">${draftCheck(d.body, cited, r.language)}</div>
     <textarea class="draftbox" id="draft">${esc(d.body)}</textarea>
+    <div class="live-preview"><span class="hint">Read with clickable source marks:</span><br>${linkRefs(d.body).replace(/\n/g, "<br>")}</div>
     <p class="draftonly">Draft only — a person decides what goes out.</p>
     <p class="live-legal">Germany/EU: cold email needs prior consent, also in B2B. Check before you send. Not legal advice.</p>
     <button id="copy">Copy without source marks</button> <button id="discard">Discard</button>
@@ -175,7 +177,7 @@ function show(m) {
 function wireDraft() {
   if (!$("copy")) return;
   const cited = (RESULTS.write.checks && RESULTS.write.checks.cited) || [];
-  $("draft").addEventListener("input", () => { $("draftcheck").innerHTML = draftCheck($("draft").value, cited); });
+  $("draft").addEventListener("input", () => { $("draftcheck").innerHTML = draftCheck($("draft").value, cited, RESULTS.write.language); });
   $("copy").onclick = async () => {
     const text = $("draft").value.replace(/[ \t]*\[\d{1,2}\]/g, "");
     await navigator.clipboard.writeText(text); $("copy").textContent = "Copied";
@@ -253,6 +255,16 @@ async function stepCall(step) {
   }
 }
 
+let FORCE_DRAFT = false;
+// Tier C: the agent stops before the email step (no model call, cost 0) unless the user insists.
+function stopped() {
+  state("write", "", "stopped");
+  $("m-write").innerHTML = "";
+  $("o-write").innerHTML = `<p class="live-stop"><strong>Stopped: not a fit. No email drafted.</strong> No model was called for this step (cost $0).</p>
+    <button id="force">Draft anyway</button>`;
+  $("force").onclick = () => { FORCE_DRAFT = true; runFrom("write").finally(() => { FORCE_DRAFT = false; }); };
+}
+
 async function runFrom(start) {
   $("go").disabled = true;
   let cur = start;
@@ -263,6 +275,7 @@ async function runFrom(start) {
       startTimer(step);
       const m = await stepCall(step);
       stopTimer(); show(m); totals(m.totals);
+      if (step === "plan" && RESULTS.score && RESULTS.score.tier === "C" && !FORCE_DRAFT) { stopped(); break; }
     }
   } catch (e) { fail(cur, e); }
   finally { $("go").disabled = false; }
@@ -289,6 +302,13 @@ async function example() {
   if (!r.ok) { $("o-research").innerHTML = `<p class="live-error">No recorded run stored yet.</p>`; return; }
   const ex = await r.json();
   RECORDED = true;
+  if (ex.input) {  // show the profile the recorded run used, not the default one
+    $("company").value = ex.input.company || "";
+    if (ex.input.product) $("product").value = ex.input.product;
+    if (Array.isArray(ex.input.icp)) $("icp").value = ex.input.icp.join("\n");
+    const k = Object.keys(PRESETS).find((key) => PRESETS[key].icp.join("|") === (ex.input.icp || []).join("|"));
+    document.querySelectorAll("[data-preset]").forEach((b) => b.classList.toggle("on", b.dataset.preset === k));
+  }
   document.querySelector("main").insertAdjacentHTML("afterbegin",
     `<p class="recorded"><strong>Recorded run</strong> - a real run saved on ${esc(ex.recorded_at || "2026-11-20")} for ${esc(ex.input.company)}. Replayed, no live calls.</p>`);
   ex.steps.forEach(show);
@@ -317,7 +337,7 @@ async function init() {
   $("mode").textContent = cfg.live ? `live · ${cfg.runs_left} runs left today` : "recorded only";
   $("mode").className = "badge " + (cfg.live ? "llm" : "rules");
   cfg.registry.forEach((r) => {
-    WHY[r.step] = String(r.why || "").split(/[:,]/)[0].trim();
+    WHY[r.step] = String(r.why || "").split(":")[0].trim();
     if (r.step === "research") { const p = /\$([\d.]+)/.exec(r.price || ""); if (p) CREDIT_USD = +p[1]; }
   });
   $("reg").innerHTML = cfg.registry.map((r) => `<tr><td>${esc(r.title)}</td><td><code>${esc(r.model)}</code></td><td>${esc(r.why)}</td><td class="hint">${esc(r.price)}</td></tr>`).join("");

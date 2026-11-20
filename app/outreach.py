@@ -221,14 +221,17 @@ It is a DRAFT: a person will edit it and decide whether it goes out.
 {UNTRUSTED_RULE}
 Rules:
 - Language: write in the language given as LANGUAGE. German: formal "Sie", no anglicisms where a German word exists.
-- Length: 50 to 90 words in the body. Four sentences at most, then the sign-off.
+- Length: 50 to 90 words in the body (German: 45 to 80). Four sentences at most, then the sign-off.
 - Sentence 1, the hook: ONE specific, checkable fact about the recipient's company taken from ONE source,
-  marked [n]. Use the hook from the plan. No compliment, no "I saw that", no "I hope this finds you well".
+  marked [n]: an occasion or a concrete observation (news, a new site, a stated plan), never general
+  encyclopaedia knowledge such as "you operate X and Y". Use the hook from the plan.
+  No compliment, no "I saw that", no "I hope this finds you well", no "I am writing to the head of ...".
 - Sentence 2: the problem this fact probably causes them, in their words, not in product words.
 - Sentence 3 (optional): one plain sentence on what the seller does about that problem. No feature list,
   no numbers about the seller, no customer names, no claims you were not given.
 - Last sentence: exactly ONE question that asks about interest ("Is this something you are looking at?").
-  No meeting request, no calendar link, no second question.
+  No meeting request, no calendar link, no second question, no alternative offer after it
+  (no "or I can send a one-pager"). No numbers in the ask (no "15 minutes").
 - Say "you/your" more often than "we/our". Never start with "I am" or "We are".
 - Facts about the recipient only with [n]. If no sourced fact is available, write {{"subject": "", "body": ""}}.
 - Address the role, never a named person. No placeholders except the sign-off line "[Sender]".

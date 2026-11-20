@@ -90,6 +90,8 @@ html.live { font-size: 112.5%; }
 .live-chips { display: flex; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
 .live-chip { font-size: .85rem; padding: .25rem .75rem; border-radius: 999px; background: #eef3f9; border-color: #d3deea; }
 .live-chip.on { background: #1f4e79; border-color: #1f4e79; color: #fff; }
+.live-preview { max-width: 46rem; margin: .5rem 0; padding: .5rem .75rem; border-left: 3px solid #d3deea; font-size: .95rem; }
+.live-stop { border: 1px solid #c62828; background: #fdecea; padding: .75rem 1rem; border-radius: 8px; }
 .live-fallback { flex-basis: 100%; font-size: .85rem; color: #8a5a00; }
 .live-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1rem 0; }
 .live-actions .primary { font-size: 1.05rem; padding: .5rem 1.5rem; }

@@ -33,8 +33,8 @@ Comparison on the scoring step: <!--CMP-->measured on 12 companies of the real s
 
 | Model | Seconds / company | USD / company | Valid JSON | Quotes discarded |
 |---|---|---|---|---|
-| `zai-org/GLM-5.3-Flash` (reasoning low) | 2.96 | 0.000386 | 100% | 0% of 38 |
-| `openai/gpt-oss-120b` | 3.48 | 0.001378 | 75% | 35% of 23 |
+| `zai-org/GLM-5.3-Flash` (reasoning low) | 3.34 | 0.000394 | 100% | 3% of 36 |
+| `openai/gpt-oss-120b` | 1.78 | 0.000574 | 100% | 29% of 35 |
 | `nvidia/Nemotron-3_5-Lightning` | - | 0.001053 | 0% | - (no valid JSON) |
 
 GLM-5.3-Flash is the scoring model: fastest, cheapest, and every quote it proposed passed the gate. Tier agreement is measured against GLM-5.3-Flash itself (gpt-oss-120b: 44%), so it shows disagreement, not who is right.<!--/CMP-->
