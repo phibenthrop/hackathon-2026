@@ -1,0 +1,25 @@
+{
+ "id": "templartransport-com",
+ "domain": "templartransport.com",
+ "fetched": "2026-11-20",
+ "user_agent": "icp-qualifier-demo/0.1",
+ "status": "ok",
+ "note": "lang=en-us",
+ "pages": [
+  {
+   "path": "/",
+   "url": "https://www.templartransport.com/",
+   "text": "Over 30 years experience in the transportation of chilled and frozen goods\nFamily run business established in 1980\nSmall team of professional and friendly drivers\nWelcome to Templar Transport Ltd\nEstablished since 1980, Templar Transport Ltd provides temperature controlled distribution throughout the UK. With a range of vehicles sizes available, this family run business prides itself on their professional and flexible service.\n© 2015, Templar Transport Ltd\nWebsite Designed by FK Designs"
+  },
+  {
+   "path": "/about",
+   "url": "https://www.templartransport.com/about",
+   "text": "Over 30 years experience in the transportation of chilled and frozen goods\nFamily run business established in 1980\nSmall team of professional and friendly drivers\nAbout Templar Transport\nTemplar Transport is a family run business established in 1980 to provide temperature controlled distribution across the UK. We have over 30 years experience in the transportation of chilled and frozen goods throughout the country. With a selection of modern vehicles ranging from van to articulated lorry no job is too big or small for us.\nSo whether a one off job or regular contract we will be happy to help.\n© 2015, Templar Transport Ltd\nWebsite Designed by FK Designs"
+  },
+  {
+   "path": "/services",
+   "url": "https://www.templartransport.com/services",
+   "text": "Over 30 years experience in the transportation of chilled and frozen goods\nFamily run business established in 1980\nSmall team of professional and friendly drivers\n© 2015, Templar Transport Ltd\nWebsite Designed by FK Designs"
+  }
+ ]
+}

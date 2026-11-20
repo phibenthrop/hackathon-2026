@@ -1,0 +1,1107 @@
+{
+ "calls": [
+  {
+   "arguments": {
+    "seed_companies": [
+     "calderhead.co.uk",
+     "buffaload.co.uk",
+     "conwaybailey.co.uk"
+    ],
+    "summary": "Provides temperature-controlled warehousing, cold storage and refrigerated road transport for chilled and frozen food. Runs its own cold stores and refrigerated fleet and delivers to retailers, food manufacturers and food service customers.",
+    "geo": {
+     "countries": [
+      "GB"
+     ]
+    }
+   },
+   "count": 17,
+   "has_more": true,
+   "next_steps": [
+    "more",
+    "refine",
+    "wrap_up"
+   ]
+  },
+  {
+   "arguments": {
+    "search_id": "fb8547dc-4456-4aac-96ed-b7b3f6674d7a",
+    "more": true
+   },
+   "count": 19,
+   "has_more": true,
+   "next_steps": [
+    "more",
+    "refine",
+    "wrap_up"
+   ]
+  },
+  {
+   "arguments": {
+    "search_id": "fb8547dc-4456-4aac-96ed-b7b3f6674d7a",
+    "more": true
+   },
+   "count": 16,
+   "has_more": true,
+   "next_steps": [
+    "more",
+    "refine",
+    "wrap_up"
+   ]
+  }
+ ],
+ "raw": [
+  {
+   "name": "Templar Transport Ltd",
+   "domain": "templartransport.com",
+   "website": "https://www.templartransport.com/",
+   "country": "United Kingdom",
+   "description": "Templar Transport Ltd is a family-owned logistics company focused on temperature-controlled distribution. They have extensive experience in transporting chilled and frozen goods throughout the UK. Their professional team and diverse fleet ensure reliable and flexible service for their clients.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Cold Chain Management"
+   ],
+   "keywords": [
+    "temperature-controlled transport",
+    "chilled goods logistics",
+    "frozen goods distribution",
+    "UK transport services",
+    "family-run logistics"
+   ]
+  },
+  {
+   "name": "ChillXpress Ltd",
+   "domain": "chillxpress.co.uk",
+   "website": "https://chillxpress.co.uk",
+   "country": "United Kingdom",
+   "description": "ChillXpress is a leading provider of refrigerated transport services in the UK and Europe. They focus on delivering chilled and frozen food products with a commitment to reliability and flexibility. Their experienced team and advanced monitoring systems ensure that all goods arrive in perfect condition.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Food Distribution"
+   ],
+   "keywords": [
+    "refrigerated transport",
+    "chilled food distribution",
+    "frozen food logistics",
+    "temperature-controlled delivery",
+    "food transport services"
+   ]
+  },
+  {
+   "name": "247 Haulage Services",
+   "domain": "247haulageservices.com",
+   "website": "https://www.247haulageservices.com/",
+   "country": "United Kingdom",
+   "description": "247 Haulage Services specializes in temperature-controlled distribution across the UK. With a commitment to reliability and customer satisfaction, they offer around-the-clock services. Their fleet is equipped to handle various shipment sizes, ensuring safe and timely deliveries.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Courier Services",
+    "Cold Chain Management"
+   ],
+   "keywords": [
+    "temperature-controlled distribution",
+    "refrigerated transport",
+    "courier services",
+    "UK logistics",
+    "reliable delivery services"
+   ]
+  },
+  {
+   "name": "Edwards Transport Shropshire Ltd.",
+   "domain": "edwards-transport.com",
+   "website": "https://edwards-transport.com",
+   "country": "United Kingdom",
+   "description": "Edwards Transport specializes in transport and storage services, focusing on temperature-controlled logistics. With over 30 years of experience, we provide efficient solutions for clients across the UK and Europe. Our extensive fleet and storage capabilities ensure that we meet diverse customer needs effectively.",
+   "industry": [
+    "Transport",
+    "Logistics",
+    "Storage",
+    "Food Distribution"
+   ],
+   "keywords": [
+    "transport services",
+    "storage solutions",
+    "refrigerated transport",
+    "milk tankers",
+    "general haulage",
+    "temperature-controlled storage",
+    "added value services"
+   ]
+  },
+  {
+   "name": "Broughton Transport Solutions Ltd",
+   "domain": "broughtontransport.com",
+   "website": "https://www.broughtontransport.com/",
+   "country": "United Kingdom",
+   "description": "Broughton Transport Solutions is a leading logistics provider specializing in temperature-controlled transport. They offer a range of services including refrigerated haulage and groupage shipping across the UK and Europe. With a focus on quality and customer care, they ensure reliable and efficient delivery solutions.",
+   "industry": [
+    "Logistics",
+    "Transport",
+    "Warehousing and Storage"
+   ],
+   "keywords": [
+    "logistics",
+    "transport",
+    "refrigerated haulage",
+    "ambient transport",
+    "UK transport services",
+    "international transport",
+    "pallet network"
+   ]
+  },
+  {
+   "name": "Iceotemp",
+   "domain": "iceotemp.co.uk",
+   "website": "https://iceotemp.co.uk",
+   "country": "United Kingdom",
+   "description": "Iceotemp is a leading provider of temperature-controlled distribution services in the UK. They offer a variety of delivery options, including same-day express services, to cater to diverse customer needs. With a focus on reliability and efficiency, Iceotemp ensures that temperature-sensitive goods are transported safely and on time.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Cold Chain Management"
+   ],
+   "keywords": [
+    "temperature-controlled distribution",
+    "same-day delivery",
+    "refrigerated transport",
+    "food logistics",
+    "pharmaceutical logistics",
+    "courier services"
+   ]
+  },
+  {
+   "name": "Transveg",
+   "domain": "transveg.pl",
+   "website": "https://transveg.pl/en/",
+   "country": "United Kingdom",
+   "description": "Transveg specializes in refrigerated transport services across Western Europe. Our expert team ensures timely deliveries of temperature-sensitive goods. We cater to a diverse range of industries, providing tailored logistics solutions.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Refrigerated Transport"
+   ],
+   "keywords": [
+    "refrigerated transport",
+    "logistics",
+    "temperature-sensitive goods",
+    "bi-temperature trailers",
+    "freight tracking"
+   ]
+  },
+  {
+   "name": "Moores Refrigeration Controlled Transport",
+   "domain": "mrct.co.uk",
+   "website": "https://www.mrct.co.uk/",
+   "country": "United Kingdom",
+   "description": "MRCT specializes in refrigerated transport and logistics, serving the food industry since 1969. The company prides itself on its family-owned values and commitment to customer satisfaction. With a modern fleet and multiple locations, MRCT provides tailored solutions for various delivery needs.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Food Services"
+   ],
+   "keywords": [
+    "refrigerated transport",
+    "logistics",
+    "food delivery",
+    "warehousing",
+    "HGV driving jobs"
+   ]
+  },
+  {
+   "name": "Transkold",
+   "domain": "transkold.co.uk",
+   "website": "https://www.transkold.co.uk/",
+   "country": "United Kingdom",
+   "description": "Transkold specializes in cold storage and refrigerated transport in Central London. With extensive facilities and a dedicated fleet, they cater to food importers and manufacturers. Their services include blast freezing, chill storage, and cross docking, ensuring flexibility and efficiency for their clients.",
+   "industry": [
+    "Cold Storage",
+    "Logistics",
+    "Food Distribution",
+    "Transportation"
+   ],
+   "keywords": [
+    "cold storage",
+    "refrigerated transport",
+    "blast freezing",
+    "chill storage",
+    "cross docking",
+    "food logistics",
+    "temperature monitoring"
+   ]
+  },
+  {
+   "name": "Ready Freight Ltd",
+   "domain": "readyfrt.com",
+   "website": "https://www.readyfrt.com/",
+   "country": "United Kingdom",
+   "description": "Ready Freight Ltd specializes in providing comprehensive transport solutions, including ambient and temperature-controlled transport. We focus on container haulage and traction-only services, ensuring flexibility and reliability for our clients. Our commitment to safety and punctuality positions us as a trusted partner in the logistics industry.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Haulage"
+   ],
+   "keywords": [
+    "haulage",
+    "transportation",
+    "logistics",
+    "temperature-controlled transport",
+    "container services",
+    "traction-only solutions"
+   ]
+  },
+  {
+   "name": "Polar International",
+   "domain": "polarinternational.co.uk",
+   "website": "https://polarinternational.co.uk",
+   "country": "United Kingdom",
+   "description": "Polar International offers comprehensive freight transport and logistics services throughout Ireland, the UK, and Europe. They specialize in temperature-controlled transport and have a strong focus on client engagement and trust. With decades of experience, they provide tailored solutions for a variety of industries, ensuring reliability and safety in every delivery.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Cold Chain Management",
+    "Pharmaceuticals",
+    "Freight Forwarding"
+   ],
+   "keywords": [
+    "Freight Transport",
+    "Logistics Services",
+    "Temperature Controlled Transport",
+    "Refrigeration Logistics",
+    "Cold Chain Logistics",
+    "Pharmaceutical Transport",
+    "Warehousing",
+    "Distribution",
+    "Custom Clearance",
+    "Live Tracking"
+   ]
+  },
+  {
+   "name": "TSC Transport Ltd",
+   "domain": "tsctransportltd.co.uk",
+   "website": "https://tsctransportltd.co.uk",
+   "country": "United Kingdom",
+   "description": "TSC Transport Ltd offers comprehensive transport services across the UK and Europe. We specialize in general haulage and temperature-controlled distribution, ensuring the safe transport of sensitive goods. Our experienced team and modern fleet are committed to delivering quality services to our clients.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Haulage"
+   ],
+   "keywords": [
+    "transport",
+    "logistics",
+    "haulage",
+    "temperature-controlled distribution",
+    "UK transport",
+    "European transport"
+   ]
+  },
+  {
+   "name": "Chillway",
+   "domain": "chillway.co.uk",
+   "website": "https://www.chillway.co.uk",
+   "country": "United Kingdom",
+   "description": "Chillway is a premier temperature-controlled transport service provider with over 50 years of experience. The company operates around the clock, ensuring timely and efficient delivery of goods. With a strong focus on quality and customer service, Chillway is dedicated to meeting the unique needs of its clients.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Supply Chain Management"
+   ],
+   "keywords": [
+    "temperature-controlled transport",
+    "logistics",
+    "time-critical delivery",
+    "supply chain",
+    "cold chain management"
+   ]
+  },
+  {
+   "name": "Long Lane Deliveries",
+   "domain": "longlanedeliveries.co.uk",
+   "website": "https://www.stef.com/united-kingdom/long-lane-deliveries-has-joined-the-stef-group",
+   "country": "United Kingdom",
+   "description": "Long Lane Deliveries offers top-notch chilled and frozen distribution services throughout the UK. With a focus on quality and compliance, they cater to businesses needing reliable transport solutions. Their extensive fleet and commitment to customer satisfaction set them apart in the logistics industry.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Food Distribution"
+   ],
+   "keywords": [
+    "chilled distribution",
+    "frozen delivery",
+    "logistics",
+    "transport services",
+    "EFSIS accredited"
+   ]
+  },
+  {
+   "name": "Frost Transport Solutions Ltd",
+   "domain": "frosttransportsolutions.co.uk",
+   "website": "https://www.frosttransportsolutions.co.uk/",
+   "country": "United Kingdom",
+   "description": "Frost Transport Solutions Ltd is a leading transport and logistics provider based in the UK. We offer a comprehensive range of services including general haulage, groupage shipping, and storage solutions. Our commitment to customer service and cost-effectiveness sets us apart in the logistics industry.",
+   "industry": [
+    "Transport",
+    "Logistics",
+    "Haulage"
+   ],
+   "keywords": [
+    "transport",
+    "logistics",
+    "haulage",
+    "supply chain",
+    "pallet network",
+    "time-critical deliveries",
+    "storage solutions"
+   ]
+  },
+  {
+   "name": "FLY Transport Ltd",
+   "domain": "fly-transport.com",
+   "website": "https://fly-transport.com",
+   "country": "United Kingdom",
+   "description": "FLY Transport Ltd provides reliable logistics and transportation services throughout the UK. They specialize in temperature-controlled and container haulage, ensuring efficient cargo movement. With a commitment to safety and environmental compliance, they cater to diverse transport needs.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Supply Chain Management"
+   ],
+   "keywords": [
+    "logistics",
+    "transportation",
+    "temperature-controlled",
+    "container haulage",
+    "supply chain",
+    "reliable delivery"
+   ]
+  },
+  {
+   "name": "Turners Distribution",
+   "domain": "turners-distribution.com",
+   "website": "https://turners-distribution.com",
+   "country": "United Kingdom",
+   "description": "Turners Distribution is a leading transport and logistics company in the UK, specializing in temperature-controlled transport and bulk storage. With over 90 years of experience, they provide innovative supply chain solutions to meet diverse customer needs. The company prides itself on its commitment to quality service and customer satisfaction.",
+   "industry": [
+    "Transport and Logistics"
+   ],
+   "keywords": [
+    "transport",
+    "logistics",
+    "temperature controlled transport",
+    "bulk storage",
+    "food distribution",
+    "fuel distribution",
+    "supply chain solutions"
+   ]
+  },
+  {
+   "name": "Run It Cool",
+   "domain": "runitcool.co.uk",
+   "website": "https://runitcool.co.uk",
+   "country": "United Kingdom",
+   "description": "Run It Cool provides expert refrigerated delivery services across the UK, focusing on chilled and frozen food products. We cater to a wide range of clients, from small businesses to large food producers. Our reliable logistics solutions ensure timely and temperature-compliant deliveries.",
+   "industry": [
+    "Logistics",
+    "Food and Beverage",
+    "Transportation",
+    "Cold Chain Management"
+   ],
+   "keywords": [
+    "refrigerated delivery",
+    "chilled food transport",
+    "frozen food logistics",
+    "temperature-controlled delivery",
+    "same-day courier service",
+    "multi-drop distribution"
+   ]
+  },
+  {
+   "name": "S & L Fastrack",
+   "domain": "sandlfastrack.co.uk",
+   "website": "https://sandlfastrack.co.uk",
+   "country": "United Kingdom",
+   "description": "S & L Fastrack is a leading provider of road haulage and refrigerated transport services in the UK. They focus on delivering reliable and efficient logistics solutions tailored to customer requirements. With a dedicated team and a commitment to quality, they ensure that all goods are transported safely and on time.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Haulage",
+    "Courier Services"
+   ],
+   "keywords": [
+    "road haulage",
+    "refrigerated transport",
+    "logistics",
+    "courier services",
+    "distribution",
+    "transportation specialists"
+   ]
+  },
+  {
+   "name": "ABS Southern Logistics Ltd",
+   "domain": "abslogistics.co.uk",
+   "website": "https://www.abslogistics.co.uk/",
+   "country": "United Kingdom",
+   "description": "ABS Southern Logistics Ltd is a Portsmouth-based transport company specializing in refrigerated and containerized logistics. We serve clients across the UK and Europe, delivering a variety of goods. Our focus is on providing reliable and competitive transport solutions for all types of loads.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Freight Services"
+   ],
+   "keywords": [
+    "transport",
+    "logistics",
+    "refrigerated transport",
+    "containerized transport",
+    "UK transport",
+    "European logistics"
+   ]
+  },
+  {
+   "name": "JHP Transport",
+   "domain": "jhptransport.co.uk",
+   "website": "https://jhptransport.co.uk",
+   "country": "United Kingdom",
+   "description": "JHP Transport is a premier logistics provider specializing in temperature-controlled distribution. Established in 2007, we focus on delivering reliable and cost-effective transport solutions. Our extensive experience and customer-centric approach set us apart in the industry.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Supply Chain Management"
+   ],
+   "keywords": [
+    "logistics",
+    "transportation",
+    "temperature-controlled distribution",
+    "heavy haulage",
+    "refrigerated transport",
+    "supply chain solutions"
+   ]
+  },
+  {
+   "name": "HI Transport",
+   "domain": "hitrans.co.uk",
+   "website": "https://hitrans.co.uk",
+   "country": "United Kingdom",
+   "description": "HI Transport is a leading logistics provider offering tailored haulage solutions across the UK. The company specializes in general haulage, container movement, and refrigerated transport. With a focus on customer service and community engagement, HI Transport is dedicated to meeting the diverse needs of its clients.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Haulage"
+   ],
+   "keywords": [
+    "haulage",
+    "logistics",
+    "transport",
+    "refrigerated transport",
+    "container movement",
+    "UK transport services"
+   ]
+  },
+  {
+   "name": "MAM Transport Services Limited",
+   "domain": "mamtransport.co.uk",
+   "website": "https://mamtransport.co.uk",
+   "country": "United Kingdom",
+   "description": "MAM Transport is a premier logistics company offering comprehensive transportation services across the UK and Europe. Our focus on reliability and customer satisfaction sets us apart in the competitive logistics market. We provide a modern fleet and tailored solutions to meet the unique needs of our clients.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Freight Services"
+   ],
+   "keywords": [
+    "logistics",
+    "transportation",
+    "fleet services",
+    "refrigerated trailers",
+    "delivery solutions"
+   ]
+  },
+  {
+   "name": "Arctic Couriers",
+   "domain": "arcticcouriers.co.uk",
+   "website": "https://arcticcouriers.co.uk",
+   "country": "United Kingdom",
+   "description": "Arctic Couriers provides fast and secure temperature-controlled delivery services in Newcastle upon Tyne. We cater to businesses requiring precise logistics for perishable goods and sensitive materials. Our family-owned approach ensures personalized service and reliability for all our clients.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Courier Services"
+   ],
+   "keywords": [
+    "temperature-controlled delivery",
+    "chilled courier services",
+    "logistics",
+    "perishable goods",
+    "same-day delivery"
+   ]
+  },
+  {
+   "name": "AGM Chilled Distribution Ltd",
+   "domain": "agmchilleddistribution.com",
+   "website": "https://agmchilleddistribution.com",
+   "country": "United Kingdom",
+   "description": "AGM Chilled Distribution Ltd is a leading provider of temperature-controlled logistics solutions. They focus on delivering frozen, chilled, ambient, and heated products nationwide. The company is dedicated to high standards of service and customer satisfaction.",
+   "industry": [
+    "Food Distribution",
+    "Logistics",
+    "Transportation"
+   ],
+   "keywords": [
+    "frozen distribution",
+    "chilled products",
+    "ambient logistics",
+    "temperature-controlled delivery",
+    "food industry logistics"
+   ]
+  },
+  {
+   "name": "GAH (Refrigeration) Ltd",
+   "domain": "gah.co.uk",
+   "website": "https://gah.co.uk",
+   "country": "United Kingdom",
+   "description": "GAH (Refrigeration) Ltd is a leading provider of refrigeration systems for transport vehicles, catering to a wide range of industries. They offer customized solutions for both single vehicles and large fleets, ensuring the safe transport of temperature-sensitive goods. With a focus on innovation and customer satisfaction, GAH is dedicated to delivering high-quality refrigeration solutions.",
+   "industry": [
+    "Transport",
+    "Refrigeration",
+    "Logistics",
+    "Manufacturing"
+   ],
+   "keywords": [
+    "refrigeration systems",
+    "transport refrigeration",
+    "temperature-sensitive goods",
+    "fleet management",
+    "cold chain distribution"
+   ]
+  },
+  {
+   "name": "Manfreight Ltd",
+   "domain": "manfreight.eu",
+   "website": "https://www.manfreight.eu/",
+   "country": "United Kingdom",
+   "description": "Manfreight specializes in transport and logistics services across the UK, Ireland, and Europe. Our extensive fleet and logistics capabilities ensure timely and safe delivery of goods. We pride ourselves on our commitment to quality and customer satisfaction.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Warehousing"
+   ],
+   "keywords": [
+    "transport",
+    "logistics",
+    "warehousing",
+    "international transport",
+    "supply chain",
+    "cold storage",
+    "fleet management"
+   ]
+  },
+  {
+   "name": "MGS Transport Services Ltd",
+   "domain": "mgstransport.co.uk",
+   "website": "https://www.mgstransport.co.uk",
+   "country": "United Kingdom",
+   "description": "MGS Transport Services Ltd is a London-based freight service specializing in the delivery of frozen, chilled, and ambient goods. With a strong focus on customer satisfaction, we have established ourselves as a trusted partner for food manufacturers and distributors. Our experienced team is committed to providing efficient and reliable transport solutions across the UK and Europe.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Food Services"
+   ],
+   "keywords": [
+    "freight services",
+    "food transportation",
+    "frozen goods delivery",
+    "chilled goods transport",
+    "ambient food logistics"
+   ]
+  },
+  {
+   "name": "Brian Close Transport",
+   "domain": "brianclosetransport.co.uk",
+   "website": "https://brianclosetransport.co.uk",
+   "country": "United Kingdom",
+   "description": "Brian Close Transport specializes in refrigerated and dry freight transport services. Founded by Brian Close, the company has grown from a single lorry to a substantial fleet. They provide comprehensive logistics solutions, including storage and distribution services.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Freight Services"
+   ],
+   "keywords": [
+    "refrigerated transport",
+    "dry freight",
+    "logistics",
+    "haulage",
+    "storage solutions"
+   ]
+  },
+  {
+   "name": "K Charles Haulage",
+   "domain": "kcharleshaulage.co.uk",
+   "website": "https://kcharleshaulage.co.uk",
+   "country": "United Kingdom",
+   "description": "K Charles Haulage provides comprehensive haulage services for both domestic and international shipments. We specialize in temperature-controlled transport, ensuring the safe delivery of sensitive goods. Our commitment to sustainability and customer satisfaction sets us apart in the logistics industry.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Haulage"
+   ],
+   "keywords": [
+    "haulage",
+    "logistics",
+    "refrigerated transport",
+    "international shipping",
+    "domestic transport",
+    "sustainability",
+    "same-day delivery"
+   ]
+  },
+  {
+   "name": "Goodall Transport Ltd",
+   "domain": "goodalltransport.co.uk",
+   "website": "https://goodalltransport.co.uk",
+   "country": "United Kingdom",
+   "description": "Goodall Transport Ltd is a trusted partner for haulage and storage solutions in the UK. We have been operating since 1961, offering specialized services in insulated and general haulage. Our family-run business is dedicated to delivering your goods safely and on time.",
+   "industry": [
+    "Transport",
+    "Logistics",
+    "Haulage",
+    "Storage"
+   ],
+   "keywords": [
+    "haulage",
+    "storage",
+    "insulated transport",
+    "general haulage",
+    "logistics",
+    "family-run business"
+   ]
+  },
+  {
+   "name": "ChillSpeed",
+   "domain": "chillspeed.co.uk",
+   "website": "https://chillspeed.co.uk",
+   "country": "United Kingdom",
+   "description": "ChillSpeed offers specialized frozen, chilled, and ambient delivery services throughout the UK and Europe. With a focus on same-day delivery and temperature control, they serve the food industry with reliability and professionalism. Their experienced team is dedicated to providing high-quality transport solutions for low-volume refrigerated needs.",
+   "industry": [
+    "Logistics",
+    "Food Distribution",
+    "Transportation"
+   ],
+   "keywords": [
+    "frozen delivery",
+    "chilled delivery",
+    "ambient delivery",
+    "refrigerated courier",
+    "same day delivery",
+    "temperature controlled transport"
+   ]
+  },
+  {
+   "name": "K Charles Haulage",
+   "domain": "kcharles.com",
+   "website": "https://kcharles.com",
+   "country": "United Kingdom",
+   "description": "K Charles Haulage offers comprehensive transport solutions for both domestic and international needs. We specialize in refrigerated logistics and same-day delivery services. Our commitment to sustainability and customer satisfaction sets us apart in the logistics industry.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Haulage"
+   ],
+   "keywords": [
+    "transportation",
+    "logistics",
+    "refrigerated transport",
+    "same-day delivery",
+    "sustainability"
+   ]
+  },
+  {
+   "name": "Caspianro Ltd",
+   "domain": "caspianrolimited.com",
+   "website": "https://www.caspianrolimited.com/",
+   "country": "United Kingdom",
+   "description": "Caspianro Ltd offers high-quality road haulage transport services throughout the UK. Our focus is on providing reliable and efficient transportation solutions tailored to our clients' needs. With a commitment to customer satisfaction, we ensure that your goods are delivered safely and on time.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Haulage"
+   ],
+   "keywords": [
+    "road haulage",
+    "vehicle transport",
+    "car recovery",
+    "temperature-controlled transport",
+    "logistics services"
+   ]
+  },
+  {
+   "name": "Transport Services UK",
+   "domain": "transportservicesuk.com",
+   "website": "https://www.transportservicesuk.com/",
+   "country": "United Kingdom",
+   "description": "Transport Services UK provides comprehensive logistics solutions including haulage, warehousing, and fulfilment. We pride ourselves on our reliable and efficient services tailored to meet the specific needs of our clients. Our commitment to transparency and communication ensures that your goods are delivered on time, every time.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Warehousing",
+    "Supply Chain Management"
+   ],
+   "keywords": [
+    "haulage",
+    "warehousing",
+    "fulfilment",
+    "logistics",
+    "shipping",
+    "customs clearance",
+    "supply chain management",
+    "container transport"
+   ]
+  },
+  {
+   "name": "TCS&D",
+   "domain": "tcsandd.com",
+   "website": "https://tcsandd.com",
+   "country": "United Kingdom",
+   "description": "TCS&D is a prominent resource for the cold storage and distribution industry, offering news and insights on temperature-controlled logistics. The company organizes the Cold Chain Hub, a key event for industry leaders to showcase innovations. TCS&D is dedicated to promoting sustainable practices and advancements in refrigerated transport.",
+   "industry": [
+    "Logistics",
+    "Cold Storage",
+    "Transportation",
+    "Food Services",
+    "Sustainability"
+   ],
+   "keywords": [
+    "cold storage",
+    "temperature-controlled logistics",
+    "refrigerated transport",
+    "sustainability",
+    "cold chain solutions"
+   ]
+  },
+  {
+   "name": "Ontime Logistics",
+   "domain": "on-timelogistics.co.uk",
+   "website": "https://on-timelogistics.co.uk",
+   "country": "United Kingdom",
+   "description": "Ontime Logistics offers first-class transport services, specializing in container haulage and chilled distribution. Based in Kent, we have over 16 years of experience in delivering tailored logistics solutions. Our focus on exceptional service and efficiency sets us apart in the competitive logistics market.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Freight Services"
+   ],
+   "keywords": [
+    "container transport",
+    "chilled distribution",
+    "logistics solutions",
+    "road haulage",
+    "real-time tracking"
+   ]
+  },
+  {
+   "name": "CC Refrigeration Ltd",
+   "domain": "cc-refrigeration.co.uk",
+   "website": "https://www.cc-refrigeration.co.uk/",
+   "country": "United Kingdom",
+   "description": "CC Refrigeration Ltd specializes in transport refrigeration services, offering tailored maintenance and installation solutions. With a focus on minimizing downtime, we provide 24-hour emergency support and expert service. Our experienced team is dedicated to meeting the evolving needs of the logistics industry.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Refrigeration Services"
+   ],
+   "keywords": [
+    "transport refrigeration",
+    "refrigerated transportation",
+    "logistics services",
+    "Frigoblock installation",
+    "emergency breakdown support"
+   ]
+  },
+  {
+   "name": "DHD Temperature Controlled Transport Ltd",
+   "domain": "dhdtransport.com",
+   "website": "https://dhdtransport.com",
+   "country": "United Kingdom",
+   "description": "DHD Transport offers comprehensive courier services, focusing on temperature-controlled deliveries. They provide same-day and scheduled options tailored to various industries, including medical and event logistics. With a commitment to customer satisfaction and reliability, DHD Transport ensures that all goods are delivered safely and on time.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Courier Services"
+   ],
+   "keywords": [
+    "courier services",
+    "temperature controlled transport",
+    "same day delivery",
+    "logistics solutions",
+    "pharmaceutical courier"
+   ]
+  },
+  {
+   "name": "Thermo King UK",
+   "domain": "thermo-king.co.uk",
+   "website": "https://www.thermo-king.co.uk/",
+   "country": "United Kingdom",
+   "description": "Thermo King UK is a prominent provider of transport refrigeration solutions in the UK. They offer a wide range of products and services, including installation, maintenance, and fleet management. With a focus on innovation and customer support, Thermo King has established itself as a trusted name in the industry.",
+   "industry": [
+    "Transport Refrigeration",
+    "Commercial Vehicles",
+    "Logistics",
+    "Sustainable Energy"
+   ],
+   "keywords": [
+    "transport refrigeration",
+    "temperature control",
+    "fleet management",
+    "sustainable power solutions",
+    "HVAC systems"
+   ]
+  },
+  {
+   "name": "Rogers UK Transport Ltd",
+   "domain": "rogerstransport.co.uk",
+   "website": "https://rogerstransport.co.uk",
+   "country": "United Kingdom",
+   "description": "Rogers UK Transport Ltd offers comprehensive haulage and logistics services across the UK and internationally. We specialize in event transport, low loader transport, and pallet delivery, ensuring safe and efficient handling of goods. Our dedicated team is available 24/7 to meet all your transport requirements.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Haulage"
+   ],
+   "keywords": [
+    "haulage",
+    "logistics",
+    "pallet delivery",
+    "event transport",
+    "low loader transport",
+    "temperature controlled transport"
+   ]
+  },
+  {
+   "name": "Glacier Vehicles",
+   "domain": "glaciervehicles.com",
+   "website": "https://www.glaciervehicles.com/",
+   "country": "United Kingdom",
+   "description": "Glacier Vehicles is a leading provider of refrigerated vans and freezer vans in the UK. They offer both new and used vehicles, along with bespoke conversion services to meet specific business needs. The company is known for its exceptional customer service and commitment to quality.",
+   "industry": [
+    "Automotive",
+    "Transportation",
+    "Logistics",
+    "Refrigeration"
+   ],
+   "keywords": [
+    "refrigerated vehicles",
+    "fridge vans",
+    "freezer vans",
+    "van conversions",
+    "temperature-controlled vehicles",
+    "commercial vehicles",
+    "logistics solutions"
+   ]
+  },
+  {
+   "name": "Surefreight Ltd",
+   "domain": "surefreight.co.uk",
+   "website": "https://www.surefreight.co.uk/",
+   "country": "United Kingdom",
+   "description": "Surefreight is a premier logistics provider offering comprehensive haulage, storage, and distribution services. Our experienced team is committed to delivering your consignments efficiently and securely. With a modern fleet and multiple depots, we ensure cost-effective logistics solutions for our clients.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Warehousing"
+   ],
+   "keywords": [
+    "logistics",
+    "haulage",
+    "distribution",
+    "storage",
+    "transportation",
+    "customs",
+    "inventory management"
+   ]
+  },
+  {
+   "name": "Davenport Transport Ltd",
+   "domain": "davenporttransport.co.uk",
+   "website": "https://davenporttransport.co.uk",
+   "country": "United Kingdom",
+   "description": "Davenport Transport Ltd is a reputable haulage contractor located in Burscough, Lancashire. They offer specialized services in chilled distribution and ambient warehousing for the food sector. With a focus on efficiency and customer satisfaction, they provide comprehensive logistics solutions across the Midlands and North West of England.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Warehousing",
+    "Food Services"
+   ],
+   "keywords": [
+    "haulage",
+    "transportation",
+    "logistics",
+    "food distribution",
+    "warehousing",
+    "chilled distribution"
+   ]
+  },
+  {
+   "name": "Frozen and Chilled Foods",
+   "domain": "frozenandchilledfoods.com",
+   "website": "https://frozenandchilledfoods.com",
+   "country": "United Kingdom",
+   "description": "Frozen and Chilled Foods is a premier magazine dedicated to the temperature-controlled storage and distribution industry. It offers valuable insights, news, and networking opportunities for professionals in the cold chain sector. The platform emphasizes innovation and sustainability in the food supply chain.",
+   "industry": [
+    "Food and Beverage",
+    "Logistics",
+    "Supply Chain Management",
+    "Cold Chain Management"
+   ],
+   "keywords": [
+    "cold chain",
+    "temperature-controlled storage",
+    "food distribution",
+    "sustainability",
+    "frozen food",
+    "chilled food",
+    "logistics",
+    "food safety"
+   ]
+  },
+  {
+   "name": "Tapfreight",
+   "domain": "tapfreight.co.uk",
+   "website": "https://www.tapfreight.co.uk/",
+   "country": "United Kingdom",
+   "description": "Tapfreight is a trusted logistics company with over three decades of experience. We provide a comprehensive range of transport and warehousing solutions tailored to meet diverse client needs. Our commitment to quality and compliance with industry standards sets us apart in the logistics sector.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Warehousing"
+   ],
+   "keywords": [
+    "logistics",
+    "transport services",
+    "warehousing",
+    "hazardous freight",
+    "ISO9001",
+    "SQAS",
+    "temperature-controlled transport"
+   ]
+  },
+  {
+   "name": "RR Transport Ltd",
+   "domain": "rrtransport.com",
+   "website": "https://rrtransport.com",
+   "country": "United Kingdom",
+   "description": "RR Transport provides comprehensive logistics solutions for both local and European transport needs. Our services include pallet distribution, secure storage, and driver training. We are dedicated to delivering goods on time and within budget, ensuring customer satisfaction.",
+   "industry": [
+    "Logistics",
+    "Transportation",
+    "Warehousing"
+   ],
+   "keywords": [
+    "logistics",
+    "transportation",
+    "pallet distribution",
+    "storage solutions",
+    "driver training"
+   ]
+  },
+  {
+   "name": "Roberts Transport Ltd",
+   "domain": "robertstransport.com",
+   "website": "https://www.robertstransport.com/",
+   "country": "United Kingdom",
+   "description": "Roberts Transport Ltd is a family-owned haulage and distribution company located in Sussex, UK. We specialize in general haulage, storage, and refrigerated transport services. Our commitment to customer satisfaction and efficient service has earned us a strong reputation in the industry.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Warehousing"
+   ],
+   "keywords": [
+    "haulage",
+    "transportation",
+    "distribution",
+    "refrigerated transport",
+    "storage solutions",
+    "family-run business",
+    "satellite tracking"
+   ]
+  },
+  {
+   "name": "Frosted Wheels",
+   "domain": "frostedwheelshire.co.uk",
+   "website": "https://frostedwheelshire.co.uk",
+   "country": "United Kingdom",
+   "description": "Frosted Wheels offers affordable refrigerated van rentals for both short and long-term needs. Our modern fleet is ULEZ compliant and designed to transport temperature-sensitive goods safely. With a focus on customer service, we ensure timely and efficient delivery across the UK and Europe.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Refrigerated Transport"
+   ],
+   "keywords": [
+    "refrigerated van hire",
+    "freezer van rental",
+    "temperature-sensitive transport",
+    "pharmaceutical transport",
+    "emergency delivery services"
+   ]
+  },
+  {
+   "name": "UK Worldwide Transport Ltd",
+   "domain": "ukworldwidetransport.co.uk",
+   "website": "https://ukworldwidetransport.co.uk",
+   "country": "United Kingdom",
+   "description": "UK Worldwide Transport Ltd offers reliable transport services with a focus on safety and efficiency. We provide expert handling and secure transportation for both commercial and personal needs. Our extensive experience and advanced logistics solutions make us a trusted partner for seamless deliveries.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Freight Services"
+   ],
+   "keywords": [
+    "transport services",
+    "logistics",
+    "freight handling",
+    "secure delivery",
+    "nationwide transport"
+   ]
+  },
+  {
+   "name": "Sparky’s Transportation Corporation",
+   "domain": "sparkystrans.com",
+   "website": "https://sparkystransportation.com",
+   "country": "United Kingdom",
+   "description": "Sparky’s Transportation Corporation is dedicated to delivering customized logistics solutions for various commodities, with a specialty in produce. They provide a range of transportation services, including refrigerated and dry transport options. With a strong emphasis on customer service and precision tracking, Sparky’s aims to meet all shipping needs efficiently.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Freight Services"
+   ],
+   "keywords": [
+    "transportation",
+    "logistics",
+    "refrigerated transport",
+    "LTL",
+    "intermodal",
+    "customer service",
+    "freight solutions"
+   ]
+  },
+  {
+   "name": "A Davies Transport Ltd",
+   "domain": "adaviestransportltd.com",
+   "website": "https://adaviestransportltd.com",
+   "country": "United Kingdom",
+   "description": "A Davies Transport Ltd offers comprehensive storage and distribution services tailored to various customer needs. With a focus on reliability and efficiency, they serve both small businesses and large corporations. Their family-run approach ensures a personal touch in every service provided.",
+   "industry": [
+    "Transportation",
+    "Logistics",
+    "Warehousing"
+   ],
+   "keywords": [
+    "transport",
+    "logistics",
+    "storage",
+    "distribution",
+    "pallet network",
+    "sustainable solutions"
+   ]
+  }
+ ],
+ "search_id": "fb8547dc-4456-4aac-96ed-b7b3f6674d7a",
+ "has_more": true
+}
