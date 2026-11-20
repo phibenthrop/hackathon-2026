@@ -1,87 +1,76 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="live">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live agent - ICP Qualifier</title>
+<title>ICP Qualifier - is this company worth an email?</title>
 <link rel="stylesheet" href="/static/style.css">
-<style>
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-  textarea { font: inherit; font-size: .92rem; width: 100%; padding: .5rem; border: 1px solid var(--line); border-radius: 6px; }
-  .field { display: block; margin: .5rem 0; } .field > span { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .2rem; }
-  .field input { width: 100%; }
-  .meta { font-size: .82rem; color: var(--muted); font-family: ui-monospace, monospace; margin: -.4rem 0 .6rem; }
-  .meta b { color: var(--ink); }
-  .state { font-size: .85rem; font-weight: 600; margin-left: auto; color: var(--muted); }
-  .state.run { color: var(--b); } .state.ok { color: var(--a); } .state.err { color: var(--bad); }
-  .sources li { margin: .35rem 0; font-size: .9rem; } .sources .ex { color: var(--muted); font-size: .82rem; }
-  .ref { font-size: .78rem; vertical-align: super; text-decoration: none; padding: 0 .1rem; }
-  .discarded { text-decoration: line-through; color: var(--bad); font-size: .85rem; }
-  .draftbox { min-height: 14rem; font-family: inherit; }
-  .draftonly { font-weight: 700; color: var(--bad); margin: .5rem 0; }
-  .flag { background: #fde8e7; color: var(--bad); border-radius: 4px; padding: .1rem .4rem; font-size: .82rem; }
-  .recorded { background: #fff1d6; border: 1px solid #efd08a; border-radius: 6px; padding: .5rem .8rem; margin: .6rem 0; }
-  .plan dt { font-weight: 700; margin-top: .5rem; } .plan dd { margin: .1rem 0 .3rem 1rem; }
-  .totals { font-weight: 600; }
-  .reg td:first-child { white-space: nowrap; font-weight: 600; } .reg code { font-size: .85rem; }
-  .cmp td, .cmp th { font-size: .85rem; text-align: right; } .cmp td:first-child, .cmp th:first-child { text-align: left; }
-</style>
 </head>
-<body>
+<body class="live-page">
 <header class="top">
   <div>
-    <h1>Live agent</h1>
-    <p class="sub">Any company in. Research, ICP score, outreach plan and an email draft out. Every fact links to its source.</p>
+    <h1>Is this company worth an email?</h1>
+    <p class="sub">Type any company. In about a minute you get a fit verdict you can check, and a first email draft. Every claim is a verbatim quote with a link. Nothing is sent.</p>
   </div>
   <div class="top-right">
     <span class="motto">Agent drafts, a person decides.</span>
     <span id="mode" class="badge">loading...</span>
+    <a class="small-link" href="#models">Models and why</a>
     <a class="small-link" href="/">Lead list</a> <a class="small-link" href="/slides">Slides</a>
   </div>
 </header>
-<p class="notice" id="notice">Model calls: Nebius Token Factory. Web research: Tavily. Nothing is sent from this page.</p>
+<p class="notice" id="notice">For SDRs and founders doing outbound. Models: Nebius Token Factory. Web research: Tavily. Runs live.</p>
 
 <main>
-  <section class="step">
-    <h2><span class="num">0</span> Your product and the company to check</h2>
-    <div class="grid">
-      <div>
+  <section class="step s-input">
+    <h2>Which company?</h2>
+    <div class="live-grid">
+      <div class="live-ask">
+        <label class="field"><span>Company domain or name</span>
+          <input id="company" maxlength="200" placeholder="e.g. stef.com, Nagel-Group, chillspeed.co.uk"></label>
+        <div class="live-chips" id="chips">
+          <button type="button" class="live-chip">stef.com</button>
+          <button type="button" class="live-chip">Nagel-Group</button>
+          <button type="button" class="live-chip">chillspeed.co.uk</button>
+        </div>
+        <p class="hint">Any domain or name. One run: at most 5 web calls and 4 model calls.</p>
+        <div class="live-actions">
+          <button class="primary" id="go">Check this company</button>
+          <button id="example">Replay a recorded run</button>
+        </div>
+        <div class="live-totals" id="totals" hidden></div>
+      </div>
+      <details class="live-icp" open>
+        <summary>Selling what, to whom (editable)</summary>
         <label class="field"><span>Your product in one sentence</span>
           <input id="product" maxlength="200"></label>
         <label class="field"><span>Ideal customer profile (one criterion per line)</span>
           <textarea id="icp" rows="8"></textarea></label>
-      </div>
-      <div>
-        <label class="field"><span>Company domain or name (any company)</span>
-          <input id="company" maxlength="200" placeholder="e.g. stef.com, Nagel-Group, chillspeed.co.uk"></label>
-        <p class="hint">Input is treated as data, max 200 characters. Per run: at most 5 Tavily calls and 4 model calls.</p>
-        <button class="primary" id="go">Run the agent</button>
-        <button id="example">Show recorded example</button>
-        <p class="totals" id="totals"></p>
-      </div>
+      </details>
     </div>
   </section>
 
-  <section class="step" id="s-research"><h2><span class="num">1</span> Research <span class="state" id="st-research">waiting</span></h2>
-    <div class="meta" id="m-research"></div><div id="o-research"></div></section>
-  <section class="step" id="s-score"><h2><span class="num">2</span> Score against the ICP <span class="state" id="st-score">waiting</span></h2>
-    <div class="meta" id="m-score"></div><div id="o-score"></div></section>
-  <section class="step" id="s-plan"><h2><span class="num">3</span> Outreach plan <span class="state" id="st-plan">waiting</span></h2>
-    <div class="meta" id="m-plan"></div><div id="o-plan"></div></section>
-  <section class="step" id="s-write"><h2><span class="num">4</span> Email draft <span class="state" id="st-write">waiting</span></h2>
-    <div class="meta" id="m-write"></div><div id="o-write"></div></section>
+  <section class="step live-step" id="s-research"><h2><span class="num">1</span> Research <span class="state" id="st-research">waiting</span></h2>
+    <div class="live-meta" id="m-research"></div><div id="o-research"></div></section>
+  <section class="step live-step" id="s-score"><h2><span class="num">2</span> Score against the ICP <span class="state" id="st-score">waiting</span></h2>
+    <div class="live-meta" id="m-score"></div><div id="o-score"></div></section>
+  <section class="step live-step" id="s-plan"><h2><span class="num">3</span> Outreach plan <span class="state" id="st-plan">waiting</span></h2>
+    <div class="live-banner" id="ban-plan" hidden></div>
+    <div class="live-meta" id="m-plan"></div><div id="o-plan"></div></section>
+  <section class="step live-step" id="s-write"><h2><span class="num">4</span> Email draft <span class="state" id="st-write">waiting</span></h2>
+    <div class="live-banner" id="ban-write" hidden></div>
+    <div class="live-meta" id="m-write"></div><div id="o-write"></div></section>
 
-  <section class="step">
+  <section class="step" id="models">
     <h2>Which model does which step, and why</h2>
     <table class="reg"><thead><tr><th>Step</th><th>Model</th><th>Why</th><th>Price</th></tr></thead><tbody id="reg"></tbody></table>
   </section>
-  <section class="step" id="cmp-wrap">
-    <h2>Model comparison for the scoring step</h2>
-    <div id="cmp"><p class="hint">No comparison recorded yet (scripts/compare_models.py).</p></div>
+  <section class="step" id="cmp-wrap" hidden>
+    <h2>Two models on the scoring step: speed, cost, rejected quotes</h2>
+    <div id="cmp"></div>
   </section>
 </main>
-<footer>Draft only. The app sends nothing. Sources: Tavily search results and company websites, fetched at run time.</footer>
+<footer>Draft only. This app cannot send email. Germany/EU: a cold email needs prior consent, also in B2B (UWG § 7). Not legal advice.</footer>
 <script src="/static/live.js"></script>
 </body>
 </html>
