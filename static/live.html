@@ -22,6 +22,21 @@
 <p class="notice" id="notice">For SDRs and founders doing outbound. Models: Nebius Token Factory. Web research: Tavily. Runs live.</p>
 
 <main>
+  <section class="step otari-panel" id="otari" hidden>
+    <h2>Otari gateway <span class="hint">every model, search and fetch call of this page goes through it</span></h2>
+    <div class="otari-row">
+      <label class="field otari-user"><span>Run as end user</span>
+        <select id="ot-user"><option value="demo-b">demo-b (budget $0.60/day)</option><option value="demo-a">demo-a (trial budget $0.03/day)</option></select></label>
+      <label class="otari-check"><input type="checkbox" id="ot-outage"> Simulate an outage of the write model in the next run</label>
+    </div>
+    <div class="otari-buttons">
+      <button id="ot-budget">1. Check budget as this user</button>
+      <button id="ot-fallback">2. Trigger fallback</button>
+      <button id="ot-guard">3. Test guardrail</button>
+    </div>
+    <div id="ot-result" class="otari-result" aria-live="polite"></div>
+    <table class="reg otari-table"><thead><tr><th>Feature</th><th>Live value from Otari</th></tr></thead><tbody id="ot-status"></tbody></table>
+  </section>
   <section class="step s-input">
     <h2>Which company?</h2>
     <div class="live-grid">
@@ -77,5 +92,6 @@
 </main>
 <footer>Draft only. This app cannot send email. Germany/EU: a cold email needs prior consent, also in B2B (UWG § 7). Not legal advice.</footer>
 <script src="/static/live.js"></script>
+<script src="/static/otari.js"></script>
 </body>
 </html>

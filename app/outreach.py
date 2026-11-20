@@ -65,20 +65,27 @@ class ModelError(RuntimeError):
 
 
 def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: float, budget: Budget,
-                reasoning: str | None = None) -> dict:
+                reasoning: str | None = None, route: str | None = None, guard: bool = False) -> dict:
     """One chat completion through the shared client in app/llm.py (JSON mode, capped retries).
 
     Returns {"content", "seconds", "prompt_tokens", "completion_tokens"}; raises ModelError."""
     budget.take_model()
     key = os.environ.get("NEBIUS_API_KEY", "").strip()
     base, sent_model = NEBIUS_BASE_URL, model
+    extra_body = extra_headers = None
     if gateway.active():  # branch otari: same Nebius model, routed through the Otari gateway
-        key, base, sent_model = gateway.api_key(), gateway.base_url(), gateway.model_name(model)
+        key, base, sent_model = gateway.api_key(), gateway.base_url(), route or gateway.model_name(model)
+        user = gateway.clean_user(budget.ctx.get("user"))
+        extra_body, extra_headers = gateway.user_fields(user)
+        if guard:
+            extra_body["guardrails"] = gateway.guard_request()
     if not key:
         raise ModelError(NO_KEYS_MSG)
+    # gateway: Otari stops a hanging attempt after 30 s and runs the fallback, so the app waits for both
     client = LLMClient(LLMConfig(base_url=base, model=sent_model, api_key=key,
-                                 timeout=timeout, max_tokens=max_tokens, reasoning_effort=reasoning,
-                                 max_retries=1))
+                                 timeout=90 if extra_body is not None else timeout, max_tokens=max_tokens,
+                                 reasoning_effort=reasoning, max_retries=0 if extra_body is not None else 1,
+                                 extra_body=extra_body, extra_headers=extra_headers))
     t0 = time.monotonic()
     try:
         content = client.chat(messages, temperature=0.2)
@@ -90,13 +97,40 @@ def nebius_chat(model: str, messages: list[dict], max_tokens: int, timeout: floa
     return {"content": content, "seconds": round(time.monotonic() - t0, 2),
             "prompt_tokens": client.usage.prompt_tokens, "completion_tokens": client.usage.completion_tokens,
             "reasoning_tokens": client.usage.reasoning_tokens,
-            **({"gateway_cost_usd": client.usage.gateway_cost_usd} if client.usage.gateway_cost_usd is not None else {})}
+            **({"gateway_cost_usd": client.usage.gateway_cost_usd} if client.usage.gateway_cost_usd is not None else {}),
+            **({"otari": otari_route(client.usage.headers, sent_model, extra_body)} if gateway.active() else {})}
 
 
-def step_chat(st, messages: list[dict], budget: Budget) -> dict:
+def otari_route(h: dict, sent: str, body: dict | None) -> dict:
+    """What Otari says it did for one call (response headers), for the Otari panel."""
+    guard = h.get("otari-guardrails")
+    try:
+        guard = json.loads(guard) if guard else None
+    except ValueError:
+        guard = None
+    return {"policy": sent, "model": h.get("otari-model"), "provider": h.get("otari-provider"),
+            "fallback": (h.get("otari-fallback") or "").lower() == "true",
+            "attempts": int(h.get("otari-attempt-count") or 1), "user": (body or {}).get("user"),
+            "end_user_budget": h.get("otari-end-user-budget"), "guardrails": guard}
+
+
+def step_chat(st, messages: list[dict], budget: Budget, guard: bool = False) -> dict:
     """Primary model of a step; on overload/timeout/error one try with the step's fallback model.
 
-    The returned dict carries "model" (the one that answered) and "fallback_from" if it switched."""
+    The returned dict carries "model" (the one that answered) and "fallback_from" if it switched.
+    Branch otari: the step sends its routing policy and Otari runs primary and fallback itself."""
+    if gateway.active():
+        route = gateway.policy_name(st.key, outage=st.key == "write" and bool(budget.ctx.get("outage")))
+        reasoning = None if route.endswith("-outage") else st.reasoning  # the fallback (Kimi-K3) takes its default
+        c = nebius_chat(st.model, messages, st.max_tokens, st.timeout, budget, reasoning, route=route, guard=guard)
+        o = c["otari"]
+        served = (o.get("model") or st.model)
+        out = {**c, "model": served}
+        if o["fallback"]:
+            first = gateway.OUTAGE_MODEL if route.endswith("-outage") else st.model
+            out.update(fallback_from=first, fallback_reason=f"Otari policy {route}: first candidate failed, "
+                                                             f"{o['attempts']} attempts")
+        return out
     try:
         return {**nebius_chat(st.model, messages, st.max_tokens, st.timeout, budget, st.reasoning), "model": st.model}
     except ModelError as exc:
@@ -123,7 +157,8 @@ def _meta(step_key: str, model: str, calls: list[dict]) -> dict:
             "cost_usd": round(cost, 6),
             **({"gateway_cost_usd": round(sum(c.get("gateway_cost_usd") or 0 for c in calls), 6)}
                if any("gateway_cost_usd" in c for c in calls) else {}),
-            **({"fallback_from": fb["fallback_from"], "fallback_reason": fb["fallback_reason"]} if fb else {})}
+            **({"fallback_from": fb["fallback_from"], "fallback_reason": fb["fallback_reason"]} if fb else {}),
+            **({"otari": calls[-1]["otari"]} if calls and calls[-1].get("otari") else {})}
 
 
 # ---------------------------------------------------------------- ICP
@@ -338,7 +373,8 @@ def step_write(run: dict) -> dict:
     user = (f"LANGUAGE: {run['language']}\n\nSELLER PRODUCT:\n<untrusted>{run['product']}</untrusted>\n\n"
             f"OUTREACH PLAN (from our strategist):\n{json.dumps(run['plan'], ensure_ascii=False)[:3000]}\n\n"
             f"SOURCES:\n{_sources_block(research, 1200)}")
-    c = step_chat(st, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}], run["budget"])
+    c = step_chat(st, [{"role": "system", "content": WRITE_SYSTEM}, {"role": "user", "content": user}], run["budget"],
+                  guard=True)
     draft = parse_json(c["content"])
     if not draft or not isinstance(draft.get("body"), str):
         raise ModelError(f"{c.get('model', st.model)} returned no valid JSON.")
@@ -399,6 +435,8 @@ class StartRequest(BaseModel):
     company: str
     product: str | None = None
     icp: list[str] | None = None
+    user: str | None = None  # branch otari: the app's end user (demo-a / demo-b)
+    outage: bool = False  # branch otari: send Write to icp-write-outage (primary not served -> fallback)
 
 
 @router.get("/api/live/config")
@@ -436,9 +474,16 @@ def live_start(req: StartRequest) -> dict:
                                  "The recorded example still works.")
     target = parse_target(company)
     budget = Budget()
+    web = None
+    if gateway.active():
+        budget.ctx = {"user": gateway.clean_user(req.user), "outage": bool(req.outage)}
+        web = gateway.OtariWeb(budget, budget.ctx["user"])
     t0 = time.monotonic()
     try:
-        research = run_research(target, os.environ["TAVILY_API_KEY"], budget)
+        research = run_research(target, os.environ["TAVILY_API_KEY"], budget, client=web)
+    except gateway.GatewayError as exc:
+        raise HTTPException(exc.status if exc.status in (402, 403) else 502,
+                            f"Research refused by Otari for user {budget.ctx.get('user')}: {exc}") from None
     except Exception as exc:
         raise HTTPException(502, f"Research failed: {type(exc).__name__}") from None
     seconds = round(time.monotonic() - t0, 2)
@@ -446,14 +491,19 @@ def live_start(req: StartRequest) -> dict:
         raise HTTPException(404, "Tavily found no usable sources for this company. Try the domain.")
     run = {"research": research, "criteria": criteria_from_lines(req.icp),
            "product": clean_input(req.product) or DEFAULT_PRODUCT, "budget": budget, "steps": []}
-    meta = {"step": "research", "model": "Tavily", "calls": len(research.calls), "seconds": seconds,
+    meta = {"step": "research", "model": "Tavily via Otari (search + builtin fetch)" if web else "Tavily",
+            "calls": len(research.calls), "seconds": seconds,
             "prompt_tokens": 0, "completion_tokens": 0, "cost_usd": None, "tavily_credits": research.credits,
+            **({"otari": {"user": budget.ctx["user"], "search": "POST /api/v1/search/tavily",
+                          "fetch": "POST /api/v1/fetch/builtin_fetch"}} if web else {}),
             "result": {"target": {"name": target.name, "domain": target.domain, "input": target.raw},
                        "sources": [s.public() for s in research.sources], "calls": research.calls}}
     run["steps"].append({k: v for k, v in meta.items() if k != "result"})
     run_id = uuid.uuid4().hex[:12]
     run["public"] = {"run_id": run_id, "input": {"company": company, "product": run["product"],
-                                                 "icp": [c.label for c in run["criteria"]]}, "steps": [meta]}
+                                                 "icp": [c.label for c in run["criteria"]],
+                                                 **({"otari_user": budget.ctx["user"], "otari_outage": budget.ctx["outage"]}
+                                                    if web else {})}, "steps": [meta]}
     _store(run_id, run)
     return {"run_id": run_id, **meta}
 
@@ -479,7 +529,8 @@ def live_step(run_id: str, step: str) -> dict:
     except BudgetExceeded as exc:
         raise HTTPException(429, str(exc)) from None
     except ModelError as exc:
-        raise HTTPException(502, str(exc)) from None
+        status = 403 if ("budget_exceeded" in str(exc) or "guardrail_violation" in str(exc)) else 502
+        raise HTTPException(status, str(exc)) from None
     run["steps"].append({k: v for k, v in meta.items() if k != "result"})
     run["public"]["steps"].append(meta)
     totals = _totals(run)

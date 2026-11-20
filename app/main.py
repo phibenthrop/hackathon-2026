@@ -24,6 +24,7 @@ from .icp import derive_icp, derive_icp_real
 from .models import CompanyResult, Criterion
 from .realdata import REAL_DIR, HttpWebsiteReader, RealDataset, SimilarCompaniesSource, real_snapshot_available
 from .outreach import router as live_router
+from .otari_routes import router as otari_router
 from .scoring import get_scorer, score_company
 from .sources import Company, DemoCompanySource, DemoDataset, LocalWebsiteReader, remove_existing
 
@@ -81,6 +82,7 @@ MAX_RUNS = 20
 app = FastAPI(title="ICP Qualifier", version="0.2.0")
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 app.include_router(live_router)  # /live and /api/live/*
+app.include_router(otari_router)  # branch otari: /api/otari/*, /otari-guardrails/*, /otari-script
 
 
 class SeedRequest(BaseModel):

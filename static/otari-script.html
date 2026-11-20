@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Otari demo script</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+  body { max-width: 980px; margin: 1.5rem auto; padding: 0 1rem; font-size: 1.05rem; }
+  .rule { background: #fff4e0; padding: .7rem 1rem; border-radius: 6px; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { border: 1px solid #d5dae0; padding: .5rem .6rem; vertical-align: top; text-align: left; }
+  th { background: #eef1f4; } td:first-child { white-space: nowrap; }
+</style>
+</head>
+<body>
+<p class="rule">Record yourself: screen recording with your own voice, no AI voice, no AI video.</p>
+
+<h2>Before you record</h2>
+<ol>
+  <li>Open <code>/live</code> of this address in the browser. Scroll so the "Otari gateway" panel is visible.</li>
+  <li>Press <b>Cmd+Shift+5</b>, choose "Record Selected Portion" or "Record Entire Screen".</li>
+  <li>Click <b>Options</b> and choose your microphone (not "None").</li>
+  <li>Click <b>Record</b>. Speak slowly. About 90 seconds.</li>
+  <li>Stop with the stop button in the menu bar.</li>
+</ol>
+
+<h2>Script (about 200 words, 90 seconds)</h2>
+<table>
+  <thead><tr><th>Time</th><th>Spoken text</th><th>Click</th></tr></thead>
+  <tbody>
+    <tr><td>0:00</td><td>This app checks if a company fits your ideal customer, and writes a first email with quoted sources.</td><td>Show the top of the page.</td></tr>
+    <tr><td>0:08</td><td>All model calls go through Otari, Mozilla's open gateway, self-hosted on my own machine.</td><td>Point at the Otari gateway panel.</td></tr>
+    <tr><td>0:16</td><td>Routing and fallbacks: each step sends a routing policy. Otari picks the model. If it fails, Otari falls back.</td><td>Click "2. Trigger fallback". Point at "fallback via Otari: ... → Kimi-K3".</td></tr>
+    <tr><td>0:30</td><td>Budgets: the app's key has a limit of one dollar per day. You see the live value here.</td><td>Point at the row "Spending limit (key)".</td></tr>
+    <tr><td>0:38</td><td>Per-user budgets: user demo-a has a small trial budget. It is used up, so Otari blocks it.</td><td>Choose "demo-a". Click "1. Check budget as this user". Red "403 budget_exceeded".</td></tr>
+    <tr><td>0:48</td><td>User demo-b has its own budget, so it still works.</td><td>Choose "demo-b". Click "1. Check budget as this user". Green "200 allowed".</td></tr>
+    <tr><td>0:56</td><td>Web search and fetch: the research step searches and reads the website through Otari too.</td><td>Point at the row "Web search + fetch", or at "via Otari: search + fetch" in step 1.</td></tr>
+    <tr><td>1:06</td><td>Guardrails: the email step must not contain phone numbers or email addresses. Otari blocks this input before any model runs.</td><td>Click "3. Test guardrail". Point at "blocked by Otari guardrail".</td></tr>
+    <tr><td>1:18</td><td>Three open-weight models, each with a role: GLM-5.3-Flash scores, Kimi-K3 plans, GLM-5.3 writes. Thank you.</td><td>Scroll to "Models and why".</td></tr>
+  </tbody>
+</table>
+<p class="hint">Not used, so not in the video: code execution and MCP.</p>
+</body>
+</html>

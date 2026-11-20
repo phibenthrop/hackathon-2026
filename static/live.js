@@ -70,13 +70,15 @@ const mark = (html, cls = "") => `<span class="live-mark ${cls}">${html}</span>`
 function meta(m) {
   if (m.step === "research") {
     return mark(`<b>Tavily</b>`) + (WHY.research ? `<span class="live-why">${esc(WHY.research)}</span>` : "") +
-      mark(`${m.calls} calls`) + mark(`${m.tavily_credits} credits`) + mark(`${m.seconds} s`);
+      mark(`${m.calls} calls`) + mark(`${m.tavily_credits} credits`) + mark(`${m.seconds} s`) +
+      (window.otariMeta ? window.otariMeta(m) : "");
   }
-  const fb = m.fallback_from
+  const fb = m.fallback_from && !m.otari
     ? `<div class="live-fallback" title="${esc(m.fallback_reason || "")}">fallback: ${esc(m.model)}, primary ${esc(m.fallback_from)} ${/timed? ?out|timeout/i.test(m.fallback_reason || "") ? "timed out" : "overloaded"}</div>` : "";
   return mark(`<b>${esc(m.model)}</b>`) + (WHY[m.step] && !m.fallback_from ? `<span class="live-why">${esc(WHY[m.step])}</span>` : "") +
     mark(`${m.seconds} s`) + mark(`${num((m.prompt_tokens || 0) + (m.completion_tokens || 0))} tokens`) + mark(money(m.cost_usd)) +
-    (m.gateway_cost_usd != null ? mark(`gateway: ${money(m.gateway_cost_usd)}`, "live-gw") : "") + fb;
+    (m.gateway_cost_usd != null ? mark(`gateway: ${money(m.gateway_cost_usd)}`, "live-gw") : "") + fb +
+    (window.otariMeta ? window.otariMeta(m) : "");
 }
 
 function renderResearch(r) {
@@ -230,6 +232,7 @@ function failText(step, e) {
   if (msg.includes("402")) return "The model provider refused the call: account out of credit (HTTP 402). Your input is fine. Research above is real; replay a recorded run for the remaining steps.";
   if (e.status === "timeout") return "This step took longer than 75 seconds and was stopped. The research is kept. Retry the step.";
   if (e.status === 404 && step === "research") return "No usable sources found under this name. Try the company's domain, for example stef.com.";
+  if (e.status === 403 && /budget_exceeded|guardrail_violation|refused by Otari/.test(msg)) return "Blocked by the Otari gateway: " + msg;
   if (e.status === 429) return "Today's live-run limit is used up. The recorded run still works.";
   if (e.status === 400 || e.status === 503 || (e.status === 404 && step !== "research")) return msg;
   if (step === "research") return "The web research call failed. Retry, or replay a recorded run.";
@@ -276,7 +279,7 @@ async function runFrom(start) {
       $("o-" + step).innerHTML = "";
       startTimer(step);
       const m = await stepCall(step);
-      stopTimer(); show(m); totals(m.totals);
+      stopTimer(); show(m); totals(m.totals); if (window.otariRefresh) window.otariRefresh();
       if (step === "plan" && RESULTS.score && RESULTS.score.tier === "C" && !FORCE_DRAFT) { stopped(); break; }
     }
   } catch (e) { fail(cur, e); }
@@ -290,7 +293,7 @@ async function run() {
   try {
     startTimer("research");
     const icp = $("icp").value.split("\n").map((s) => s.trim()).filter(Boolean);
-    const first = await post("/api/live/start", { company: $("company").value, product: $("product").value, icp });
+    const first = await post("/api/live/start", { company: $("company").value, product: $("product").value, icp, ...(window.otariOpts ? window.otariOpts() : {}) });
     RUN_ID = first.run_id;
     stopTimer(); show(first); totals(null, first);
   } catch (e) { fail("research", e); $("go").disabled = false; return; }

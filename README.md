@@ -249,59 +249,52 @@ MIT, see `LICENSE`.
 
 ## Otari variant
 
-On branch `otari` only (`main` is unchanged), one switch, `LLM_GATEWAY=otari`, sends every model call
-through a self-hosted [Mozilla Otari](https://github.com/mozilla-ai/otari) gateway (Apache 2.0,
-OpenAI-compatible, no account), which forwards to the same Nebius Token Factory models
-(addressed as `nebius:<model>`); unset, the app calls Nebius directly as before. The gateway reports
-its own metered cost for every call (`usage.cost_usd`, shown per step as "gateway: $…"), and a hard
-USD ceiling per calendar day sits on the app's key (default 1 USD), enforced by the gateway, not by the app.
+Branch `otari` only (`main` is unchanged). One switch, `LLM_GATEWAY=otari`, sends **every model call,
+web search and page fetch** of the live agent through a self-hosted
+[Mozilla Otari](https://github.com/mozilla-ai/otari) gateway (Apache 2.0, OpenAI-compatible, runs on
+our own machine, no account). Unset, the app calls Nebius and Tavily directly as before; 51 tests
+pass (both modes covered). With the switch on, `/live` shows an **Otari gateway panel**: pick the end user,
+three buttons (budget check, trigger fallback, test guardrail) and the live values Otari reports.
+Demo script for the screen recording: `/otari-script` (not linked, `noindex`).
 
-Start, after the one-time setup below (two commands):
+### Rubric item → where in the app → evidence
 
-```bash
-(cd .otari-gw && NEBIUS_API_KEY=... OTARI_API_KEY=... .venv/bin/otari serve --config config.yml)   # gateway on :8000
-LLM_GATEWAY=otari OTARI_API_KEY=... NEBIUS_API_KEY=... TAVILY_API_KEY=... uv run uvicorn app.main:app --port 8771
-```
+| Rubric item | Where in the app | Evidence |
+|---|---|---|
+| **Open-weight models** | Three open-weight models on Nebius Token Factory, each with one job: `zai-org/GLM-5.3-Flash` (Z.ai) scores against the ICP, `moonshotai/Kimi-K3` (Moonshot AI) plans the outreach, `zai-org/GLM-5.3` (Z.ai) writes the draft; fallbacks `openai/gpt-oss-120b`, `zai-org/GLM-5.3`, `moonshotai/Kimi-K3`. Licenses not re-checked for this README. | [`app/models_registry.py`](app/models_registry.py), table "Which model does which step" on `/live`, [`docs/otari/run.json`](docs/otari/run.json) |
+| **Routing and fallbacks** | Each step sends an Otari routing policy (`icp-score`, `icp-plan`, `icp-write`) instead of a model; Otari picks the primary and runs the step's fallback on failure (a hanging attempt counts as failed after 30 s). The step shows "fallback via Otari: X → Y" from the headers `Otari-Model`, `Otari-Fallback`, `Otari-Attempt-Count`. Button **"2. Trigger fallback"** uses `icp-write-outage`, whose primary is a model id Nebius does not serve. | [routing-fallback.png](docs/otari/routing-fallback.png) (button: GLM-5.3-retired → Kimi-K3, 2 attempts); [routing-write-guardrail.png](docs/otari/routing-write-guardrail.png) (**unprovoked** in the recorded run: GLM-5.3 hung, Otari fell back to Kimi-K3); code [`app/outreach.py` step_chat](app/outreach.py#L117), policies in [`scripts/otari_config.py`](scripts/otari_config.py#L38) |
+| **Budgets / spending limits** | The app's service key has a ceiling of 1 USD per calendar day, enforced by Otari (`ceiling: icp-app-ceiling`); the panel shows used and left live (`GET /api/v1/key/budget`). The app keeps its own run cap on top (`LIVE_MAX_RUNS`). | Row "Spending limit (key)" in [routing-fallback.png](docs/otari/routing-fallback.png); [`scripts/otari_config.py`](scripts/otari_config.py#L51) |
+| **Per-user budgets** | Every call names the app's end user (`user` field, header `Otari-End-User-Budget`); Otari bills and caps each one on its own budget: `demo-a` trial $0.03/day, `demo-b` $0.60/day. demo-a is used up and gets `403 budget_exceeded`, demo-b continues. Button **"1. Check budget as this user"** makes one web search billed to the chosen user. | [per-user-budget-demo-a-blocked.png](docs/otari/per-user-budget-demo-a-blocked.png), [per-user-budget-demo-b-allowed.png](docs/otari/per-user-budget-demo-b-allowed.png), [per-user-budget-run-demo-a.png](docs/otari/per-user-budget-run-demo-a.png) (full run as demo-a: plan step refused with HTTP 403); code [`app/gateway.py` user_fields](app/gateway.py#L64) |
+| **Web search / fetch** | The research step searches through `POST /api/v1/search/tavily` (Tavily behind Otari, $0.008 per call billed to the end user) and reads the company website through `POST /api/v1/fetch/builtin_fetch`. | [web-search-fetch.png](docs/otari/web-search-fetch.png) ("via Otari: search + fetch as demo-b"); code [`app/gateway.py` OtariWeb](app/gateway.py#L153) |
+| **Guardrails** | The write step asks Otari for profile `no-contact-data` in block mode on input and output. Otari calls the deployment's guardrails service (this app, `/otari-guardrails/validate`: flags e-mail addresses and phone numbers). Normal run: "passed, evaluated". Button **"3. Test guardrail"** sends an input with a phone number and an address: `403 guardrail_violation`, no model runs. | [guardrail.png](docs/otari/guardrail.png), [routing-write-guardrail.png](docs/otari/routing-write-guardrail.png); code [`app/gateway.py` guard_check](app/gateway.py#L73), [`app/otari_routes.py`](app/otari_routes.py#L149) |
+| **Project and demo** | The ICP Qualifier: research, score with verbatim quotes, outreach plan, email draft; click demo of all features in about 90 s. | [run-dachser-full.png](docs/otari/run-dachser-full.png), `/otari-script` |
 
-### Recorded run through the gateway (2026-11-20)
+### Recorded run through the gateway (2026-11-20, 13:41)
 
-dachser.de with the profile "European logistics groups", driven through the live page in a headless
-browser: Tier A, 6 of 6 criteria met, 0 quotes rejected, 13 s, $0.08 including web research.
-Response data: [`docs/otari/run.json`](docs/otari/run.json) (person names removed).
+dachser.de, profile "European logistics groups", end user demo-b, driven through `/live` in a headless
+browser: Tier A (score 0.83, 5 of 6 criteria), 0 quotes rejected. Data: [`docs/otari/run.json`](docs/otari/run.json).
 
-| Step | Model | Seconds | Cost per gateway (`usage.cost_usd`) | Cost per own price table |
-|---|---|---:|---:|---:|
-| Research | Tavily (4 calls, not via the gateway) | 1.82 | n/a | 4 credits |
-| Score | zai-org/GLM-5.3-Flash | 2.57 | $0.000957 | $0.000957 |
-| Plan | moonshotai/Kimi-K3 | 6.19 | $0.038313 | $0.038313 |
-| Write | zai-org/GLM-5.3 | 2.02 | $0.005088 | $0.005088 |
-| **Models total** | 3 calls, 14,686 tokens | 10.78 | **$0.044358** | **$0.044358** |
+| Step | Route through Otari | Model that answered | Seconds | Cost (Otari `usage.cost_usd`) |
+|---|---|---|---:|---:|
+| Research | search + builtin fetch, as demo-b | Tavily (4 calls) | 2.22 | 4 × $0.008 on demo-b's budget |
+| Score | `icp-score` | zai-org/GLM-5.3-Flash | 2.05 | $0.000964 |
+| Plan | `icp-plan` | moonshotai/Kimi-K3 | 9.16 | $0.049740 |
+| Write | `icp-write`, guardrail passed | moonshotai/Kimi-K3 (**fallback**, GLM-5.3 hung, 2 attempts) | 31.57 | $0.013899 |
 
-Daily ceiling, shown live: with the ceiling briefly set to $0.01 (already spent that day), one call on
-the app key came back `HTTP 403 {"detail":"API key has exceeded budget limit","code":"budget_exceeded"}`;
-the ceiling was then set back to 1 USD.
-
-Live page with the gateway badge ("via Mozilla Otari gateway"):
-
-![Live page via Mozilla Otari gateway](docs/otari/1-live-page.png)
-
-Each step shows the app's own cost and, in green, the cost the gateway metered:
-
-![Score step](docs/otari/2-step-score.png)
-![Plan step](docs/otari/3-step-plan.png)
-![Write step](docs/otari/4-step-write.png)
-
-Totals, with the gateway-metered model cost next to the app's own table:
-
-![Totals](docs/otari/5-totals.png)
-
-### One-time setup
+### Start (three commands)
 
 ```bash
-git clone --depth 1 https://github.com/mozilla-ai/otari .otari-gw && (cd .otari-gw && uv sync --no-dev)
-uv run python scripts/otari_config.py .otari-gw/config.yml          # sqlite, nebius provider, prices, budget
-export OTARI_API_KEY=$(python3 -c "import secrets; print('tk-' + secrets.token_urlsafe(48))")
+set -a; . ./my-keys.env; set +a       # NEBIUS_API_KEY, TAVILY_API_KEY, OTARI_API_KEY, OTARI_MASTER_KEY
+bash scripts/otari_up.sh              # writes the config, starts the gateway (:8000) and the app (:8781)
+open http://127.0.0.1:8781/live       # the Otari panel is at the top; script: /otari-script
 ```
 
-Earlier measurement the same day (one live run, tive.com): score 3.6 s / $0.000653, plan 8.6 s / $0.039345,
-write 32.0 s / $0.003425; the gateway's metered cost matched the app's own price table to the cent.
+One-time setup before that: `git clone --depth 1 https://github.com/mozilla-ai/otari .otari-gw && (cd .otari-gw && uv sync --no-dev)`;
+`OTARI_API_KEY` and `OTARI_MASTER_KEY` are random strings you choose (e.g. `python3 -c "import secrets; print(secrets.token_urlsafe(48))"`).
+The config ([`scripts/otari_config.py`](scripts/otari_config.py)) holds no secrets, only `${ENV}` references.
+
+### Not used (and why)
+
+- **Code execution:** not possible in this setup: Otari needs a sandbox backend (its own protocol server or an E2B account); we have neither, and the app has no step that runs code.
+- **MCP:** not attempted: it needs an MCP server for a tool the app actually uses, and the app has none today; we did not want to fake one.
+- **Catalog guardrails** (hosted vendor checks): not used; they need vendor accounts. We use Otari's guardrails service contract with our own small service instead.

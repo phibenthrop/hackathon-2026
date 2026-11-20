@@ -37,6 +37,7 @@ class Budget:
     model_max: int = MAX_MODEL_CALLS
     tavily_used: int = 0
     model_used: int = 0
+    ctx: dict = field(default_factory=dict)  # branch otari: end user, fallback demo
 
     def take_tavily(self) -> None:
         if self.tavily_used >= self.tavily_max:
@@ -202,6 +203,8 @@ def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | 
         except BudgetExceeded:
             raise
         except Exception as exc:  # unreachable site: carry on with search
+            if getattr(exc, "status", None) in (401, 402, 403):  # gateway refusal (budget): stop the run
+                raise
             res.calls.append({"call": "extract", "query": f"https://{domain}", "error": str(exc)[:160],
                               "credits": 1})
 
@@ -214,6 +217,8 @@ def run_research(target: Target, api_key: str, budget: Budget, client: Tavily | 
         except BudgetExceeded:
             break
         except Exception as exc:
+            if getattr(exc, "status", None) in (401, 402, 403):  # gateway refusal (budget): stop the run
+                raise
             res.calls.append({"call": "search", "query": query, "error": str(exc)[:160], "credits": 1})
             continue
         res.calls.append({"call": f"search ({topic})", "query": query, "seconds": round(dt, 2),

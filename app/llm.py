@@ -33,6 +33,8 @@ class LLMConfig:
     max_tokens: int = 2500
     max_retries: int = MAX_RETRIES  # the live agent uses 1: a demo cannot wait 4 x timeout
     reasoning_effort: str | None = None  # Nebius "reasoning_effort" (none/low/medium/high); None = model default
+    extra_body: dict | None = None  # gateway fields (Otari: user, guardrails)
+    extra_headers: dict | None = None
 
     @classmethod
     def from_env(cls) -> "LLMConfig | None":
@@ -76,6 +78,7 @@ class Usage:
     errors: int = 0
     retries: int = 0
     gateway_cost_usd: float | None = None  # set when a gateway (Otari) meters the call
+    headers: dict = field(default_factory=dict)  # response headers of the last successful call
     log: list = field(default_factory=list)
 
 
@@ -95,17 +98,20 @@ class LLMClient:
         }
         if self.config.reasoning_effort:
             payload["reasoning_effort"] = self.config.reasoning_effort
+        payload.update(self.config.extra_body or {})
         body = json.dumps(payload).encode()
         last_exc: Exception | None = None
         for attempt in range(self.config.max_retries + 1):
             req = urllib.request.Request(url, data=body, method="POST", headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.config.api_key}",
+                **(self.config.extra_headers or {}),
             })
             try:
                 self.usage.calls += 1
                 with urllib.request.urlopen(req, timeout=self.config.timeout) as resp:
                     data = json.loads(resp.read().decode())
+                    self.usage.headers = {k.lower(): v for k, v in resp.headers.items()}
                 u = data.get("usage") or {}
                 self.usage.prompt_tokens += int(u.get("prompt_tokens") or 0)
                 self.usage.completion_tokens += int(u.get("completion_tokens") or 0)
@@ -120,6 +126,13 @@ class LLMClient:
                 if exc.code not in RETRY_STATUS or attempt == self.config.max_retries:
                     self.usage.errors += 1
                     hint = " (credit balance exhausted: add funds)" if exc.code == 402 else ""
+                    if self.config.extra_body is not None:  # gateway: keep its refusal code (budget, guardrail)
+                        try:
+                            err = json.loads(exc.read().decode() or "{}")
+                        except Exception:
+                            err = {}
+                        if isinstance(err, dict) and err.get("code"):
+                            hint = f" {err['code']}: {str(err.get('detail'))[:160]}"
                     raise RuntimeError(f"HTTP {exc.code} from LLM endpoint{hint}") from None
                 wait = float(exc.headers.get("Retry-After") or 0) or (2 ** attempt)
             except (urllib.error.URLError, TimeoutError) as exc:

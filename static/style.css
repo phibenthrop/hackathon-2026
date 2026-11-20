@@ -129,3 +129,15 @@ html.live { font-size: 112.5%; }
 .live-page .cmp td, .live-page .cmp th { font-size: .85rem; text-align: right; } .live-page .cmp td:first-child, .live-page .cmp th:first-child { text-align: left; }
 .live-page footer { font-size: .85rem; }
 .live-page [hidden] { display: none !important; }
+
+/* Otari panel (branch otari, only when LLM_GATEWAY=otari) */
+.otari-panel { border-left: 4px solid #5b3fd6; }
+.otari-panel h2 .hint { font-weight: normal; font-size: .85rem; margin-left: .5rem; }
+.otari-row { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: end; margin-bottom: .6rem; }
+.otari-user select { font-size: 1rem; padding: .3rem; }
+.otari-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .6rem; }
+.otari-result { min-height: 1.4rem; margin-bottom: .6rem; font-size: .95rem; }
+.otari-result .ok { color: #1d6b34; font-weight: 600; } .otari-result .no { color: #a32020; font-weight: 600; }
+.otari-table td:first-child { white-space: nowrap; font-weight: 600; }
+.live-mark.live-ot { background: #ece8fb; }
+.live-mark.live-ot-fb { background: #fde7c8; font-weight: 600; }
