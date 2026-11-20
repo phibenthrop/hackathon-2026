@@ -1,6 +1,44 @@
 # ICP Qualifier
 
-> Turns a list of "similar companies" into a tiered A/B/C lead list in which every verdict carries a verbatim quote and a link to its source.
+> Type any company. An agent researches it on the live web, scores it against your ideal customer
+> profile with verbatim quotes, plans the outreach and drafts a first email. A person decides what goes out.
+
+## Try it in one minute
+
+1. Open `/live`.
+2. Type a company domain or name and press "Check this company".
+3. Watch four steps: research (Tavily), score, plan, draft (three models on Nebius Token Factory).
+   Each step shows its model, seconds, tokens and cost.
+4. Click any quote to open its source. Edit the draft. Nothing is sent.
+
+No key? The page replays a recorded run and says so (`data/live_example.json`, written by `scripts/record_live_example.py`).<!--NOEX--> At the time of writing no run has been recorded yet.<!--/NOEX-->
+
+## Who it is for, and what changes
+
+An SDR or founder doing outbound. Before: ten tabs per company, a guess, an email written from memory.
+After: one input, a verdict with quotes that can be checked in one click, and a draft that opens with
+one sourced fact. Companies that do not fit are stopped before anyone writes to them.
+Time and cost per company: see the totals line of a run (measured per run, not a benchmark).
+
+## Which model does which step, and why (summary)
+
+| Step | Model | Why |
+|---|---|---|
+| Research | Tavily search + extract | Live web, every source keeps its URL |
+| Score | `zai-org/GLM-5.3-Flash` | Many calls, JSON out, code checks every quote: pay for speed |
+| Plan | `moonshotai/Kimi-K3` | One call per company, judgement matters: pay for reasoning |
+| Write | `zai-org/GLM-5.3` | Natural voice in the customer's language |
+
+Comparison on the scoring step: <!--CMP-->not measured yet; `scripts/compare_models.py` writes `data/real/model_comparison.json` when it runs.<!--/CMP-->
+
+## Limits (summary)
+
+Built entirely on 20 Nov 2026 at the event; nothing existed before. No sending, no CRM write-back,
+no contact finding. The quote check proves that a sentence is in the source, not that the source is right.
+Cold email to recipients in Germany needs prior consent, also in B2B (UWG § 7); the app warns, it does
+not check consent. Not legal advice. Sentences naming people are dropped from research by a heuristic
+filter; the plan addresses roles only. The lead-list page (`/`) uses a stored snapshot of 40 UK
+companies, not a live feed.
 
 Built on 20 Nov 2026 at the AI Builders x commIT Hack Day in Berlin. Track: Go-to-Market.
 
@@ -123,7 +161,7 @@ Every route takes an optional `dataset` (`real` or `fictional`; query parameter 
 
 ## Status and limits
 
-- Runs: full flow offline with the rule scorer; LLM scorer, profile check and replay are unit-tested offline. The first live run against Nebius on 2026-11-20 was refused with HTTP 402 (account credit exhausted), so `data/real/llm_scores.json` does not exist yet and the real dataset falls back to the rule scorer until it is generated.
+- Runs: full flow offline with the rule scorer; LLM scorer, profile check and replay are unit-tested offline. The first live run against Nebius on 2026-11-20 was refused with HTTP 402 (account credit exhausted); after credit was added, `data/real/llm_scores.json` was generated the same day with `openai/gpt-oss-120b`: 40 companies, 40 calls, estimated cost USD 0.0447, 121 quotes checked, 4 discarded as not verbatim (figures from the file's `stats` block).
 - Real dataset: replayed from the stored snapshot; live pulls need a token and run only through `scripts/pull_real.py`. The snapshot has no company size and no similarity score, so neither is shown or scored.
 - Rule scorer limits: keyword and regex matching with simple sentence-level negation; it can be fooled by unusual wording.
 
@@ -191,11 +229,11 @@ set -a; . /path/to/your.env; set +a     # NEBIUS_API_KEY and TAVILY_API_KEY
 uv run uvicorn app.main:app --host 127.0.0.1 --port 8765
 ```
 
-Open <http://127.0.0.1:8765/live>, type a domain (for example `chillspeed.co.uk`, `stef.com`, or a German company such as `nagel-group.com`) and press **Run the agent**. Without keys the page plays the recorded run. Tests: `uv run pytest -q` (no network).
+Open <http://127.0.0.1:8765/live>, type a domain (for example `chillspeed.co.uk`, `stef.com`, or a German company such as `nagel-group.com`) and press **Check this company**. Without keys the page plays the recorded run, if `data/live_example.json` exists. Tests: `uv run pytest -q` (no network).
 
 ## Next step
 
-Run the source and website reader live per request, add a source for company size, and generate `data/real/llm_scores.json` once the Nebius account has credit.
+Batch mode: score 50 companies with the small model, plan and write only for tier A. Run the source and website reader live per request, and add a source for company size.
 
 ## License
 

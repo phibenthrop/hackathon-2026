@@ -25,11 +25,22 @@
   .shot { flex: 1; border: 3px dashed var(--line); border-radius: 10px; display: grid; place-items: center; color: var(--muted); font-size: clamp(1rem, 2vw, 1.8rem); text-align: center; padding: 1em; }
   .foot { position: fixed; bottom: 10px; left: 0; right: 0; text-align: center; color: #9aa4ae; font-size: 14px; }
   .foot a { color: #9aa4ae; }
+  .cols { display: flex; gap: 2vw; margin-top: .5em; }
+  .cols .box { font-size: clamp(.9rem, 1.8vw, 1.6rem); line-height: 1.4; }
+  .biglink { font-size: clamp(1.6rem, 4vw, 3.4rem); font-weight: 700; }
+  .biglink a { color: var(--accent); }
+  ul.small li { font-size: clamp(.9rem, 1.7vw, 1.5rem); }
 </style>
 </head>
 <body>
 
 <section class="slide active">
+  <h1>Is this company worth an email?</h1>
+  <p>An agent that researches a company, scores it against your ICP with quotes you can check, and drafts the first email. A person decides.</p>
+  <p><span class="motto">Agent drafts, a person decides.</span></p>
+</section>
+
+<section class="slide">
   <h2>Problem</h2>
   <h1>Lookalike lists are easy. Deciding who is worth an email is not.</h1>
   <ul>
@@ -37,6 +48,38 @@
     <li>Someone still opens every website to check fit: industry, size, region, buying signals.</li>
     <li>A generic AI "fit score" without a source is a guess; one wrong claim in a first email burns the lead.</li>
   </ul>
+</section>
+
+
+<!-- live-agent slide (branch live-agent): model per step + comparison, filled from /api/live/config -->
+<section class="slide" id="live-models">
+  <h2>Live agent: which model does which step</h2>
+  <table style="width:100%;font-size:.8em"><tbody id="live-reg"><tr><td>Research</td><td>Tavily search + extract</td></tr></tbody></table>
+  <h3 style="margin-top:1em">Two models on the scoring step: speed, cost, rejected quotes</h3>
+  <div id="live-cmp" style="font-size:.75em">No comparison recorded yet.</div>
+  <p style="font-size:.7em">Open <a href="/live">/live</a> and type any company.</p>
+</section>
+<script>
+fetch("/api/live/config").then((r) => r.json()).then((c) => {
+  const e = (s) => String(s ?? "").replace(/[&<>]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[x]));
+  document.getElementById("live-reg").innerHTML = c.registry.map((r) => `<tr><td><b>${e(r.title)}</b></td><td><code>${e(r.model)}</code></td><td>${e(r.why)}</td></tr>`).join("");
+  const m = c.comparison && c.comparison.models;
+  if (m) {
+    const pct = (v) => v == null ? "-" : Math.round(v * 100) + "%";
+    document.getElementById("live-cmp").innerHTML = `<table style="width:100%"><tr><th>Model</th><th>s / firm</th><th>USD / firm</th><th>valid JSON</th><th>quotes discarded</th><th>tier agreement</th></tr>` +
+      m.map((x) => `<tr><td>${e(x.model)}</td><td>${x.avg_seconds ?? "-"}</td><td>${x.cost_per_company_usd == null ? "-" : "$" + x.cost_per_company_usd.toFixed(5)}</td><td>${pct(x.valid_json_rate)}</td><td>${pct(x.discarded_quote_rate)}</td><td>${pct(x.tier_agreement)}</td></tr>`).join("") +
+      `</table><p>${e(c.comparison.note)}</p>`;
+  }
+}).catch(() => {});
+</script>
+<!-- end live-agent slide -->
+
+<section class="slide">
+  <h2>Before / after</h2>
+  <div class="cols">
+    <div class="box"><strong>Before</strong>An SDR opens the website, LinkedIn and news in ten tabs, skims, guesses the fit and writes from memory. Time per account: not measured. Claims in the email cannot be traced.</div>
+    <div class="box us"><strong>After</strong><!--AFTER-->Types the company. Reads four steps, clicks the quotes, edits the draft, decides. Time and cost per company are measured in each run and shown in its totals line. Companies that do not fit are stopped before anyone writes.<!--/AFTER--></div>
+  </div>
 </section>
 
 <section class="slide">
@@ -63,7 +106,7 @@
 
 <section class="slide">
   <h2>Demo</h2>
-  <div class="shot">[ Screenshot placeholder: tiered result list with one company expanded, showing quotes and source links ]</div>
+  <p class="biglink"><a href="/live">Live: /live - type any company</a></p>
 </section>
 
 <section class="slide">
@@ -79,37 +122,25 @@
 </section>
 
 <section class="slide">
+  <h2>Limits</h2>
+  <ul class="small">
+    <li>Built entirely today, 20 Nov 2026. Nothing existed before the event.</li>
+    <li>Works: live research, quote-checked scoring, plan, draft, for any company with a public website.</li>
+    <li>Not built: sending, CRM write-back, contact finding. Sending is left out on purpose.</li>
+    <li>Weak spots: company size is rarely on the web; the quote check proves a sentence exists, not that it is true; German cold email needs consent, the app only warns.</li>
+    <li>The lead-list page runs on a stored snapshot of 40 UK companies, not a live feed.</li>
+  </ul>
+</section>
+
+<section class="slide">
   <h2>Next steps</h2>
   <ul>
-    <li>Run similarcompanies.ai and the website reader live per request instead of the stored snapshot.</li>
+    <li>Batch mode: score 50 companies with the small model, plan and write only for tier A.</li>
     <li>Get company size from a source that has it; today the real dataset has no size data, so size is not scored.</li>
     <li>Hand A-tier leads to a Needle campaign as drafts for human review.</li>
     <li>Learn from won and lost deals to adjust criteria weights.</li>
   </ul>
 </section>
-
-<!-- live-agent slide (branch live-agent): model per step + comparison, filled from /api/live/config -->
-<section class="slide" id="live-models">
-  <h2>Live agent: which model does which step</h2>
-  <table style="width:100%;font-size:.8em"><tbody id="live-reg"><tr><td>Research</td><td>Tavily search + extract</td></tr></tbody></table>
-  <h3 style="margin-top:1em">Scoring step, measured on the real snapshot</h3>
-  <div id="live-cmp" style="font-size:.75em">No comparison recorded yet.</div>
-  <p style="font-size:.7em">Open <a href="/live">/live</a> and type any company.</p>
-</section>
-<script>
-fetch("/api/live/config").then((r) => r.json()).then((c) => {
-  const e = (s) => String(s ?? "").replace(/[&<>]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[x]));
-  document.getElementById("live-reg").innerHTML = c.registry.map((r) => `<tr><td><b>${e(r.title)}</b></td><td><code>${e(r.model)}</code></td><td>${e(r.why)}</td></tr>`).join("");
-  const m = c.comparison && c.comparison.models;
-  if (m) {
-    const pct = (v) => v == null ? "-" : Math.round(v * 100) + "%";
-    document.getElementById("live-cmp").innerHTML = `<table style="width:100%"><tr><th>Model</th><th>s / firm</th><th>USD / firm</th><th>valid JSON</th><th>quotes discarded</th><th>tier agreement</th></tr>` +
-      m.map((x) => `<tr><td>${e(x.model)}</td><td>${x.avg_seconds ?? "-"}</td><td>${x.cost_per_company_usd == null ? "-" : "$" + x.cost_per_company_usd.toFixed(5)}</td><td>${pct(x.valid_json_rate)}</td><td>${pct(x.discarded_quote_rate)}</td><td>${pct(x.tier_agreement)}</td></tr>`).join("") +
-      `</table><p>${e(c.comparison.note)}</p>`;
-  }
-}).catch(() => {});
-</script>
-<!-- end live-agent slide -->
 
 <div class="foot">Arrow keys or click to navigate · <span id="pos"></span> · <a href="/">open the app</a> · fictional dataset: invented companies · real dataset: similarcompanies.ai snapshot 2026-11-20, quotes from public company websites</div>
 <script>
