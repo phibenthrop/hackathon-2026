@@ -326,7 +326,11 @@ keith kelly ken kevin kim laura lee leon linda lisa louise lucy luke malcolm mar
 mary matt matthew michael michelle mike neil nick nicola nigel oliver paul pauline peter phil philip rachel
 ray rebecca richard rob robert roger ron ross roy russell ryan sam samuel sandra sarah scott sean sharon simon
 sophie stephen steve steven stuart sue susan terry thomas tim tom tony tracy trevor victoria wallace wayne
-william""".split())
+william
+alexander andreas axel bernd bernhard burkhard christoph dieter dirk florian gerhard günter hans harald heinz
+helmut holger horst jens joachim jochen jörg jürgen karl klaus lars manfred marcus markus matthias norbert
+ralf rainer reinhard rüdiger sebastian stefan thorsten torsten ulrich uwe volker werner wolfgang anja birgit
+claudia heike katrin kerstin monika petra sabine silke stefanie susanne ursula""".split())
 # biographies: a sentence about "he"/"she" is about a person, not the company
 PRONOUN = re.compile(r"\b(he|she|his|her|hers|him|himself|herself)\b", re.IGNORECASE)
 SURNAME_FAMILY = re.compile(r"\b(?:the )?[A-Z][a-z]+ family\b")

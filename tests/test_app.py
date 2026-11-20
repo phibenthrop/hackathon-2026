@@ -120,3 +120,10 @@ def test_llm_quotes_are_checked_and_fabrications_discarded(monkeypatch):
 
 def test_rules_used_without_key(client):
     assert client.get("/api/config").json()["llm"] is False
+
+
+def test_script_page_is_served_unlinked_and_noindex(client):
+    r = client.get("/script")
+    assert r.status_code == 200 and 'name="robots" content="noindex"' in r.text
+    for page in ("/", "/live", "/slides"):
+        assert '"/script"' not in client.get(page).text  # "</script>" tags contain the bare path

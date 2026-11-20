@@ -182,7 +182,7 @@ function tierBanner() {
   ["ban-plan", "ban-write"].forEach((id) => {
     $(id).hidden = !c;
     $(id).className = "live-banner" + (c && !notFit ? " live-banner-check" : "");
-    $(id).textContent = !c ? "" : notFit ? "Tier C, do not contact: a criterion is quoted as not met. Plan and draft are shown so you can see why." : "Tier C, not enough evidence: no criterion is quoted as not met, but key ones have no quote. A missing quote is not proof of a bad fit: check the \"no evidence\" rows. Plan and draft are shown so you can see why.";
+    $(id).textContent = !c ? "" : notFit ? "Tier C, do not contact: a criterion is quoted as not met. The plan below shows why; a draft is written only if you ask." : "Tier C, not enough evidence: no criterion is quoted as not met, but key ones have no quote. A missing quote is not proof of a bad fit: check the \"no evidence\" rows. The plan below shows why; a draft is written only if you ask.";
   });
 }
 

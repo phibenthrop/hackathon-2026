@@ -18,7 +18,9 @@ No key? The page replays a recorded run and says so (`data/live_example.json`, w
 An SDR or founder doing outbound. Before: ten tabs per company, a guess, an email written from memory.
 After: one input, a verdict with quotes that can be checked in one click, and a draft that opens with
 one sourced fact. Companies that do not fit are stopped before anyone writes to them.
-Time and cost per company: about 20 seconds and 6 to 8 cents with web research (totals line of each run; measured per run, not a benchmark).
+Time and cost per company: about 20 seconds and 6 to 9 cents with web research (totals line of each run; measured per run, not a benchmark).
+Recorded example (`data/live_example.json`, dachser.de, European logistics profile): Tier A in 16 s for $0.09
+(model calls $0.054 plus 4 Tavily credits), 0 of 6 quotes rejected, German draft of 48 words.
 
 ## Which model does which step, and why (summary)
 

@@ -153,6 +153,12 @@ def slides() -> FileResponse:
     return FileResponse(STATIC / "slides.html")
 
 
+@app.get("/script", include_in_schema=False)
+def script() -> FileResponse:
+    """Video script, recording checklist and submission text for the team. Not linked, noindex."""
+    return FileResponse(STATIC / "script.html")
+
+
 @app.get("/healthz")
 def healthz() -> dict:
     return {"ok": True}
