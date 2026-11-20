@@ -205,7 +205,7 @@ function failText(step, e) {
 function fail(step, e) {
   stopTimer();
   state(step, "err", "failed");
-  $("o-" + step).innerHTML = `<p class="live-error">${esc(failText(step, e))}</p>
+  $("o-" + step).innerHTML = `<p class="live-error" title="${esc(e.message)}">${esc(failText(step, e))}</p>
     <button class="retry">Retry this step</button> <button class="replay">Replay a recorded run</button>`;
   $("o-" + step).querySelector(".retry").onclick = () => (step === "research" || !RUN_ID ? run() : runFrom(step));
   $("o-" + step).querySelector(".replay").onclick = example;
