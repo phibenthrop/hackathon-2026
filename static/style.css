@@ -68,3 +68,5 @@ footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 1re
 .source-view section.current { border-color: var(--accent); }
 .source-view h2 { font-size: .85rem; color: var(--muted); font-family: ui-monospace, monospace; margin: .2rem 0; }
 mark { background: #ffe58a; padding: 0 .1rem; }
+.dataset-pick { font-size: .85rem; display: flex; gap: .4rem; align-items: center; }
+a.url { color: var(--muted, #5b6672); }

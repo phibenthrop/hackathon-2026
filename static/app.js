@@ -4,9 +4,10 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const STATUS_TEXT = { met: "met", partial: "partial", not_met: "not met", no_evidence: "no evidence" };
 
-const state = { criteria: [], results: [], runId: null, tier: "ALL", open: new Set() };
+const state = { criteria: [], results: [], runId: null, tier: "ALL", open: new Set(), dataset: null, real: false };
 
 async function api(path, body) {
+  if (body !== undefined) body = Object.assign({ dataset: state.dataset }, body);
   const res = await fetch(path, body === undefined ? {} : {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
   });
@@ -20,12 +21,35 @@ function seeds() {
 }
 
 async function init() {
-  const cfg = await api("/api/config");
+  const wanted = state.dataset || new URLSearchParams(location.search).get("dataset") || "";
+  const cfg = await api("/api/config" + (wanted ? "?dataset=" + encodeURIComponent(wanted) : ""));
+  state.dataset = cfg.dataset;
+  state.real = cfg.real;
+  const sel = $("#dataset");
+  sel.innerHTML = cfg.datasets.map((d) => `<option value="${esc(d.key)}">${esc(d.label)}</option>`).join("");
+  sel.value = cfg.dataset;
   $("#mode").textContent = cfg.llm ? `LLM: ${cfg.scorer.slice(4)}` : "Scorer: rule-based (no LLM key set)";
   $("#mode").classList.add(cfg.llm ? "llm" : "rules");
+  $("#notice").textContent = cfg.notice;
+  $("#source-line").textContent = cfg.source_line;
+  $("#footer-data").textContent = cfg.real ? cfg.source_line : "Fictional data only.";
+  $("#seller").textContent = cfg.seller.name;
   $("#offer").textContent = cfg.seller.offer;
+  $("#step1-title").textContent = cfg.real ? "Three seed companies (examples of the target profile)" : "Your three best customers";
+  $("#size-note").textContent = cfg.size_note || "";
   $("#customers").innerHTML = cfg.existing_customers.map((c) => `<option value="${esc(c.domain)}">${esc(c.name)}</option>`).join("");
-  cfg.default_best_customers.forEach((d, i) => { $("#seed" + i).value = d; });
+  [0, 1, 2].forEach((i) => { $("#seed" + i).value = cfg.default_best_customers[i] || ""; });
+}
+
+async function switchDataset() {
+  state.dataset = $("#dataset").value;
+  state.criteria = []; state.results = []; state.runId = null; state.open.clear();
+  ["#icp-wrap", "#cand-wrap", "#results-wrap"].forEach((s) => { $(s).hidden = true; });
+  $("#run-status").textContent = "";
+  const url = new URL(location.href);
+  url.searchParams.set("dataset", state.dataset);
+  history.replaceState(null, "", url);
+  try { await init(); await deriveIcp(); } catch (e) { alert(e.message); }
 }
 
 // ---------- step 1: ICP
@@ -43,7 +67,7 @@ async function deriveIcp() {
 function renderCriteria() {
   $("#criteria-body").innerHTML = state.criteria.map((c, i) => {
     const terms = c.kind === "size"
-      ? `<input type="number" data-i="${i}" data-f="min" value="${c.min}" class="num-in"> to
+      ? `<input type="number" data-i="${i}" data-f="min" value="${c.min == null ? "" : c.min}" class="num-in"> to
          <input type="number" data-i="${i}" data-f="max" value="${c.max}" class="num-in"> employees`
       : `<input data-i="${i}" data-f="keywords" value="${esc(c.keywords.join(", "))}" class="terms-in">`;
     const weights = [1, 2, 3].map((w) => `<option ${w === c.weight ? "selected" : ""}>${w}</option>`).join("");
@@ -76,7 +100,7 @@ async function fetchCandidates() {
     $("#cand-meta").innerHTML = `<strong>${data.candidates.length}</strong> candidates from ${esc(data.source)}.
       Existing customers removed: <strong>${data.removed_existing_customers.length}</strong> (${removed}).`;
     $("#cand-list").innerHTML = data.candidates.map((c) =>
-      `<span class="chip">${esc(c.name)} <small>${esc(c.domain)} · ${(c.similarity * 100).toFixed(0)}%</small></span>`).join("");
+      `<span class="chip">${esc(c.name)} <small>${esc(c.domain)}${c.similarity == null ? "" : " · " + (c.similarity * 100).toFixed(0) + "%"}</small></span>`).join("");
     $("#cand-wrap").hidden = false;
   } catch (e) { alert(e.message); }
 }
@@ -90,6 +114,7 @@ async function run() {
     const data = await api("/api/qualify", { best_customers: seeds(), criteria: state.criteria });
     state.results = data.results;
     state.runId = data.run_id;
+    $("#sort option[value=similarity]").hidden = !data.results.some((r) => r.similarity != null);
     state.open.clear();
     const counts = ["A", "B", "C"].map((t) => `${t}: ${data.tier_counts[t] || 0}`).join(" · ");
     $("#run-status").textContent = `${data.results.length} companies qualified (${counts}). Scorer: ${data.scorer}. Existing customers excluded: ${data.removed_existing_customers.length}.`;
@@ -134,7 +159,9 @@ function renderResults() {
         <td>${f.quote
           ? `<blockquote>"${esc(f.quote)}"</blockquote>
              <a href="${esc(f.source_link)}" target="_blank" rel="noopener">View source</a>
-             <span class="url" title="Public URL with text fragment (fictional domain)">${esc(f.url)}</span>`
+             ${state.real
+               ? `<a class="url" href="${esc(f.url)}" target="_blank" rel="noopener" title="Public page, scrolls to the quote (text fragment)">${esc(f.url)}</a>`
+               : `<span class="url" title="Public URL with text fragment (fictional domain)">${esc(f.url)}</span>`}`
           : `<span class="noev">No quote found - no verdict.</span>`}</td></tr>`).join("");
     const hook = r.draft_hook ? `<div class="hook"><strong>Draft opener (not sent):</strong> ${esc(r.draft_hook)}</div>` : "";
     return main + `<tr class="detail"><td colspan="5">${hook}<table class="findings">${findings}</table></td></tr>`;
@@ -161,5 +188,6 @@ $("#sort").addEventListener("change", renderResults);
 $("#btn-icp").addEventListener("click", deriveIcp);
 $("#btn-cand").addEventListener("click", fetchCandidates);
 $("#btn-run").addEventListener("click", run);
+$("#dataset").addEventListener("change", switchDataset);
 
 init().then(deriveIcp).catch((e) => { $("#mode").textContent = "Error: " + e.message; });

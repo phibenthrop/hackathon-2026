@@ -14,15 +14,21 @@
   </div>
   <div class="top-right">
     <span class="motto">Agent drafts, human sends.</span>
+    <label class="dataset-pick">Demo dataset:
+      <select id="dataset" aria-label="Demo dataset">
+        <option value="real">real (similarcompanies.ai snapshot)</option>
+        <option value="fictional">fictional</option>
+      </select>
+    </label>
     <span id="mode" class="badge">loading...</span>
     <a class="small-link" href="/slides">Slides</a>
   </div>
 </header>
-<p class="notice">Demo data: all companies, domains and website texts are fictional. Seller in this demo: <strong id="seller">ColdTrace (fictional)</strong>, <span id="offer"></span></p>
+<p class="notice"><span id="notice">Loading dataset...</span> Seller in this demo: <strong id="seller">ColdTrace (fictional)</strong>, <span id="offer"></span><br><span id="source-line"></span></p>
 
 <main>
   <section class="step" id="step1">
-    <h2><span class="num">1</span> Your three best customers</h2>
+    <h2><span class="num">1</span> <span id="step1-title">Your three best customers</span></h2>
     <div class="seeds">
       <input id="seed0" list="customers" aria-label="Best customer 1">
       <input id="seed1" list="customers" aria-label="Best customer 2">
@@ -31,7 +37,7 @@
       <button id="btn-icp" class="primary">Derive ICP</button>
     </div>
     <div id="icp-wrap" hidden>
-      <p class="hint">Derived from the websites of your best customers. Edit anything: switch criteria on or off, change terms, ranges and weights.</p>
+      <p class="hint">Derived from your best customers. Edit anything: switch criteria on or off, change terms, ranges and weights. <span id="size-note"></span></p>
       <table class="criteria">
         <thead><tr><th>On</th><th>Criterion</th><th>Terms / range</th><th>Weight</th><th>Must-have</th></tr></thead>
         <tbody id="criteria-body"></tbody>
@@ -79,7 +85,7 @@
     </div>
   </section>
 </main>
-<footer>ICP Qualifier - Hack Day demo, 20 Nov 2026. Fictional data only.</footer>
+<footer>ICP Qualifier - Hack Day demo, 20 Nov 2026. <span id="footer-data"></span></footer>
 <script src="/static/app.js"></script>
 </body>
 </html>
