@@ -29,7 +29,15 @@ Time and cost per company: see the totals line of a run (measured per run, not a
 | Plan | `moonshotai/Kimi-K3` | One call per company, judgement matters: pay for reasoning |
 | Write | `zai-org/GLM-5.3` | Natural voice in the customer's language |
 
-Comparison on the scoring step: <!--CMP-->not measured yet; `scripts/compare_models.py` writes `data/real/model_comparison.json` when it runs.<!--/CMP-->
+Comparison on the scoring step: <!--CMP-->measured on 12 companies of the real snapshot, same prompt and quote gate as the app (`data/real/model_comparison.json`, 2026-11-20 12:35):
+
+| Model | Seconds / company | USD / company | Valid JSON | Quotes discarded |
+|---|---|---|---|---|
+| `zai-org/GLM-5.3-Flash` (reasoning low) | 2.96 | 0.000386 | 100% | 0% of 38 |
+| `openai/gpt-oss-120b` | 3.48 | 0.001378 | 75% | 35% of 23 |
+| `nvidia/Nemotron-3_5-Lightning` | - | 0.001053 | 0% | - (no valid JSON) |
+
+GLM-5.3-Flash is the scoring model: fastest, cheapest, and every quote it proposed passed the gate. Tier agreement is measured against GLM-5.3-Flash itself (gpt-oss-120b: 44%), so it shows disagreement, not who is right.<!--/CMP-->
 
 ## Limits (summary)
 
