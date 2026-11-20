@@ -279,6 +279,7 @@ function renderCmp(c) {
 }
 
 async function init() {
+  reset();
   const cfg = CFG = await (await fetch("/api/live/config")).json();
   $("product").value = cfg.default_product;
   $("icp").value = cfg.default_icp.join("\n");

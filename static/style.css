@@ -123,3 +123,4 @@ html.live { font-size: 112.5%; }
 .live-page .reg td:first-child { white-space: nowrap; font-weight: 600; } .live-page .reg code { font-size: .85rem; }
 .live-page .cmp td, .live-page .cmp th { font-size: .85rem; text-align: right; } .live-page .cmp td:first-child, .live-page .cmp th:first-child { text-align: left; }
 .live-page footer { font-size: .85rem; }
+.live-page [hidden] { display: none !important; }
