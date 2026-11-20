@@ -13,12 +13,13 @@ from __future__ import annotations
 
 import json
 import logging
+from pathlib import Path
 from typing import Protocol
 
 from .evidence import find_sizes, find_terms, fragment_url, local_source_link, verify_quote
 from .icp import GAZETTEER
-from .llm import LLMClient, LLMConfig
-from .models import STATUS_CREDIT, CompanyResult, Criterion, Finding
+from .llm import LLMClient, LLMConfig, extract_json
+from .models import FIT_VERDICTS, STATUS_CREDIT, CompanyResult, Criterion, Finding, Fit
 from .sources import Website
 
 log = logging.getLogger("icp.scoring")
@@ -39,11 +40,17 @@ class Scorer(Protocol):
 
     def findings(self, site: Website, criteria: list[Criterion]) -> list[Finding]: ...
 
+    def assess(self, site: Website, criteria: list[Criterion]) -> tuple[list[Finding], "Fit | None"]: ...
+
 
 # ---------------------------------------------------------------- rule-based
 
 class RuleScorer:
     name = "rules"
+    mode = "rules"
+
+    def assess(self, site: Website, criteria: list[Criterion]) -> tuple[list[Finding], Fit | None]:
+        return self.findings(site, criteria), None
 
     def findings(self, site: Website, criteria: list[Criterion]) -> list[Finding]:
         return [self._one(site, c) for c in criteria]
@@ -99,14 +106,58 @@ class RuleScorer:
 
 # ---------------------------------------------------------------- LLM-based
 
-SYSTEM_PROMPT = """You qualify B2B leads against an ideal customer profile (ICP).
-Use ONLY the website text you are given. For every criterion return:
-- status: one of "met", "partial", "not_met", "no_evidence"
-- reason: one short sentence
-- quote: a passage copied CHARACTER FOR CHARACTER from the website text that proves the status (max 40 words), or null
-- page: the page path the quote comes from, or null
-If the text does not support a judgement, use "no_evidence" with quote null. Never infer facts that are not written.
-Reply with JSON only: {"findings": [{"criterion_id": "...", "status": "...", "reason": "...", "quote": "...", "page": "..."}]}"""
+TARGET_PROFILE = ("a company that itself operates temperature-controlled (chilled or frozen) transport, "
+                  "distribution or cold storage for its customers")
+
+SYSTEM_PROMPT = f"""You qualify B2B leads against an ideal customer profile (ICP).
+Use ONLY the website text you are given.
+
+1. fit: is this company an operator of the target profile at all? Target profile: {TARGET_PROFILE}.
+   verdict is one of:
+   "candidate"    - it operates such services itself
+   "publisher"    - a magazine, news site, directory or media company
+   "manufacturer" - it makes vehicles, refrigeration units or other equipment
+   "supplier"     - it sells products or services to such operators but does not operate them
+   "spam"         - unrelated or junk content (gambling, ads, keyword stuffing)
+   "parked"       - placeholder, for-sale or empty domain
+   "other"        - a real business outside the target profile
+   Give a quote that shows what the company actually is.
+2. findings: for every criterion return
+   - status: one of "met", "partial", "not_met", "no_evidence"
+   - reason: one short sentence
+   - quote: a passage copied CHARACTER FOR CHARACTER from the website text that proves the status (max 40 words), or null
+   - page: the page path the quote comes from (the text after "=== PAGE "), or null
+   If the text does not support a judgement, use "no_evidence" with quote null. Never infer facts that are not written.
+   A signal counts only if the company itself shows it (e.g. moving a customer's goods to a new location is not expansion).
+
+Every quote must be copied exactly from one page, without changes, ellipses or merged sentences.
+Reply with JSON only:
+{{"fit": {{"verdict": "...", "reason": "...", "quote": "...", "page": "..."}},
+ "findings": [{{"criterion_id": "...", "status": "...", "reason": "...", "quote": "...", "page": "..."}}]}}"""
+
+
+def parse_findings(raw: dict, criteria: list[Criterion]) -> list[Finding]:
+    by_id = {str(f.get("criterion_id")): f for f in raw.get("findings") or [] if isinstance(f, dict)}
+    out = []
+    for c in criteria:
+        f = by_id.get(c.id, {})
+        status = f.get("status")
+        if status not in STATUS_CREDIT:
+            status = "no_evidence"
+        quote = f.get("quote") if isinstance(f.get("quote"), str) else None
+        out.append(Finding(criterion_id=c.id, label=c.label, status=status,
+                           reason=str(f.get("reason") or "No verdict returned by the model."),
+                           quote=quote, page=f.get("page") if isinstance(f.get("page"), str) else None))
+    return out
+
+
+def parse_fit(raw: dict) -> Fit | None:
+    f = raw.get("fit")
+    if not isinstance(f, dict) or f.get("verdict") not in FIT_VERDICTS:
+        return None
+    return Fit(verdict=f["verdict"], reason=str(f.get("reason") or ""),
+               quote=f.get("quote") if isinstance(f.get("quote"), str) else None,
+               page=f.get("page") if isinstance(f.get("page"), str) else None)
 
 
 class LLMScorer:
@@ -114,6 +165,7 @@ class LLMScorer:
         self.config = config
         self.client = LLMClient(config)
         self.name = f"llm:{config.model}"
+        self.mode = "live"
         self._fallback = RuleScorer()
 
     def _prompt(self, site: Website, criteria: list[Criterion]) -> list[dict]:
@@ -122,35 +174,60 @@ class LLMScorer:
         user = f"Company: {site.company.name} ({site.company.domain})\n\nCRITERIA:\n{crit}\n\nWEBSITE TEXT:\n{pages}"
         return [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": user}]
 
-    def findings(self, site: Website, criteria: list[Criterion]) -> list[Finding]:
-        raw = None
+    def raw(self, site: Website, criteria: list[Criterion]) -> dict | None:
+        """One model verdict as parsed JSON, or None (at most 2 calls, each with capped retries)."""
         for _attempt in range(2):
             try:
-                raw = json.loads(self.client.chat(self._prompt(site, criteria)))
-                break
-            except json.JSONDecodeError:
-                continue
+                out = extract_json(self.client.chat(self._prompt(site, criteria)))
             except Exception as exc:  # network, auth, timeout: fall back, never block the demo
                 log.warning("LLM call failed for %s: %s", site.company.domain, exc)
-                break
-        if not isinstance(raw, dict) or not isinstance(raw.get("findings"), list):
+                return None
+            if out is not None and isinstance(out.get("findings"), list):
+                return out
+        return None
+
+    def assess(self, site: Website, criteria: list[Criterion]) -> tuple[list[Finding], Fit | None]:
+        raw = self.raw(site, criteria)
+        if raw is None:
             out = self._fallback.findings(site, criteria)
             for f in out:
                 f.reason += " (rule fallback: LLM unavailable)"
-            return out
+            return out, None
+        return parse_findings(raw, criteria), parse_fit(raw)
 
-        by_id = {str(f.get("criterion_id")): f for f in raw["findings"] if isinstance(f, dict)}
-        out = []
-        for c in criteria:
-            f = by_id.get(c.id, {})
-            status = f.get("status")
-            if status not in STATUS_CREDIT:
-                status = "no_evidence"
-            quote = f.get("quote") if isinstance(f.get("quote"), str) else None
-            out.append(Finding(criterion_id=c.id, label=c.label, status=status,
-                               reason=str(f.get("reason") or "No verdict returned by the model."),
-                               quote=quote, page=f.get("page") if isinstance(f.get("page"), str) else None))
-        return out
+    def findings(self, site: Website, criteria: list[Criterion]) -> list[Finding]:
+        return self.assess(site, criteria)[0]
+
+
+class ReplayScorer:
+    """Plays back LLM verdicts precomputed by scripts/precompute_llm.py (no key, no network).
+
+    The quote gate and the tiering still run in the app at replay time.
+    """
+
+    def __init__(self, path: Path):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        self.meta = {k: v for k, v in data.items() if k != "companies"}
+        self.companies: dict[str, dict] = data["companies"]
+        self.model = data["model"]
+        self.name = f"llm:{self.model}"
+        self.mode = "precomputed"
+        self.line = (f"LLM verdicts: {self.model} via {data.get('provider', 'LLM')}, "
+                     f"precomputed {data['computed']}")
+
+    def assess(self, site: Website, criteria: list[Criterion]) -> tuple[list[Finding], Fit | None]:
+        raw = self.companies.get(site.company.domain)
+        if raw is None:
+            return [Finding(criterion_id=c.id, label=c.label, status="no_evidence",
+                            reason="No precomputed LLM verdict for this company.") for c in criteria], None
+        out = parse_findings(raw, criteria)
+        for f in out:
+            if not any(x.get("criterion_id") == f.criterion_id for x in raw.get("findings", [])):
+                f.reason = "Criterion not in the precomputed run; no verdict."
+        return out, parse_fit(raw)
+
+    def findings(self, site: Website, criteria: list[Criterion]) -> list[Finding]:
+        return self.assess(site, criteria)[0]
 
 
 # ---------------------------------------------------------------- shared
@@ -218,18 +295,57 @@ def draft_hook(findings: list[Finding], tier: str) -> str | None:
     return None
 
 
+def enforce_fit(site: Website, fit: Fit | None) -> Fit | None:
+    """Same gate for the fit verdict: a quote that is not verbatim on the site is discarded.
+
+    A "not a fit" claim without a verified quote does not count (the company stays a candidate).
+    """
+    if fit is None:
+        return None
+    page = verify_quote(site, fit.quote, fit.page)
+    if page is None:
+        fit.quote = fit.page = None
+        if fit.verdict != "candidate":
+            fit.discarded = True
+            fit.reason = f'Model said "{fit.verdict}", but its quote is not verbatim on the site; ignored.'
+        return fit
+    fit.page = page
+    fit.url = fragment_url(site.company.domain, page, fit.quote, site.urls.get(page))
+    fit.source_link = local_source_link(site.company.id, page, fit.quote)
+    return fit
+
+
 def score_company(site: Website, criteria: list[Criterion], scorer: Scorer) -> CompanyResult:
     active = [c for c in criteria if c.enabled]
-    findings = enforce_evidence(site, scorer.findings(site, active))
+    assess = getattr(scorer, "assess", None)
+    found, fit = assess(site, active) if assess else (scorer.findings(site, active), None)
+    findings = enforce_evidence(site, found)
+    fit = enforce_fit(site, fit)
     tier, score = tier_for(findings, active)
+    summary = summarize(findings)
+    not_fit = bool(fit and fit.verdict != "candidate" and not fit.discarded)
+    if not_fit:  # the app, not the model, sets the tier: a verified non-operator is never above C
+        tier = "C"
+        summary = f"Not a fit ({fit.verdict}): {fit.reason} " + summary
     c = site.company
     return CompanyResult(
         id=c.id, name=c.name, domain=c.domain, website=c.website, similarity=c.similarity,
-        tier=tier, score=score, summary=summarize(findings), draft_hook=draft_hook(findings, tier),
-        scorer=scorer.name, findings=findings,
+        tier=tier, score=score, summary=summary, draft_hook=draft_hook(findings, tier),
+        scorer=scorer.name, findings=findings, fit=fit, not_a_fit=not_fit,
     )
 
 
-def get_scorer() -> Scorer:
+def get_scorer(mode: str | None = None, replay_path: Path | None = None) -> Scorer:
+    """Pick the scorer.
+
+    mode "rules" forces the rule scorer. Otherwise: LLM live if LLM_* is set; else, for the real
+    dataset, the precomputed LLM verdicts if the file exists; else rules.
+    """
+    if mode == "rules":
+        return RuleScorer()
     cfg = LLMConfig.from_env()
-    return LLMScorer(cfg) if cfg else RuleScorer()
+    if cfg:
+        return LLMScorer(cfg)
+    if replay_path is not None and replay_path.exists():
+        return ReplayScorer(replay_path)
+    return RuleScorer()

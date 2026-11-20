@@ -42,6 +42,20 @@ class Finding(BaseModel):
     source_link: str | None = None  # local link that shows the cached page with the quote highlighted
 
 
+FIT_VERDICTS = ("candidate", "publisher", "manufacturer", "supplier", "spam", "parked", "other")
+
+
+class Fit(BaseModel):
+    """LLM judgement: is this company an operator of the target profile at all?"""
+    verdict: str  # one of FIT_VERDICTS
+    reason: str
+    quote: str | None = None
+    page: str | None = None
+    url: str | None = None
+    source_link: str | None = None
+    discarded: bool = False  # a "not a fit" claim whose quote failed the verbatim check
+
+
 class CompanyResult(BaseModel):
     id: str
     name: str
@@ -54,3 +68,5 @@ class CompanyResult(BaseModel):
     draft_hook: str | None
     scorer: str
     findings: list[Finding]
+    fit: Fit | None = None
+    not_a_fit: bool = False

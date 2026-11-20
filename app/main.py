@@ -22,11 +22,12 @@ from pydantic import BaseModel
 from .evidence import collapse_ws
 from .icp import derive_icp, derive_icp_real
 from .models import CompanyResult, Criterion
-from .realdata import HttpWebsiteReader, RealDataset, SimilarCompaniesSource, real_snapshot_available
+from .realdata import REAL_DIR, HttpWebsiteReader, RealDataset, SimilarCompaniesSource, real_snapshot_available
 from .scoring import get_scorer, score_company
 from .sources import Company, DemoCompanySource, DemoDataset, LocalWebsiteReader, remove_existing
 
 STATIC = Path(__file__).resolve().parent.parent / "static"
+LLM_SCORES = REAL_DIR / "llm_scores.json"  # precomputed by scripts/precompute_llm.py
 
 
 @dataclass
@@ -87,6 +88,24 @@ class SeedRequest(BaseModel):
 
 class QualifyRequest(SeedRequest):
     criteria: list[Criterion] | None = None
+    scorer: str | None = None  # "llm" (default: live if LLM_* set, else precomputed) | "rules"
+
+
+def _scorer(b: Bundle, mode: str | None):
+    if mode not in (None, "", "llm", "rules"):
+        raise HTTPException(400, "scorer must be 'llm' or 'rules'.")
+    return get_scorer(mode, LLM_SCORES if b.key == "real" else None)
+
+
+def _scorer_info(scorer) -> dict:
+    mode = getattr(scorer, "mode", "rules")
+    if mode == "live":
+        line = f"LLM verdicts: {scorer.config.model}, live"
+    elif mode == "precomputed":
+        line = scorer.line
+    else:
+        line = "Rule-based scorer (keywords and regex, no LLM)"
+    return {"scorer": scorer.name, "scorer_mode": mode, "scorer_line": line}
 
 
 def _bundle(key: str | None) -> Bundle:
@@ -138,12 +157,14 @@ def healthz() -> dict:
 
 
 @app.get("/api/config")
-def config(dataset: str | None = None) -> dict:
+def config(dataset: str | None = None, scorer: str | None = None) -> dict:
     b = _bundle(dataset)
-    scorer = get_scorer()
+    sc = _scorer(b, scorer)
+    llm_default = _scorer(b, "llm")
     return {
-        "scorer": scorer.name,
-        "llm": scorer.name.startswith("llm:"),
+        **_scorer_info(sc),
+        "llm": getattr(sc, "mode", "") == "live",  # live model calls (key set)
+        "llm_available": getattr(llm_default, "mode", "rules") != "rules",
         "dataset": b.key,
         "datasets": [{"key": k, "label": v.label} for k, v in BUNDLES.items()],
         "default_dataset": DEFAULT_DATASET,
@@ -186,7 +207,7 @@ def qualify(req: QualifyRequest) -> dict:
     if not any(c.enabled for c in criteria):
         raise HTTPException(400, "Enable at least one criterion.")
     keep, removed = _candidates(b, seeds)
-    scorer = get_scorer()
+    scorer = _scorer(b, req.scorer)
     results = [score_company(b.reader.read(c), criteria, scorer) for c in keep]  # sequential on purpose
     results.sort(key=lambda r: (r.tier, -r.score, r.name))
     run_id = uuid.uuid4().hex[:12]
@@ -197,7 +218,8 @@ def qualify(req: QualifyRequest) -> dict:
         "run_id": run_id,
         "dataset": b.key,
         "source_line": b.source_line,
-        "scorer": scorer.name,
+        **_scorer_info(scorer),
+        "not_a_fit": sum(r.not_a_fit for r in results),
         "tier_counts": dict(sorted(Counter(r.tier for r in results).items())),
         "removed_existing_customers": [_company_json(c) for c in removed],
         "results": [r.model_dump() for r in results],
