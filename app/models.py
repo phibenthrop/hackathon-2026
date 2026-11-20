@@ -27,7 +27,8 @@ class Criterion(BaseModel):
             return f"Company has between {self.min} and {self.max} employees."
         if self.kind == "region":
             return f"Company is based in or operates mainly in: {', '.join(self.keywords)}."
-        return f"{self.label}. Indicative terms: {', '.join(self.keywords)}."
+        need = f" At least {self.min} different terms for 'met'." if self.min else ""
+        return f"{self.label}. Indicative terms: {', '.join(self.keywords)}.{need}"
 
 
 class Finding(BaseModel):

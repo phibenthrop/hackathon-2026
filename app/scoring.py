@@ -83,6 +83,11 @@ class RuleScorer:
         positive = [h for h in hits if not h.negated]
         if positive:
             h = positive[0]
+            distinct = list(dict.fromkeys(x.term.lower().replace("-", " ") for x in positive))
+            if c.min and len(distinct) < c.min:  # breadth required: e.g. at least 2 different niche terms
+                return Finding(**base, status="partial",
+                               reason=f'Website mentions only "{h.term}" ({len(distinct)} of {c.min} terms needed).',
+                               quote=h.sentence, page=h.page)
             return Finding(**base, status="met", reason=f'Website mentions "{h.term}".',
                            quote=h.sentence, page=h.page)
         if hits:
@@ -163,7 +168,7 @@ def enforce_evidence(site: Website, findings: list[Finding]) -> list[Finding]:
             f.quote = f.page = None
             continue
         f.page = page
-        f.url = fragment_url(site.company.domain, page, f.quote)
+        f.url = fragment_url(site.company.domain, page, f.quote, site.urls.get(page))
         f.source_link = local_source_link(site.company.id, page, f.quote)
     return findings
 
