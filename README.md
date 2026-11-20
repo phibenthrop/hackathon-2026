@@ -19,8 +19,8 @@ An SDR or founder doing outbound. Before: ten tabs per company, a guess, an emai
 After: one input, a verdict with quotes that can be checked in one click, and a draft that opens with
 one sourced fact. Companies that do not fit are stopped before anyone writes to them.
 Time and cost per company: usually 15 to 25 seconds; the slowest run we measured took 46; 6 to 9 cents with web research (totals line of each run; measured per run, not a benchmark).
-Recorded example (`data/live_example.json`, dachser.de, European logistics profile): Tier A in 23 s for $0.09
-(model calls $0.057 plus 4 Tavily credits), 0 of 6 quotes rejected, phone recommended, German call opener of 52 words.
+Recorded example (`data/live_example.json`, dachser.de, European logistics profile): Tier A in 14 s for $0.08
+(model calls $0.053 plus 4 Tavily credits), 0 of 6 quotes rejected, phone recommended, German call opener of 58 words.
 
 ## Which model does which step, and why (summary)
 

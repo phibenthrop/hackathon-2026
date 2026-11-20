@@ -130,7 +130,7 @@ function renderPlan(r) {
     <dt>Channel</dt><dd>${linkRefs(p.channel)}</dd>
     <dt>Do not say</dt><dd><ul>${list(p.avoid).map((a) => `<li>${linkRefs(typeof a === "object" ? JSON.stringify(a) : a)}</li>`).join("")}</ul></dd>
     <dt>Discovery question</dt><dd>${list(p.questions).map(linkRefs).join("<br>")}</dd>
-    <dt>Email language</dt><dd>${esc(r.language)}</dd></dl>${checks(r.checks)}`;
+    <dt>Draft language</dt><dd>${esc(r.language)}</dd></dl>${checks(r.checks)}`;
 }
 
 // Check line over the draft, computed in the browser: words, questions, sourced facts.

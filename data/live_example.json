@@ -1,5 +1,5 @@
 {
-  "run_id": "7783c8196798",
+  "run_id": "ce9a637cf275",
   "input": {
     "company": "dachser.de",
     "product": "ColdTrace (fictional): wireless temperature sensors and automatic audit reports for temperature-controlled logistics.",
@@ -17,7 +17,7 @@
       "step": "research",
       "model": "Tavily",
       "calls": 4,
-      "seconds": 0.84,
+      "seconds": 1.2,
       "prompt_tokens": 0,
       "completion_tokens": 0,
       "cost_usd": null,
@@ -107,28 +107,28 @@
           {
             "call": "extract",
             "query": "https://dachser.de",
-            "seconds": 0.26,
+            "seconds": 0.31,
             "results": 1,
             "credits": 1
           },
           {
             "call": "search (general)",
             "query": "\"Dachser\" dachser.de company",
-            "seconds": 0.15,
+            "seconds": 0.26,
             "results": 3,
             "credits": 1
           },
           {
             "call": "search (news)",
             "query": "\"Dachser\" news",
-            "seconds": 0.24,
+            "seconds": 0.25,
             "results": 3,
             "credits": 1
           },
           {
             "call": "search (general)",
             "query": "\"Dachser\" locations depots fleet employees",
-            "seconds": 0.16,
+            "seconds": 0.3,
             "results": 3,
             "credits": 1
           }
@@ -139,11 +139,11 @@
       "step": "score",
       "model": "zai-org/GLM-5.3-Flash",
       "calls": 1,
-      "seconds": 1.96,
+      "seconds": 2.16,
       "prompt_tokens": 4749,
-      "completion_tokens": 316,
-      "reasoning_tokens": 6,
-      "cost_usd": 0.00087,
+      "completion_tokens": 357,
+      "reasoning_tokens": 1,
+      "cost_usd": 0.000891,
       "result": {
         "tier": "A",
         "score": 1.0,
@@ -165,9 +165,9 @@
             "label": "Region: headquartered in continental Europe (e.g. Germany, France, Netherlands, Austria)",
             "status": "met",
             "reason": "Headquartered in Kempten, Germany.",
-            "quote": "headquarters are stationed in Kempten in the Allgäu region",
+            "quote": "Their headquarters are stationed in Kempten in the Allgäu region.",
             "page": "[2]",
-            "url": "https://en.wikipedia.org/wiki/Dachser#:~:text=headquarters%20are%20stationed%20in,in%20the%20Allg%C3%A4u%20region",
+            "url": "https://en.wikipedia.org/wiki/Dachser#:~:text=Their%20headquarters%20are%20stationed,in%20the%20Allg%C3%A4u%20region.",
             "source_link": null,
             "source_n": 2
           },
@@ -175,7 +175,7 @@
             "criterion_id": "custom3",
             "label": "Size: large group with a network of branches or warehouses in several countries",
             "status": "met",
-            "reason": "Large group with 427 locations and country organizations in 42 countries.",
+            "reason": "Large group with ~37,500 employees, 427 locations and warehouses in many countries.",
             "quote": "some 37,500 employees at 427 locations all over the globe",
             "page": "[5]",
             "url": "https://theprint.in/ani-press-releases/dachser-grows-despite-economic-headwinds/2905465#:~:text=some%2037%2C500%20employees%20at,all%20over%20the%20globe",
@@ -186,7 +186,7 @@
             "criterion_id": "custom4",
             "label": "Signal: offers food or temperature-controlled logistics",
             "status": "met",
-            "reason": "Dedicated Food Logistics business line with temperature-controlled storage for food.",
+            "reason": "Dedicated Food Logistics business line with temperature/food storage capacity.",
             "quote": "total storage capacity for industrial goods and food to over four million pallet spaces",
             "page": "[5]",
             "url": "https://theprint.in/ani-press-releases/dachser-grows-despite-economic-headwinds/2905465#:~:text=total%20storage%20capacity%20for,four%20million%20pallet%20spaces",
@@ -197,7 +197,7 @@
             "criterion_id": "custom5",
             "label": "Signal: audit / compliance pressure (certifications, quality standards)",
             "status": "met",
-            "reason": "Website lists Corporate Compliance with integrity, reporting system and value-based supply chain.",
+            "reason": "Website lists corporate compliance, compliance reporting system and value-based supply chain.",
             "quote": "Corporate Compliance Integrity in Logistics Compliance reporting system Value-based supply chain",
             "page": "[3]",
             "url": "https://www.dachser.com/en/facts-figures-44#:~:text=Corporate%20Compliance%20Integrity%20in,system%20Value-based%20supply%20chain",
@@ -208,12 +208,12 @@
             "criterion_id": "custom6",
             "label": "Signal: sustainability or emissions programme",
             "status": "met",
-            "reason": "Sustainability programme with environmental and climate protection; investments in climate action.",
-            "quote": "invested some EUR 325 million in expanding its network, in its employees, and in digitalization and climate action",
-            "page": "[6]",
-            "url": "https://www.manilatimes.net/2026/04/15/tmt-newswire/pr-newswire/dachser-grows-despite-economic-headwinds/2320732#:~:text=invested%20some%20EUR%20325,digitalization%20and%20climate%20action",
+            "reason": "Sustainability section with environmental and climate protection; investments in climate action.",
+            "quote": "Environmental and climate protection Social responsibility",
+            "page": "[3]",
+            "url": "https://www.dachser.com/en/facts-figures-44#:~:text=Environmental%20and%20climate%20protection%20Social%20responsibility",
             "source_link": null,
-            "source_n": 6
+            "source_n": 3
           }
         ],
         "discarded": 0,
@@ -225,35 +225,34 @@
       "step": "plan",
       "model": "moonshotai/Kimi-K3",
       "calls": 1,
-      "seconds": 6.68,
-      "prompt_tokens": 4467,
-      "completion_tokens": 1865,
+      "seconds": 8.02,
+      "prompt_tokens": 4449,
+      "completion_tokens": 2138,
       "reasoning_tokens": 0,
-      "cost_usd": 0.041376,
+      "cost_usd": 0.045417,
       "result": {
         "plan": {
-          "fit_summary": "Tier A fit: DACHSER is headquartered in Kempten, Germany [2] and runs a Food Logistics business line that grew 10.1 percent to over EUR 1.8 billion in 2025 [6], so temperature monitoring and audit reporting are core to its operations.",
+          "fit_summary": "Tier A fit: DACHSER is headquartered in Kempten, Germany [2], runs a dedicated Food Logistics business line that grew 10.1 percent to over EUR 1.8 billion in 2025 [6], and documents a compliance reporting system [3] — a direct match for temperature sensors and automatic audit reports.",
           "who": [
             {
               "role": "Head of Food Logistics",
-              "why": "Owns the business line that grew 10.1 percent to over EUR 1.8 billion in 2025 [6], where temperature-controlled transport and warehousing sit."
+              "why": "Owns the business line that grew 10.1 percent to over EUR 1.8 billion in 2025 [6]; temperature control is core to this trade."
             },
             {
-              "role": "Head of Quality Management / Compliance",
-              "why": "DACHSER operates a compliance reporting system [3], so audit-ready temperature documentation falls in this remit."
+              "role": "Head of Quality Management / Corporate Compliance",
+              "why": "DACHSER documents a compliance reporting system and value-based supply chain [3]; automatic audit reports cut their documentation effort."
             }
           ],
-          "hook": "DACHSER increased its Food Logistics revenue by 10.1 percent to over EUR 1.8 billion in 2025 [6]. That growth means more customers asking for temperature proof in audits — ColdTrace automates exactly that documentation.",
-          "channel": "Phone call to the Kempten headquarters [2], asking for the Head of Food Logistics. DACHSER is based in Germany, where UWG § 7 (2) no. 2 requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail — so no cold email or LinkedIn/XING DM as first touch. A B2B call needs at least presumed consent, which is plausible here because temperature monitoring in food logistics is directly tied to the recipient's trade; a letter is the fallback. Not legal advice.",
+          "hook": "In 2025 DACHSER added space for roughly another 240,000 pallets at its 174 warehouse locations worldwide [5]. Every new temperature-controlled pallet zone needs monitoring and audit-ready records from day one — that is the opening.",
+          "channel": "Phone call to the Food Logistics organisation: DACHSER is headquartered in Kempten, Germany [2], so German law (UWG § 7 (2) no. 2) requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail — no cold email or LinkedIn/XING DM as first touch. A B2B call needs at least presumed consent; the concrete business reason is the 2025 expansion of storage capacity by roughly 240,000 pallets [5], where the call offers temperature monitoring with automatic audit reports for the new food-logistics zones. Not legal advice.",
           "channel_kind": "call",
           "avoid": [
-            "Do not use cold email or LinkedIn/XING DM as the first touch — German law requires prior express consent for electronic mail, also in B2B.",
-            "Do not claim DACHSER has temperature-monitoring gaps or audit problems — no source supports that.",
-            "Do not name or guess an individual contact; address roles only.",
-            "Do not quote the '427 locations' figure — it does not appear word for word in the provided source text."
+            "Do not claim DACHSER has temperature-monitoring gaps or audit problems — no source shows a deficiency; only a compliance reporting system is documented [3].",
+            "Do not use older figures such as 15,000 employees or 294 branch offices from [8] — they conflict with current reporting of some 37,500 employees at 427 locations [5].",
+            "Do not open with air & sea freight or the Synergie Canada stake [4] — the sourced, relevant signal is food logistics warehousing, not air freight."
           ],
           "questions": [
-            "How do you currently produce temperature documentation for customer audits across your food logistics warehouses — manually or from an automated system?"
+            "How are temperature records across your food logistics warehouses currently captured and turned into audit-ready documentation?"
           ]
         },
         "language": "German",
@@ -261,7 +260,10 @@
           "cited": [
             2,
             3,
-            6
+            4,
+            5,
+            6,
+            8
           ],
           "invalid_refs": [],
           "unsourced_numbers": []
@@ -270,45 +272,43 @@
     },
     {
       "step": "write",
-      "model": "moonshotai/Kimi-K3",
+      "model": "zai-org/GLM-5.3",
       "calls": 1,
-      "seconds": 13.34,
-      "prompt_tokens": 4249,
-      "completion_tokens": 141,
-      "reasoning_tokens": 0,
-      "cost_usd": 0.014862,
-      "fallback_from": "zai-org/GLM-5.3",
-      "fallback_reason": "Nebius call failed for zai-org/GLM-5.3: LLM endpoint unreachable: TimeoutError",
+      "seconds": 2.53,
+      "prompt_tokens": 4138,
+      "completion_tokens": 137,
+      "reasoning_tokens": 1,
+      "cost_usd": 0.006396,
       "result": {
         "draft": {
           "subject": "",
-          "body": "Laut Presseberichten ist Ihr Umsatz in der Food Logistics 2025 um 10,1 Prozent auf über 1,8 Milliarden Euro gewachsen. Solch ein Wachstum bedeutet häufig, dass mehr Kunden lückenlose Temperaturnachweise für Audits verlangen. ColdTrace automatisiert genau diese Dokumentation mit drahtlosen Sensoren und prüfungsfertigen Berichten. Ist das bei Ihnen gerade ein Thema?",
+          "body": "Guten Tag, laut einer Pressemitteilung von April hat DACHSER im Jahr 2025 an seinen 174 Lagerstandorten weltweit Platz für rund 240.000 zusätzliche Paletten geschaffen. Neue temperaturgeführte Zonen in der Lebensmittellogistik erfordern von Anfang an lückenlose Temperaturüberwachung und prüffähige Dokumentation. Genau dafür bieten wir mit ColdTrace drahtlose Temperatursensoren und automatische Auditberichte an. Wäre das für Ihre Food-Logistics-Zonen ein Thema?",
           "format": "call"
         },
         "language": "German",
         "checks": {
           "cited": [
-            6
+            5
           ],
           "invalid_refs": [],
           "unsourced_numbers": []
         },
-        "channel": "Phone call to the Kempten headquarters [2], asking for the Head of Food Logistics. DACHSER is based in Germany, where UWG § 7 (2) no. 2 requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail — so no cold email or LinkedIn/XING DM as first touch. A B2B call needs at least presumed consent, which is plausible here because temperature monitoring in food logistics is directly tied to the recipient's trade; a letter is the fallback. Not legal advice.",
+        "channel": "Phone call to the Food Logistics organisation: DACHSER is headquartered in Kempten, Germany [2], so German law (UWG § 7 (2) no. 2) requires prior express consent for electronic mail, also in B2B, and courts treat social-network messages as electronic mail — no cold email or LinkedIn/XING DM as first touch. A B2B call needs at least presumed consent; the concrete business reason is the 2025 expansion of storage capacity by roughly 240,000 pallets [5], where the call offers temperature monitoring with automatic audit reports for the new food-logistics zones. Not legal advice.",
         "kind": "call",
         "title": "Call opener",
-        "source": 6,
+        "source": 5,
         "issues": [],
         "rewritten": false
       }
     }
   ],
   "totals": {
-    "seconds": 22.82,
-    "model_cost_usd": 0.057108,
+    "seconds": 13.91,
+    "model_cost_usd": 0.052704,
     "tavily_credits": 4,
-    "tokens": 15787,
-    "model_calls": 4,
+    "tokens": 15968,
+    "model_calls": 3,
     "tavily_calls": 4
   },
-  "recorded_at": "2026-11-20T13:24"
+  "recorded_at": "2026-11-20T13:37"
 }
