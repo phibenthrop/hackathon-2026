@@ -20,11 +20,17 @@
         <option value="fictional">fictional</option>
       </select>
     </label>
+    <label class="dataset-pick">Scorer:
+      <select id="scorer" aria-label="Scorer">
+        <option value="llm">LLM</option>
+        <option value="rules">rule-based</option>
+      </select>
+    </label>
     <span id="mode" class="badge">loading...</span>
     <a class="small-link" href="/slides">Slides</a>
   </div>
 </header>
-<p class="notice"><span id="notice">Loading dataset...</span> Seller in this demo: <strong id="seller">ColdTrace (fictional)</strong>, <span id="offer"></span><br><span id="source-line"></span></p>
+<p class="notice"><span id="notice">Loading dataset...</span> Seller in this demo: <strong id="seller">ColdTrace (fictional)</strong>, <span id="offer"></span><br><span id="source-line"></span><br><span id="scorer-line"></span></p>
 
 <main>
   <section class="step" id="step1">

@@ -33,7 +33,7 @@ def client():
 
 @pytest.fixture
 def real_run(client):
-    r = client.post("/api/qualify", json={"dataset": "real"})
+    r = client.post("/api/qualify", json={"dataset": "real", "scorer": "rules"})  # replay: test_llm.py
     assert r.status_code == 200, r.text
     return r.json()
 

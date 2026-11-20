@@ -4,10 +4,10 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const STATUS_TEXT = { met: "met", partial: "partial", not_met: "not met", no_evidence: "no evidence" };
 
-const state = { criteria: [], results: [], runId: null, tier: "ALL", open: new Set(), dataset: null, real: false };
+const state = { criteria: [], results: [], runId: null, tier: "ALL", open: new Set(), dataset: null, real: false, scorer: null };
 
 async function api(path, body) {
-  if (body !== undefined) body = Object.assign({ dataset: state.dataset }, body);
+  if (body !== undefined) body = Object.assign({ dataset: state.dataset, scorer: state.scorer }, body);
   const res = await fetch(path, body === undefined ? {} : {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
   });
@@ -22,14 +22,26 @@ function seeds() {
 
 async function init() {
   const wanted = state.dataset || new URLSearchParams(location.search).get("dataset") || "";
-  const cfg = await api("/api/config" + (wanted ? "?dataset=" + encodeURIComponent(wanted) : ""));
+  const qs = new URLSearchParams();
+  if (wanted) qs.set("dataset", wanted);
+  if (state.scorer) qs.set("scorer", state.scorer);
+  const cfg = await api("/api/config" + (qs.toString() ? "?" + qs : ""));
   state.dataset = cfg.dataset;
+  state.scorer = cfg.scorer_mode === "rules" ? "rules" : "llm";
+  const llmOpt = $("#scorer option[value=llm]");
+  llmOpt.disabled = !cfg.llm_available;
+  llmOpt.textContent = cfg.llm_available ? "LLM" : "LLM (no key, not precomputed)";
+  $("#scorer").value = state.scorer;
   state.real = cfg.real;
   const sel = $("#dataset");
   sel.innerHTML = cfg.datasets.map((d) => `<option value="${esc(d.key)}">${esc(d.label)}</option>`).join("");
   sel.value = cfg.dataset;
-  $("#mode").textContent = cfg.llm ? `LLM: ${cfg.scorer.slice(4)}` : "Scorer: rule-based (no LLM key set)";
-  $("#mode").classList.add(cfg.llm ? "llm" : "rules");
+  const isLlm = cfg.scorer_mode !== "rules";
+  $("#mode").textContent = cfg.scorer_mode === "live" ? `LLM live: ${cfg.scorer.slice(4)}`
+    : cfg.scorer_mode === "precomputed" ? `LLM precomputed: ${cfg.scorer.slice(4)}` : "Scorer: rule-based";
+  $("#mode").classList.toggle("llm", isLlm);
+  $("#mode").classList.toggle("rules", !isLlm);
+  $("#scorer-line").textContent = cfg.scorer_line;
   $("#notice").textContent = cfg.notice;
   $("#source-line").textContent = cfg.source_line;
   $("#footer-data").textContent = cfg.real ? cfg.source_line : "Fictional data only.";
@@ -41,8 +53,17 @@ async function init() {
   [0, 1, 2].forEach((i) => { $("#seed" + i).value = cfg.default_best_customers[i] || ""; });
 }
 
+async function switchScorer() {
+  state.scorer = $("#scorer").value;
+  state.results = []; state.runId = null; state.open.clear();
+  $("#results-wrap").hidden = true;
+  $("#run-status").textContent = "";
+  try { await init(); } catch (e) { alert(e.message); }
+}
+
 async function switchDataset() {
   state.dataset = $("#dataset").value;
+  state.scorer = null;
   state.criteria = []; state.results = []; state.runId = null; state.open.clear();
   ["#icp-wrap", "#cand-wrap", "#results-wrap"].forEach((s) => { $(s).hidden = true; });
   $("#run-status").textContent = "";
@@ -117,7 +138,8 @@ async function run() {
     $("#sort option[value=similarity]").hidden = !data.results.some((r) => r.similarity != null);
     state.open.clear();
     const counts = ["A", "B", "C"].map((t) => `${t}: ${data.tier_counts[t] || 0}`).join(" · ");
-    $("#run-status").textContent = `${data.results.length} companies qualified (${counts}). Scorer: ${data.scorer}. Existing customers excluded: ${data.removed_existing_customers.length}.`;
+    const nofit = data.not_a_fit ? ` Not a fit: ${data.not_a_fit} (shown as C).` : "";
+    $("#run-status").textContent = `${data.results.length} companies qualified (${counts}).${nofit} ${data.scorer_line}. Existing customers excluded: ${data.removed_existing_customers.length}.`;
     $("#results-wrap").hidden = false;
     renderResults();
   } catch (e) {
@@ -148,7 +170,7 @@ function renderResults() {
     const open = state.open.has(r.id);
     const main = `<tr class="row ${open ? "open" : ""}" data-id="${esc(r.id)}">
       <td><span class="tier tier-${r.tier}">${r.tier}</span></td>
-      <td><strong>${esc(r.name)}</strong><div class="domain">${esc(r.domain)}</div></td>
+      <td><strong>${esc(r.name)}</strong>${r.not_a_fit ? `<span class="nofit" title="${esc(r.fit.reason)}">not a fit: ${esc(r.fit.verdict)}</span>` : ""}<div class="domain">${esc(r.domain)}</div></td>
       <td><div class="bar"><span style="width:${Math.round(r.score * 100)}%"></span></div>${Math.round(r.score * 100)}</td>
       <td>${esc(r.summary)}</td>
       <td class="chev">${open ? "&#9650;" : "&#9660;"}</td></tr>`;
@@ -163,8 +185,10 @@ function renderResults() {
                ? `<a class="url" href="${esc(f.url)}" target="_blank" rel="noopener" title="Public page, scrolls to the quote (text fragment)">${esc(f.url)}</a>`
                : `<span class="url" title="Public URL with text fragment (fictional domain)">${esc(f.url)}</span>`}`
           : `<span class="noev">No quote found - no verdict.</span>`}</td></tr>`).join("");
+    const fit = r.fit ? `<div class="fit-box"><strong>Profile check:</strong> ${esc(r.fit.verdict)} - ${esc(r.fit.reason)}
+      ${r.fit.quote ? `<blockquote>"${esc(r.fit.quote)}"</blockquote><a href="${esc(r.fit.source_link)}" target="_blank" rel="noopener">View source</a>` : ""}</div>` : "";
     const hook = r.draft_hook ? `<div class="hook"><strong>Draft opener (not sent):</strong> ${esc(r.draft_hook)}</div>` : "";
-    return main + `<tr class="detail"><td colspan="5">${hook}<table class="findings">${findings}</table></td></tr>`;
+    return main + `<tr class="detail"><td colspan="5">${fit}${hook}<table class="findings">${findings}</table></td></tr>`;
   }).join("") || `<tr><td colspan="5" class="hint">No companies match.</td></tr>`;
   const tiers = state.tier === "ALL" ? "A,B,C" : state.tier;
   $("#export").href = `/api/export/${state.runId}.csv?tiers=${tiers}`;
@@ -189,5 +213,6 @@ $("#btn-icp").addEventListener("click", deriveIcp);
 $("#btn-cand").addEventListener("click", fetchCandidates);
 $("#btn-run").addEventListener("click", run);
 $("#dataset").addEventListener("change", switchDataset);
+$("#scorer").addEventListener("change", switchScorer);
 
 init().then(deriveIcp).catch((e) => { $("#mode").textContent = "Error: " + e.message; });
