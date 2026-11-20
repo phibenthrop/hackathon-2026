@@ -58,6 +58,7 @@ Tests: `uv run pytest -q`
 | `LLM_MODEL` | Model name at that endpoint | empty |
 | `LLM_API_KEY` | API key. **If any of the three is empty, the deterministic rule-based scorer is used** and the demo runs fully offline. | empty |
 | `LLM_TIMEOUT_SECONDS` | Per-call timeout | `45` |
+| `LLM_MAX_TOKENS` | Output cap per call (reasoning models count their thinking here) | `2500` |
 | `PORT` | Port for the Docker image | `8000` |
 
 Keys come only from the environment. `.env` is git-ignored.
@@ -88,11 +89,27 @@ Keys come only from the environment. `.env` is git-ignored.
 | `app/realdata.py` | `SimilarCompaniesSource` (MCP JSON-RPC, stdlib only), `HttpWebsiteReader` (robots.txt, text extraction, personal-data filter), snapshot loader |
 | `app/main.py` | FastAPI routes, dataset switch |
 | `scripts/pull_real.py` | Pulls the real snapshot once on a machine with a token |
+| `scripts/precompute_llm.py` | Writes `data/real/llm_scores.json` (LLM verdicts for the public demo) on a machine with a key |
 | `static/` | Plain HTML/CSS/JS front end and `/slides`, no build step |
 | `data/companies.json`, `data/sites/*.txt` | 28 fictional companies (3 best customers, 25 candidates incl. 2 existing customers) |
 | `data/real/` | Real snapshot: `search.json` (raw search results), `companies.json` (3 seeds, 40 candidates), `sites/*.json` (cleaned page texts with their URLs) |
 
 The model never sets the tier: it returns per-criterion verdicts with quotes, the app verifies the quotes and computes the tier.
+
+The LLM also returns a **profile check**: is the company an operator of temperature-controlled transport or storage (`candidate`), or a `publisher`, `manufacturer`, `supplier`, `spam`, `parked` domain or `other`? A non-candidate verdict needs its own verbatim quote; then the app shows the company as C with a "not a fit" badge. If the quote fails the check, the claim is ignored.
+
+### Scorer switch and precomputed LLM verdicts
+
+The header has a scorer switch (LLM or rule-based). For the real dataset the default is LLM: live if the three `LLM_*` variables are set, otherwise the app replays `data/real/llm_scores.json` and says so ("LLM verdicts: <model> via Nebius Token Factory, precomputed <date>"). The public deployment holds no key. The verbatim gate and the tiering run at replay time as well. The fictional dataset stays on the rule scorer unless a key is set.
+
+The LLM path targets open models on [Nebius Token Factory](https://tokenfactory.nebius.com/) through its OpenAI-compatible endpoint. The file is written by a repeatable script; the key comes from the environment only and is never written:
+
+```
+export NEBIUS_API_KEY=...   # from the Nebius console; never put it in a file in this repo
+uv run python scripts/precompute_llm.py --model openai/gpt-oss-120b
+```
+
+The script probes one company first and stops on auth or credit errors, caps the total number of calls, and records model, date, calls, tokens, estimated cost and the number of quotes that failed the verbatim check.
 
 ### API
 
@@ -106,7 +123,7 @@ Every route takes an optional `dataset` (`real` or `fictional`; query parameter 
 
 ## Status and limits
 
-- Runs: full flow offline with the rule scorer; LLM scorer is implemented and unit-tested with a fake model, not yet against a live endpoint.
+- Runs: full flow offline with the rule scorer; LLM scorer, profile check and replay are unit-tested offline. The first live run against Nebius on 2026-11-20 was refused with HTTP 402 (account credit exhausted), so `data/real/llm_scores.json` does not exist yet and the real dataset falls back to the rule scorer until it is generated.
 - Real dataset: replayed from the stored snapshot; live pulls need a token and run only through `scripts/pull_real.py`. The snapshot has no company size and no similarity score, so neither is shown or scored.
 - Rule scorer limits: keyword and regex matching with simple sentence-level negation; it can be fooled by unusual wording.
 
@@ -129,7 +146,7 @@ uv run python scripts/pull_real.py reclean  # re-apply text cleaning to stored p
 
 ## Next step
 
-Run the source and website reader live per request, add a source for company size, and set the three `LLM_*` variables for an open model on Nebius.
+Run the source and website reader live per request, add a source for company size, and generate `data/real/llm_scores.json` once the Nebius account has credit.
 
 ## License
 

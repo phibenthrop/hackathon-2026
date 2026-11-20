@@ -1,6 +1,6 @@
 """Precompute LLM verdicts for the real dataset, so a public deployment needs no key.
 
-    set -a; . ~/.config/jarvis/hackday.env; set +a     # provides NEBIUS_API_KEY
+    export NEBIUS_API_KEY=...   # from the Nebius console
     uv run python scripts/precompute_llm.py --model openai/gpt-oss-120b
     uv run python scripts/precompute_llm.py --model zai-org/GLM-5.3-Flash --only tcsandd.com,chillspeed.co.uk --out /tmp/x.json
 
