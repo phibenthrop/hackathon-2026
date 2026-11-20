@@ -48,19 +48,16 @@ class Step:
 
 _DEFAULTS = [
     ("score", "Score against the ICP", "zai-org/GLM-5.3-Flash",
-     "Small, fast, cheap: one call per company, JSON out, and every quote is checked by code anyway, "
-     "so we pay for speed, not brilliance. Reasoning set to 'low': at the default it spent all 1,800 "
-     "tokens thinking and returned no JSON. Comparison on 12 real companies (2026-11-20): 100% valid "
-     "JSON, 3% of quotes discarded by the gate, vs 29% for gpt-oss-120b; Nemotron-Lightning ignores "
-     "the reasoning setting and returned no JSON.", 1800, 40, "low"),
+     "Small, fast, cheap: one call per company, JSON out. Code checks every quote afterwards, so we pay "
+     "for speed, not brilliance. On 12 real companies: 100% valid JSON, 3% of quotes discarded, vs 29% "
+     "for gpt-oss-120b. Reasoning 'low': at the default it returned no JSON.", 1800, 40, "low"),
     ("plan", "Plan the outreach", "moonshotai/Kimi-K3",
-     "Strong reasoning model, one call per run: choosing whom to address and which hook to use is the "
-     "step where judgement matters and the volume is low.", 2500, 45, None),
+     "Strong reasoning: one call per company, and choosing the role, the hook and the channel is where "
+     "a mistake costs a lead.", 2500, 45, None),
     ("write", "Write the email draft", "zai-org/GLM-5.3",
-     "Fluent multilingual writer with a natural voice (German and English tested), fast enough for a "
-     "live demo, cheaper than the planner. Reasoning 'low': at the default it used all 1,500 tokens "
-     "thinking and returned no draft (measured 2026-11-20). If it is overloaded (HTTP 529, seen on "
-     "2026-11-20) the step falls back to Kimi-K3 without reasoning.", 1500, 30, "low"),
+     "Multilingual writer: natural voice, German and English tested, fast enough to watch, a third of "
+     "the planner's output price. Reasoning 'low'; if overloaded (HTTP 529, seen today) it falls back "
+     "to Kimi-K3.", 1500, 30, "low"),
 ]
 
 
@@ -76,8 +73,8 @@ def steps() -> dict[str, Step]:
     return out
 
 
-RESEARCH_WHY = ("Tavily search and extract: the company's own site plus targeted searches "
-                "(what they run, recent news, size and sites). Every source keeps its URL.")
+RESEARCH_WHY = ("Live web: the company's own site plus three targeted searches. "
+                "Every source keeps its URL.")
 
 
 def cost_usd(model: str, prompt_tokens: int, completion_tokens: int) -> float | None:

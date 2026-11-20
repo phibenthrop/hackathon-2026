@@ -179,8 +179,11 @@ SCORE_SYSTEM = f"""You qualify one B2B company against an ideal customer profile
 For every criterion return:
 - status: "met", "partial", "not_met" or "no_evidence"
 - reason: one short sentence
-- quote: a passage copied CHARACTER FOR CHARACTER from one source TEXT (one sentence or line, 6 to 30 words,
-  no ellipses, never two passages joined, plain ASCII hyphens as in the text), or null
+- quote: a SHORT passage copied CHARACTER FOR CHARACTER from one source TEXT, or null.
+  Copy a contiguous part of one sentence, 4 to 12 words. Copy every character exactly as written,
+  including words in brackets, abbreviations, company names, capitals and punctuation. Never leave
+  out, shorten, reorder or fix anything inside the passage; no ellipses, never two passages joined.
+  If you cannot copy it exactly, choose a shorter passage you can copy exactly.
 - source: the number n of that source, or null
 Sources about other companies do not count. No quote -> "no_evidence". Never infer what is not written.
 Reply with JSON only: {{"findings": [{{"criterion_id": "...", "status": "...", "reason": "...", "quote": "...", "source": 1}}]}}"""
@@ -191,6 +194,19 @@ Rules:
 - Address ROLES only (e.g. "Head of Operations"). Never name or guess a person.
 - Every factual statement about the target company must cite sources as [n] using the numbered sources.
   If you cannot cite it, leave it out.
+- Numbers (employees, revenue, sites, fleet size, years): only if the exact figure appears word for word
+  in the numbered source you cite. Never estimate, round, convert or combine figures.
+- If the tier is C, start fit_summary with "Do not contact:" and give the reason with [n].
+  Then who, hook and questions describe what would have to change, not a pitch.
+- Hook: exactly ONE fact from ONE source [n] that is recent or specific (a new site, a certification,
+  a stated process). Not a general description of what the company does.
+- Channel: if the company is based in Germany, Austria or another EU country, do not recommend a cold
+  email as the first touch: German law (UWG § 7) requires prior consent for email, also in B2B. Recommend
+  a phone call with a concrete business reason, a letter, or a LinkedIn message, and say that the email
+  draft is for use after consent or as a letter. For the UK or US, email is acceptable; say that an
+  opt-out line is needed. End the channel text with "Not legal advice."
+- who: at most two roles.
+- questions: exactly one.
 - Keep it short and concrete.
 Reply with JSON only:
 {{"fit_summary": "one sentence with [n]",
@@ -200,14 +216,23 @@ Reply with JSON only:
   "avoid": ["what not to say, and why"],
   "questions": ["one discovery question"]}}"""
 
-WRITE_SYSTEM = f"""You write a short first outreach email (a DRAFT a person will edit and decide on).
+WRITE_SYSTEM = f"""You write a first outreach email to a company that has never heard of the seller.
+It is a DRAFT: a person will edit it and decide whether it goes out.
 {UNTRUSTED_RULE}
 Rules:
-- Write in the language given as LANGUAGE.
-- 80 to 140 words, plain, specific, no hype, no flattery, no fake familiarity.
-- Every fact about the recipient's company carries its source as [n]. No fact without a source.
-- Address the role, not a named person; no placeholders like [Name] or [Your name] except one sign-off line "[Sender]".
-- One clear, low-effort call to action.
+- Language: write in the language given as LANGUAGE. German: formal "Sie", no anglicisms where a German word exists.
+- Length: 50 to 90 words in the body. Four sentences at most, then the sign-off.
+- Sentence 1, the hook: ONE specific, checkable fact about the recipient's company taken from ONE source,
+  marked [n]. Use the hook from the plan. No compliment, no "I saw that", no "I hope this finds you well".
+- Sentence 2: the problem this fact probably causes them, in their words, not in product words.
+- Sentence 3 (optional): one plain sentence on what the seller does about that problem. No feature list,
+  no numbers about the seller, no customer names, no claims you were not given.
+- Last sentence: exactly ONE question that asks about interest ("Is this something you are looking at?").
+  No meeting request, no calendar link, no second question.
+- Say "you/your" more often than "we/our". Never start with "I am" or "We are".
+- Facts about the recipient only with [n]. If no sourced fact is available, write {{"subject": "", "body": ""}}.
+- Address the role, never a named person. No placeholders except the sign-off line "[Sender]".
+- Subject: 2 to 4 words, lower case, no punctuation, no product name, sounds like an internal note.
 Reply with JSON only: {{"subject": "...", "body": "..."}}"""
 
 
