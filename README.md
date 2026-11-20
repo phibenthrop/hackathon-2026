@@ -18,7 +18,7 @@ No key? The page replays a recorded run and says so (`data/live_example.json`, w
 An SDR or founder doing outbound. Before: ten tabs per company, a guess, an email written from memory.
 After: one input, a verdict with quotes that can be checked in one click, and a draft that opens with
 one sourced fact. Companies that do not fit are stopped before anyone writes to them.
-Time and cost per company: see the totals line of a run (measured per run, not a benchmark).
+Time and cost per company: about 20 seconds and 6 to 8 cents with web research (totals line of each run; measured per run, not a benchmark).
 
 ## Which model does which step, and why (summary)
 
@@ -29,7 +29,7 @@ Time and cost per company: see the totals line of a run (measured per run, not a
 | Plan | `moonshotai/Kimi-K3` | One call per company, judgement matters: pay for reasoning |
 | Write | `zai-org/GLM-5.3` | Natural voice in the customer's language |
 
-Comparison on the scoring step: <!--CMP-->measured on 12 companies of the real snapshot, same prompt and quote gate as the app (`data/real/model_comparison.json`, 2026-11-20 12:35):
+Comparison on the scoring step: <!--CMP-->measured on 12 companies of the real snapshot, same prompt and quote gate as the app (`data/real/model_comparison.json`, 2026-11-20 12:39):
 
 | Model | Seconds / company | USD / company | Valid JSON | Quotes discarded |
 |---|---|---|---|---|
@@ -37,14 +37,18 @@ Comparison on the scoring step: <!--CMP-->measured on 12 companies of the real s
 | `openai/gpt-oss-120b` | 1.78 | 0.000574 | 100% | 29% of 35 |
 | `nvidia/Nemotron-3_5-Lightning` | - | 0.001053 | 0% | - (no valid JSON) |
 
-GLM-5.3-Flash is the scoring model: fastest, cheapest, and every quote it proposed passed the gate. Tier agreement is measured against GLM-5.3-Flash itself (gpt-oss-120b: 44%), so it shows disagreement, not who is right.<!--/CMP-->
+GLM-5.3-Flash is the scoring model: the cheapest, and the gate threw out 1 of its 36 quotes (3%) against 10 of 35 (29%) for gpt-oss-120b. gpt-oss-120b is faster (1.78 s against 3.34 s); we pay that time for fewer lost verdicts. Nemotron returned no valid JSON. Tier agreement is left out here: it is measured against GLM-5.3-Flash itself, so it shows disagreement, not who is right.
+
+The lead list (`/`) was scored earlier with gpt-oss-120b, and there the gate threw out only 4 of 121 quotes (3%). The runs differ in more than the model: 40 companies instead of 12, reasoning effort at the model default instead of "low", and a 4000-token cap instead of 1800 (`data/real/llm_scores.json`, `scripts/precompute_llm.py`). We have not measured which of these explains the gap; our guess is the reasoning effort.<!--/CMP-->
 
 ## Limits (summary)
 
 Built entirely on 20 Nov 2026 at the event; nothing existed before. No sending, no CRM write-back,
 no contact finding. The quote check proves that a sentence is in the source, not that the source is right.
-Cold email to recipients in Germany needs prior consent, also in B2B (UWG § 7); the app warns, it does
-not check consent. Not legal advice. Sentences naming people are dropped from research by a heuristic
+Germany: a cold email or LinkedIn message needs prior express consent, also in B2B (UWG § 7 (2) no. 2);
+for German companies the plan recommends a phone call with a specific business reason or a letter. Other
+countries differ (UK: email to limited companies with sender identity and opt-out; not to sole traders).
+The app warns, it does not check consent. Not legal advice. Sentences naming people are dropped from research by a heuristic
 filter; the plan addresses roles only. The lead-list page (`/`) uses a stored snapshot of 40 UK
 companies, not a live feed.
 
@@ -61,18 +65,18 @@ The seller in both datasets, ColdTrace, is fictional. No people's names or conta
 
 ## Problem
 
-A lookalike search (for example similarcompanies.ai) returns dozens of companies in seconds, but someone still has to open every website to decide who actually fits the ideal customer profile. An AI "fit score" without a source is a guess, and a wrong claim in a first outreach email burns the lead.
+A lookalike search (for example similarcompanies.ai) returns dozens of companies in seconds, but someone still has to open every website to decide who actually fits the ideal customer profile. An AI "fit score" without a source is a guess: in our test on 12 companies, one open model had 10 of its 35 proposed quotes (29%) thrown out because they were not in the source.
 
 ## Solution
 
 ICP Qualifier sits between the company source and the outbound tool (for example Needle):
 
-1. You name your three best customers. The app derives an ICP from their websites (industry terms, size range, region, buying signals) and shows it as an editable list of criteria.
+1. You name your three best customers. The app derives an ICP from their websites (industry terms, size range, region, timing signals in public text) and shows it as an editable list of criteria.
 2. It fetches similar companies through a `CompanySource` interface (similarcompanies.ai snapshot, or the fictional demo database) and removes existing customers and seed brands.
 3. The agent reads each candidate's website text and judges every criterion. Each verdict needs a **verbatim quote** plus a **link to the passage**. No quote, no verdict: the criterion shows "no evidence" and the tier drops.
 4. You get a sortable, filterable list with expandable evidence and a CSV export for Needle or your CRM.
 
-**Agent drafts, human sends.** Nothing is sent automatically; the export and the draft openers are marked as drafts.
+**Agent drafts, a person decides.** Nothing is sent automatically; the export and the draft openers are marked as drafts.
 
 ## Start (two commands)
 
@@ -199,7 +203,7 @@ Open <http://127.0.0.1:8765/live>. Enter your product in one sentence, keep or e
 3. **Plan** (reasoning model): whom to address (roles only; the agent never names or searches people), the hook, the channel, what not to say. Every fact cites `[n]`.
 4. **Draft** (writing model): a short email in the customer's language (German for German sites, English otherwise), every fact with `[n]`. Each `[n]` is a link to the source. References to missing sources and sentences with numbers but no source are flagged. The draft sits in an editable text box with **Copy** and **Discard**; the app sends nothing.
 
-Guards for a public demo: per run at most 5 Tavily calls and 4 model calls, `max_tokens` and a timeout per call, at most 60 runs per process and day, input capped at 200 characters. Web text and form input go to the models inside `<untrusted>` blocks with the instruction never to follow instructions found there. Without `NEBIUS_API_KEY` and `TAVILY_API_KEY` the page says "live mode needs NEBIUS_API_KEY and TAVILY_API_KEY" and plays back a recorded run (`data/live_example.json`, marked as recorded). An empty Nebius balance shows as "Nebius account has no credit".
+Guards for a public demo: per run at most 5 Tavily calls and 6 model calls (one second try per step on invalid JSON or overload), `max_tokens` and a timeout per call, at most 60 runs per process and day, input capped at 200 characters. Web text and form input go to the models inside `<untrusted>` blocks with the instruction never to follow instructions found there. Without `NEBIUS_API_KEY` and `TAVILY_API_KEY` the page says "live mode needs NEBIUS_API_KEY and TAVILY_API_KEY" and plays back a recorded run (`data/live_example.json`, marked as recorded). An empty Nebius balance shows as "Nebius account has no credit".
 
 ## Who needs this and how they do it today
 

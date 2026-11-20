@@ -36,7 +36,8 @@
 
 <section class="slide active">
   <h1>Is this company worth an email?</h1>
-  <p>An agent that researches a company, scores it against your ICP with quotes you can check, and drafts the first email. A person decides.</p>
+  <p>A yes or no you can check. Quotes that are not in the source are thrown out, visibly.</p>
+  <p class="muted">An agent researches a company, scores it against your ICP with word-for-word quotes, and drafts the first email. About 20 seconds, 6 to 8 cents.</p>
   <p><span class="motto">Agent drafts, a person decides.</span></p>
 </section>
 
@@ -45,9 +46,17 @@
   <h1>Lookalike lists are easy. Deciding who is worth an email is not.</h1>
   <ul>
     <li>A similar-companies search returns dozens of names in seconds.</li>
-    <li>Someone still opens every website to check fit: industry, size, region, buying signals.</li>
-    <li>A generic AI "fit score" without a source is a guess; one wrong claim in a first email burns the lead.</li>
+    <li>Someone still opens every website to check fit: industry, size, region, timing signals in public text.</li>
+    <li>A generic AI "fit score" without a source is a guess: in our test on 12 companies, one open model had 10 of its 35 proposed quotes (29%) thrown out because they were not in the source.</li>
   </ul>
+</section>
+
+<section class="slide">
+  <h2>Demo</h2>
+  <div style="display:flex;gap:2vw;align-items:center;min-height:0;flex:1">
+    <img src="/static/demo.png" alt="A live run: verdict with quotes, plan and draft" style="max-height:62vh;max-width:70%;border:1px solid var(--line);border-radius:6px">
+    <p class="biglink" style="flex:1"><a href="/live">Live: /live - type any company</a></p>
+  </div>
 </section>
 
 
@@ -55,7 +64,7 @@
 <section class="slide" id="live-models">
   <h2>Live agent: which model does which step</h2>
   <table style="width:100%;font-size:.8em"><tbody id="live-reg"><tr><td>Research</td><td>Tavily search + extract</td></tr></tbody></table>
-  <h3 style="margin-top:1em">Two models on the scoring step: speed, cost, rejected quotes</h3>
+  <h3 style="margin-top:1em">Scoring: GLM-5.3-Flash, cheapest, 3% of quotes thrown out (gpt-oss-120b: 29%)</h3>
   <div id="live-cmp" style="font-size:.75em">No comparison recorded yet.</div>
   <p style="font-size:.7em">Open <a href="/live">/live</a> and type any company.</p>
 </section>
@@ -66,8 +75,8 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
   const m = c.comparison && c.comparison.models;
   if (m) {
     const pct = (v) => v == null ? "-" : Math.round(v * 100) + "%";
-    document.getElementById("live-cmp").innerHTML = `<table style="width:100%"><tr><th>Model</th><th>s / firm</th><th>USD / firm</th><th>valid JSON</th><th>quotes discarded</th><th>tier agreement</th></tr>` +
-      m.map((x) => `<tr><td>${e(x.model)}</td><td>${x.avg_seconds ?? "-"}</td><td>${x.cost_per_company_usd == null ? "-" : "$" + x.cost_per_company_usd.toFixed(5)}</td><td>${pct(x.valid_json_rate)}</td><td>${pct(x.discarded_quote_rate)}</td><td>${pct(x.tier_agreement)}</td></tr>`).join("") +
+    document.getElementById("live-cmp").innerHTML = `<table style="width:100%"><tr><th>Model</th><th>s / firm</th><th>USD / firm</th><th>valid JSON</th><th>quotes discarded</th></tr>` +
+      m.map((x) => `<tr><td>${e(x.model)}</td><td>${x.avg_seconds ?? "-"}</td><td>${x.cost_per_company_usd == null ? "-" : "$" + x.cost_per_company_usd.toFixed(5)}</td><td>${pct(x.valid_json_rate)}</td><td>${pct(x.discarded_quote_rate)}${x.quotes_proposed ? ` of ${x.quotes_proposed}` : ""}</td></tr>`).join("") +
       `</table><p>${e(c.comparison.note)}</p>`;
   }
 }).catch(() => {});
@@ -90,7 +99,7 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
     <li>Reads each candidate's website and judges every criterion.</li>
     <li>Tier A/B/C with a verbatim quote and a link to the passage. No quote, no verdict: "no evidence" lowers the tier.</li>
   </ul>
-  <p><span class="motto">Agent drafts, human sends.</span></p>
+  <p><span class="motto">Agent drafts, a person decides.</span></p>
 </section>
 
 <section class="slide">
@@ -104,10 +113,6 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
   <p class="muted">Model behind an OpenAI-compatible interface (open models on Nebius Token Factory); it also says whether a company is an operator at all or a publisher, manufacturer or spam page, with a verbatim quote. Without a key the app replays precomputed verdicts or runs a deterministic rule scorer.</p>
 </section>
 
-<section class="slide">
-  <h2>Demo</h2>
-  <p class="biglink"><a href="/live">Live: /live - type any company</a></p>
-</section>
 
 <section class="slide">
   <h2>Where it sits</h2>
@@ -118,7 +123,7 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
     <div class="arrow">&#8594;</div>
     <div class="box"><strong>Needle / CRM</strong>Runs the outbound campaign from the reviewed lead list. A human decides what is sent.</div>
   </div>
-  <p><strong>Real data path in this demo:</strong> three seed companies &#8594; <code>find_companies</code> on the similarcompanies.ai MCP server (paged only by search id) &#8594; seed brands and duplicate domains removed &#8594; public company websites fetched (robots.txt respected, no contact, team or legal pages, no personal data kept) &#8594; every verdict passes the verbatim-quote check and links to the real page. Pulled once on our box and stored as a snapshot, so the public demo needs no token.</p>
+  <p><strong>Real data path in this demo:</strong> three seed companies &#8594; <code>find_companies</code> on the similarcompanies.ai MCP server (paged only by search id) &#8594; seed brands and duplicate domains removed &#8594; public company websites fetched (robots.txt respected, no contact, team or legal pages, personal data filtered out by a heuristic) &#8594; every verdict passes the verbatim-quote check and links to the real page. Pulled once on our box and stored as a snapshot, so the public demo needs no token.</p>
 </section>
 
 <section class="slide">
@@ -127,7 +132,7 @@ fetch("/api/live/config").then((r) => r.json()).then((c) => {
     <li>Built entirely today, 20 Nov 2026. Nothing existed before the event.</li>
     <li>Works: live research, quote-checked scoring, plan, draft, for any company with a public website.</li>
     <li>Not built: sending, CRM write-back, contact finding. Sending is left out on purpose.</li>
-    <li>Weak spots: company size is rarely on the web; the quote check proves a sentence exists, not that it is true; German cold email needs consent, the app only warns.</li>
+    <li>Weak spots: company size is rarely on the web; the quote check proves a sentence exists, not that it is true; in Germany cold email and LinkedIn messages need prior express consent; the app warns and recommends phone or letter, it does not check consent.</li>
     <li>The lead-list page runs on a stored snapshot of 40 UK companies, not a live feed.</li>
   </ul>
 </section>
