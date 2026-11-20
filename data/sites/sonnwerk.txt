@@ -1,0 +1,14 @@
+[page: /]
+Sonnwerk Solarmontage GmbH plans and installs solar power systems for homes, farms and commercial buildings in Baden-Wuerttemberg, Germany. From the first roof check to grid connection, everything comes from one team.
+
+[page: /about]
+Sonnwerk was founded in 2010 by two electricians. Today we have 90 employees, including roofers, electricians and energy consultants. We have installed more than 4,000 systems, from small balcony modules to large rooftop plants on barns and warehouses.
+
+[page: /services]
+We offer solar panels, battery storage, wallboxes for electric cars and heat pump integration. Every system is planned with a 3D model of the roof. After installation, customers can follow their production in an app and call our service team if anything looks unusual.
+
+[page: /news]
+Demand for battery storage has doubled this year. We are expanding our installation teams and opening a new location in Ulm.
+
+[page: /careers]
+We are hiring electricians, roofers and apprentices. Join our team and help power the energy transition in southern Germany.

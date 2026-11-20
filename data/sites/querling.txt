@@ -1,0 +1,11 @@
+[page: /]
+Querling Medical Couriers GmbH is a same-day courier service for laboratories, hospitals and pharmacies in Berlin and Brandenburg, Germany. We pick up blood samples, medicines and medical devices and deliver them within hours.
+
+[page: /about]
+Querling was founded in 2016 by a former hospital logistics manager. Our team of 35 employees includes couriers, dispatchers and a quality officer. We use electric vans and cargo bikes for inner-city routes, and our own vans for regular tours to clinics in Potsdam, Cottbus and Frankfurt (Oder). Many of our customers book a fixed daily pick-up slot.
+
+[page: /services]
+Samples and medicines travel in validated temperature-controlled boxes for the ranges 2 to 8 degrees, 15 to 25 degrees and frozen on dry ice. Every box carries a data logger, and the curve is attached to the delivery confirmation. We work according to GDP guidelines and are regularly audited by our laboratory customers.
+
+[page: /contact]
+Querling Medical Couriers GmbH, Probenstrasse 0, Berlin. Our dispatch team is available from 6:00 to 22:00, seven days a week.

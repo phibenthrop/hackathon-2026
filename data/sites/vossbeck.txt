@@ -1,0 +1,17 @@
+[page: /]
+Vossbeck Lager & Logistik GmbH provides warehousing and distribution for consumer goods, electronics and spare parts. Our warehouses in Duisburg, Germany, are directly connected to the inland port and the motorway network.
+
+[page: /about]
+Vossbeck was founded in 1989. Today we have 160 employees and 60,000 square metres of warehouse space. Our customers are online retailers, importers of household goods and manufacturers of technical components.
+
+[page: /services]
+We offer storage, order picking, returns handling and value-added services such as labelling and kitting. Please note that we do not offer refrigerated or temperature-controlled storage; all our warehouses are ambient. For food or pharmaceutical products we recommend specialised partners.
+
+[page: /quality]
+Our processes are certified according to ISO 9001 and audited every year by an external certification body.
+
+[page: /news]
+We are expanding: a new site with 25,000 square metres in Moers will open next year, mainly for e-commerce fulfilment.
+
+[page: /careers]
+We are hiring warehouse operatives and team leads for our new site. Join our team in Duisburg or Moers.

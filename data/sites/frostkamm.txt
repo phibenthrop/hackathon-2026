@@ -1,0 +1,14 @@
+[page: /]
+Frostkamm Logistik GmbH is a cold chain specialist in Graz, Austria. We store and deliver frozen and chilled food for producers in Styria, Carinthia and Slovenia.
+
+[page: /about]
+Founded in 1996, Frostkamm today has 130 employees, a cold storage warehouse with 8,000 pallet spaces at minus 23 degrees and a fleet of 40 refrigerated trucks. Our customers are frozen food producers, bakeries and food service wholesalers. Many of them have been with us for more than fifteen years.
+
+[page: /quality]
+We operate according to HACCP and IFS Logistics and pass customer audits every year. Every driver checks the temperature at loading and unloading and notes it on the delivery note. The notes are collected in the office and typed into spreadsheets for the monthly quality report.
+
+[page: /news]
+Frostkamm is opening a new site in Klagenfurt next year. The expansion will add a cross-dock and space for 2,000 pallets of chilled goods.
+
+[page: /careers]
+We are hiring drivers, warehouse staff and a quality assistant. Join our team in Graz or Klagenfurt and work in a company where people know each other by name.

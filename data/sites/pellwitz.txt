@@ -1,0 +1,14 @@
+[page: /]
+Pellwitz Spedition GmbH is a regional freight forwarder based in Kassel, Germany. We transport palletised goods, building materials and machine parts for industrial customers in Hesse, Lower Saxony and Thuringia.
+
+[page: /about]
+The company was founded in 1974 and is run by the second generation of the Pellwitz family. With 120 employees and 75 trucks, we offer full and part loads, warehousing and customs handling. Our warehouse has 12,000 pallet spaces for dry goods.
+
+[page: /services]
+In addition to general freight we operate four trucks with refrigeration units. They are mainly used for a few temperature-controlled loads for a beverage wholesaler and a garden centre chain. Most of our business, however, is classic dry freight for industry.
+
+[page: /news]
+Pellwitz has received a sustainability award from the regional chamber of commerce for converting 20 trucks to biofuel. We thank our drivers for their commitment.
+
+[page: /contact]
+Pellwitz Spedition GmbH, Am Gueterbahnhof 0, Kassel. Dispatch is reachable on weekdays from 6:00 to 19:00.

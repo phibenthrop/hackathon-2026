@@ -1,0 +1,14 @@
+[page: /]
+Orbelle Cosmetics SAS creates natural skincare and make-up in Lyon, France. Our creams, serums and lipsticks are made with plant-based ingredients and sold in our own boutiques and online.
+
+[page: /about]
+Orbelle was founded in 2014 by a chemist and a designer who wanted cosmetics that are kind to the skin and to the planet. Today we have 70 employees and twelve boutiques in France and Belgium. Every formula is developed and tested in our own laboratory in Lyon.
+
+[page: /products]
+Our products contain no microplastics and no synthetic fragrances. Most products can be stored at room temperature; we recommend keeping our serums away from direct sunlight. Packaging is made from recycled glass and refillable aluminium.
+
+[page: /news]
+Our new summer collection with mineral sun protection is now available in all boutiques. We are also opening a pop-up store in Paris for the holiday season.
+
+[page: /careers]
+We are hiring sales advisors for our boutiques and a junior product developer for our laboratory.

@@ -1,0 +1,14 @@
+[page: /]
+Ferrowind Stahlbau GmbH designs, fabricates and erects steel structures for industrial halls, bridges and wind turbine foundations. Our plant in Saxony-Anhalt, Germany, processes more than 15,000 tonnes of steel per year.
+
+[page: /about]
+Ferrowind was founded in 1991. Today we employ 260 engineers, welders and fitters. Our own engineering office handles structural calculations and detailed design, so customers get planning, fabrication and assembly from a single source.
+
+[page: /projects]
+Recent projects include a logistics hall of 40,000 square metres near Magdeburg, a pedestrian bridge over the Elbe and transition pieces for an offshore wind farm in the North Sea. Large components are transported by heavy-load trucks or by ship from our own quay.
+
+[page: /quality]
+Our welding processes are certified according to EN 1090 EXC4, and our quality management according to ISO 9001. Every weld on load-bearing components is tested and documented.
+
+[page: /careers]
+We are hiring certified welders, structural engineers and project managers. Join our team on the Elbe.

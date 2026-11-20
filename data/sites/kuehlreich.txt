@@ -1,0 +1,14 @@
+[page: /]
+Kuehlreich Transporte GmbH is a refrigerated transport company in Hanover, Germany. We deliver chilled food, flowers and medicines on fixed routes across Lower Saxony and to Hamburg, Bremen and Berlin.
+
+[page: /about]
+Kuehlreich was founded by two brothers in 2008. Today we are 60 employees with 35 refrigerated vans and trucks. We are small enough to answer the phone ourselves and big enough to run deliveries seven days a week. Temperature-controlled transport is all we do.
+
+[page: /quality]
+For our pharmaceutical customers we work according to GDP guidelines; for food customers we follow HACCP. Our vehicles have temperature recorders, but the data is read out manually from each recorder and sent to customers as a spreadsheet when they ask for it. Customer audits take place every year.
+
+[page: /news]
+We are expanding our network: from January we will run a daily route to Leipzig and Dresden with four additional trucks.
+
+[page: /careers]
+We are hiring drivers with a category C licence. Join our team and drive modern vehicles on planned routes without overnight stays. Experience in cold chain transport is a plus.

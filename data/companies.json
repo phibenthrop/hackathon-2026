@@ -1,0 +1,42 @@
+{
+  "notice": "All companies, domains and texts in this file and in data/sites/ are fictional. Any resemblance to real companies is coincidental.",
+  "seller": {
+    "name": "ColdTrace (fictional)",
+    "offer": "Wireless temperature sensors and automatic audit reports for temperature-controlled logistics."
+  },
+  "existing_customers": [
+    {"id": "kaltquell", "name": "Kaltquell Logistik GmbH", "domain": "kaltquell-logistik.example"},
+    {"id": "frisellan", "name": "Frisellan Cold Chain AG", "domain": "frisellan.example"},
+    {"id": "brumtaler", "name": "Brumtaler Frischedienst GmbH", "domain": "brumtaler-frische.example"},
+    {"id": "velmora", "name": "Velmora Kuehltransporte GmbH", "domain": "velmora-kuehl.example"},
+    {"id": "tiefgrund", "name": "Tiefgrund Frozen Logistics GmbH", "domain": "tiefgrund.example"}
+  ],
+  "default_best_customers": ["kaltquell-logistik.example", "frisellan.example", "brumtaler-frische.example"],
+  "similar_db": [
+    {"id": "quellbeck", "name": "Quellbeck Kuehlhaus GmbH", "domain": "quellbeck.example", "similarity": 0.94},
+    {"id": "velmora", "name": "Velmora Kuehltransporte GmbH", "domain": "velmora-kuehl.example", "similarity": 0.93},
+    {"id": "silvarin", "name": "Silvarin Pharma Logistics GmbH", "domain": "silvarin.example", "similarity": 0.91},
+    {"id": "hallerau", "name": "Hallerau Frischelogistik GmbH", "domain": "hallerau-frische.example", "similarity": 0.90},
+    {"id": "tiefgrund", "name": "Tiefgrund Frozen Logistics GmbH", "domain": "tiefgrund.example", "similarity": 0.89},
+    {"id": "morvik", "name": "Morvik Cold Storage AG", "domain": "morvik.example", "similarity": 0.88},
+    {"id": "frostkamm", "name": "Frostkamm Logistik GmbH", "domain": "frostkamm.example", "similarity": 0.87},
+    {"id": "kuehlreich", "name": "Kuehlreich Transporte GmbH", "domain": "kuehlreich.example", "similarity": 0.86},
+    {"id": "brennholt", "name": "Brennholt Cold Chain Services GmbH", "domain": "brennholt.example", "similarity": 0.85},
+    {"id": "tandvik", "name": "Tandvik Logistics Group", "domain": "tandvik.example", "similarity": 0.83},
+    {"id": "lumbra", "name": "Lumbra Fresh Foods B.V.", "domain": "lumbra-fresh.example", "similarity": 0.81},
+    {"id": "querling", "name": "Querling Medical Couriers GmbH", "domain": "querling.example", "similarity": 0.79},
+    {"id": "haldenfeld", "name": "Haldenfeld Obst Genossenschaft", "domain": "haldenfeld.example", "similarity": 0.77},
+    {"id": "pellwitz", "name": "Pellwitz Spedition GmbH", "domain": "pellwitz.example", "similarity": 0.76},
+    {"id": "klarmont", "name": "Klarmont Catering Logistik GmbH", "domain": "klarmont.example", "similarity": 0.74},
+    {"id": "vossbeck", "name": "Vossbeck Lager & Logistik GmbH", "domain": "vossbeck.example", "similarity": 0.72},
+    {"id": "zandoria", "name": "Zandoria Backzutaten GmbH", "domain": "zandoria.example", "similarity": 0.68},
+    {"id": "orbelle", "name": "Orbelle Cosmetics SAS", "domain": "orbelle.example", "similarity": 0.55},
+    {"id": "ambrosin", "name": "Ambrosin Textil Sp. z o.o.", "domain": "ambrosin.example", "similarity": 0.51},
+    {"id": "pixelhain", "name": "Pixelhain Software GmbH", "domain": "pixelhain.example", "similarity": 0.47},
+    {"id": "brueckmoor", "name": "Brueckmoor Moebelwerkstatt GmbH", "domain": "brueckmoor.example", "similarity": 0.44},
+    {"id": "sonnwerk", "name": "Sonnwerk Solarmontage GmbH", "domain": "sonnwerk.example", "similarity": 0.42},
+    {"id": "ferrowind", "name": "Ferrowind Stahlbau GmbH", "domain": "ferrowind.example", "similarity": 0.40},
+    {"id": "tintenfeld", "name": "Tintenfeld Creative Studio Lda.", "domain": "tintenfeld.example", "similarity": 0.37},
+    {"id": "kiesgrund", "name": "Kiesgrund Bau GmbH", "domain": "kiesgrund.example", "similarity": 0.35}
+  ]
+}

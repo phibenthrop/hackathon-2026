@@ -1,0 +1,14 @@
+[page: /]
+Pixelhain Software GmbH builds HR software for small and mid-sized companies. Our cloud product handles job postings, applicant tracking, onboarding and holiday planning in one simple tool.
+
+[page: /about]
+Pixelhain was founded in Berlin, Germany, in 2018. Today our team of 45 people works from Berlin and remotely. More than 900 companies use Pixelhain to hire and manage their staff, from dental practices to software agencies.
+
+[page: /product]
+With Pixelhain, managers create a job posting in minutes and publish it on several job boards at once. Applicants are collected in a clear pipeline, and the whole team can rate them. Once a contract is signed, onboarding checklists start automatically. Data is hosted in Frankfurt and processed according to the GDPR.
+
+[page: /news]
+We are expanding our product team after closing our latest funding round. The money will go into new features for shift planning and time tracking.
+
+[page: /careers]
+We are hiring frontend and backend engineers, a product designer and customer success managers. Join our team in Berlin or work remotely from anywhere in Germany.

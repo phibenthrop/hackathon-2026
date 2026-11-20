@@ -1,0 +1,14 @@
+[page: /]
+Morvik Cold Storage AG operates cold storage for food importers and retailers near Zurich, Switzerland. Chilled, frozen and deep-frozen: we keep every product at the temperature it needs, around the clock.
+
+[page: /about]
+Morvik was founded in 2011. With 75 employees we run a fully automated high-bay cold store with 14,000 pallet spaces, plus a refrigerated delivery service for customers in the cantons of Zurich, Aargau and Zug. Our cold chain is designed for frozen food, ice cream and fresh meat.
+
+[page: /quality]
+We follow HACCP and are certified according to IFS Logistics. Retail customers audit us every year. Temperature data from the cold rooms is monitored, but readings from delivery vehicles are still collected manually after each tour.
+
+[page: /news]
+Because demand from importers keeps growing, we are expanding. Our board has approved additional capacity of 6,000 pallet spaces on the neighbouring plot. Construction starts next year.
+
+[page: /contact]
+Morvik Cold Storage AG, Kuehlweg 0, Dietikon, Switzerland. Visits by appointment only.

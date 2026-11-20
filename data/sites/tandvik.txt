@@ -1,0 +1,14 @@
+[page: /]
+Tandvik Logistics Group is a full-service logistics provider headquartered in Hamburg, Germany. We offer road freight, sea freight, contract logistics and refrigerated transport for industrial, retail and food customers across Europe.
+
+[page: /about]
+Tandvik was founded in 1962 and has grown into a group with 2,400 employees at 31 locations in eleven countries. Our food division runs cold storage in Hamburg, Rotterdam and Poznan and a pan-European network of refrigerated trailers. Group-wide processes and IT systems are managed centrally from Hamburg.
+
+[page: /quality]
+All Tandvik locations are certified according to ISO 9001, and our food sites are IFS Logistics certified. Customers audit our sites regularly. Temperature monitoring for our refrigerated trailers is part of our group telematics platform, developed in-house.
+
+[page: /news]
+Tandvik is expanding its contract logistics business in Poland and Czechia with two new sites. The investment is part of our five-year growth plan.
+
+[page: /careers]
+Tandvik offers careers in more than ten countries. Visit our global careers portal to see all current openings.
