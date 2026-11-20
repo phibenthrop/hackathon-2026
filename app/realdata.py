@@ -307,7 +307,8 @@ class _TextExtractor(HTMLParser):
 
 
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
-PHONE = re.compile(r"(?:\+|\b0)\d[\d ()/-]{7,}\d")
+# (?<!\d) instead of \b: a number glued to a word ("Newcastle upon Tyne07595 088377") is still a number
+PHONE = re.compile(r"(?:\+|(?<!\d)0)\d[\d ()/-]{7,}\d")
 PERSON_ROLE = re.compile(
     r"\b(CEO|CFO|COO|CTO|MD|founder|co-founder|managing director|director|directors|chairman|chairwoman|"
     r"head of|manager|proprietor|stewardship|grandson|granddaughter|brother|sister|son|daughter|wife|husband|"

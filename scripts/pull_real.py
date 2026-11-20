@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app.realdata import (  # noqa: E402
-    REAL_DIR, HttpWebsiteReader, SimilarCompaniesSource, company_id, filter_and_merge, reclean_snapshot,
+    EMAIL, PHONE, REAL_DIR, HttpWebsiteReader, SimilarCompaniesSource, company_id, filter_and_merge, reclean_snapshot,
     registrable_domain,
 )
 from app.sources import Company  # noqa: E402
@@ -117,6 +117,19 @@ def cmd_reclean() -> None:
         snap = json.loads(f.read_text(encoding="utf-8"))
         f.write_text(json.dumps(reclean_snapshot(snap), indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print("recleaned", len(list((REAL_DIR / "sites").glob("*.json"))), "site snapshots")
+    left = contact_leftovers()
+    if left:
+        raise SystemExit(f"contact details still in snapshots: {left}")
+
+
+def contact_leftovers() -> list[str]:
+    """Pages under data/real/sites/ that still contain a phone number or an e-mail address."""
+    out = []
+    for f in sorted((REAL_DIR / "sites").glob("*.json")):
+        for pg in json.loads(f.read_text(encoding="utf-8")).get("pages", []):
+            if PHONE.search(pg["text"]) or EMAIL.search(pg["text"]):
+                out.append(f"{f.name}{pg['path']}")
+    return out
 
 
 def cmd_build() -> None:

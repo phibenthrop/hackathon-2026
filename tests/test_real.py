@@ -145,3 +145,17 @@ def test_html_to_text_drops_people_and_picks_safe_pages():
     assert text == "We run temperature-controlled trucks across the UK."
     picked = pick_extra_pages("https://acme.co.uk/", links)
     assert picked == ["https://acme.co.uk/about-us/", "https://acme.co.uk/services/chilled"]
+
+
+def test_phone_glued_to_word_and_emails_are_dropped():
+    from app.realdata import clean_lines
+    kept = clean_lines(["Newcastle upon Tyne07595 088377", "Call +44 (0)191 123 4567 today please",
+                        "Write to office@example.co.uk for a quote", "We run chilled vans across the North East."])
+    assert kept == ["We run chilled vans across the North East."]
+
+
+def test_snapshot_texts_hold_no_phone_or_email():
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from pull_real import contact_leftovers
+    assert contact_leftovers() == []
